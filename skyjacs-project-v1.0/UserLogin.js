@@ -4,6 +4,7 @@ import
 
 class UserLogin extends Component {
 	state = {
+		username: '',
 		password: ''
 	}
 	handleUsername = (text) => {
