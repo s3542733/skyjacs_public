@@ -3,7 +3,7 @@
 
 git clone [Github](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
 
-*myvenv - virtual environment: making changes to one website won't affect any others while you're also developing*
+*myvenv - virtual environment: making changes to one website won't affect any others while you're also developing* <br>
 $ python3 -m venv myvenv
 $ source myvenv/bin/activate
 
