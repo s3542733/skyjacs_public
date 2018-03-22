@@ -25,5 +25,5 @@ $ python manage.py runserver
 - shell: $ curl -H 'Accept: application/json; indent=4' -u admin:password http://127.0.0.1:8000/users/
 - url: http://127.0.0.1:8000/users/
 
-**to access api data list**
-
+**access api data list**
+- url: http://127.0.0.1:8000/api/list
