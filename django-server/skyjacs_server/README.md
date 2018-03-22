@@ -3,13 +3,13 @@
 
 git clone [Github](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
 
-**myvenv - virtual environment: making changes to one website won't affect any others while you're also developing** <br>
-$ python3 -m venv myvenv <br>
-$ source myvenv/bin/activate <br>
+**virtual environment**<br>
+$ python3 -m venv myvenv<br>
+$ source myvenv/bin/activate<br>
 
-**required frameworks** <br>
-$ cd skyjacs_server <br>
-$ pip install -r requirements.txt <br>
+**required frameworks**<br>
+$ cd skyjacs_server<br>
+$ pip install -r requirements.txt<br>
 
 **create migrations and users**<br>
 $ python manage.py migrate<br>
