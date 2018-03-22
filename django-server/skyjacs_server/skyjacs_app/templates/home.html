@@ -4,4 +4,9 @@
 
 {% block content %}
 	<h2>Home</h2>
+	{% if user.is_authenticated %}
+		<p>Authenticated user logged in</p>
+	{% else %}
+		<p>No user logged in</p>
+	{% endif %}
 {% endblock %}
