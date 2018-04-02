@@ -3,9 +3,7 @@
 
 git clone [Github - SKYJACS](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
 
-```diff
-+ADMIN
-```
+- ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `#f03c15`
 **virtual environment**<br>
 $ python3.6 -m venv myvenv<br>
 $ source myvenv/bin/activate<br>
