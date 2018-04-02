@@ -1,7 +1,5 @@
 
-## INSTALLATION GUIDE
-
-git clone [Github - SKYJACS](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
+## SKYJACS - SERVER GUIDE
 
 #### ADMIN
 ###### Virtual environment<br>
