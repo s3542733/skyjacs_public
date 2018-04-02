@@ -4,30 +4,30 @@
 #### ADMIN
 ###### Virtual environment<br>
 ```
-$ python3.6 -m venv myvenv<br>
-$ source myvenv/bin/activate<br>
+$ python3.6 -m venv myvenv
+$ source myvenv/bin/activate
 ```
 ###### Required frameworks<br>
 ```
-$ cd skyjacs_server<br>
-$ pip install -r requirements.txt<br>
+$ cd skyjacs_server
+$ pip install -r requirements.txt
 ```
 ###### Create migrations and users<br>
 ```
-$ python manage.py migrate<br>
-$ python manage.py createsuperuser<br>
+$ python manage.py migrate
+$ python manage.py createsuperuser
 ```
 
 #### DEVELOPERS
 ###### Virtual environment<br>
 ```
-$ source myvenv/bin/activate<br>
+$ source myvenv/bin/activate
 ```
 ###### Start server<br>
 ```
 $ python manage.py runserver
 ```
-###### Exit server<br>
+###### Exit server
 ```
 $ deactivate
 ```
