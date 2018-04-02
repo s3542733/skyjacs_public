@@ -23,19 +23,16 @@ $ python manage.py createsuperuser
 ```
 $ source myvenv/bin/activate
 ```
-###### Start server<br>
+###### Deploy server<br>
 ```
-$ python manage.py runserver
+$ eb deploy
 ```
-###### Exit server
-```
-$ deactivate
-```
+
 ## API GUIDE
 
 ###### Access user list<br>
-- shell: $ curl -H 'Accept: application/json; indent=4' -u admin:password http://127.0.0.1:8000/users/
-- url: http://127.0.0.1:8000/users/
+- shell: $ curl -H 'Accept: application/json; indent=4' -u admin:password http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/users/
+- url: http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/users/
 
 ###### Access api data list<br>
-- url: http://127.0.0.1:8000/api/list
+- url: TODO
