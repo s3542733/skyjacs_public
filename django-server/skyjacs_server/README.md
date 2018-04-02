@@ -25,12 +25,6 @@ $ pip install -r requirements.txt
 $ python manage.py migrate
 $ python manage.py createsuperuser
 ```
-
-#### DEVELOPERS
-###### Virtual environment<br>
-```
-$ source myvenv/bin/activate
-```
 ###### Deploy server<br>
 ```
 $ eb deploy
