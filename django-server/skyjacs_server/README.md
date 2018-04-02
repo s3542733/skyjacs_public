@@ -8,7 +8,7 @@
 ###### Access api data list<br>
 - url: TODO
 
-## SKYJACS - SERVER GUIDE
+## SERVER GUIDE
 
 #### ADMIN
 ###### Virtual environment<br>
