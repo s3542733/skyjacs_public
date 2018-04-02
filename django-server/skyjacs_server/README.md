@@ -4,7 +4,7 @@
 git clone [Github - SKYJACS](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
 
 ```diff
-ADMIN
++ADMIN
 ```
 **virtual environment**<br>
 $ python3.6 -m venv myvenv<br>
