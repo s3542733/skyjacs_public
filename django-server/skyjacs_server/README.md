@@ -1,10 +1,11 @@
 
 ## INSTALLATION GUIDE
 
-git clone [Github](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
+git clone [Github - SKYJACS](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
 
+#### ADMIN ONLY
 **virtual environment**<br>
-$ python3 -m venv myvenv<br>
+$ python3.6 -m venv myvenv<br>
 $ source myvenv/bin/activate<br>
 
 **required frameworks**<br>
@@ -18,6 +19,15 @@ $ python manage.py createsuperuser<br>
 **start server**<br>
 $ python manage.py runserver
 
+#### DEVELOPERS
+**virtual environment**<br>
+$ source myvenv/bin/activate<br>
+
+**start server**<br>
+$ python manage.py runserver
+
+**exit server**<br>
+$ deactivate
 
 ## API GUIDE
 
