@@ -27,10 +27,12 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
+    # website config
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'template_name': 'logout.html'}, name='logout'),
+    url(r'^home/$', TemplateView.as_view(template_name='home.html'), name='home'),
+    # API config
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
-    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
 ]

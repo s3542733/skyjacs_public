@@ -22,6 +22,9 @@ export default class HomeScreen extends React.Component {
 			        	<View>
 			        		<Text>Popular Items</Text>
 			        	</View>
+			        	<ScrollView horizontal={true}>
+			        		
+			        	</ScrollView>
 			        </View>
 
 			        // recently viewed
@@ -30,14 +33,20 @@ export default class HomeScreen extends React.Component {
 			        	<View>
 			        		<Text>Recently Viewed</Text>
 			        	</View>
+			        	<ScrollView horizontal={true}>
+			        		
+			        	</ScrollView>
 			        </View>
 
 			        // newly listed
 
 			        <View style={{height: 200, backgroundColor: '#aaaaaa'}}>
 			        	<View>
-			        		<Text>Newly Listeds</Text>
+			        		<Text>Newly Listed</Text>
 			        	</View>
+			        	<ScrollView horizontal={true}>
+			        		
+			        	</ScrollView>
 			        </View>
 
 			        // starred items
@@ -46,6 +55,9 @@ export default class HomeScreen extends React.Component {
 			        	<View>
 			        		<Text>Starred Items</Text>
 			        	</View>
+			        	<ScrollView horizontal={true}>
+			        		
+			        	</ScrollView>
 			        </View>
 
 			    </View>
