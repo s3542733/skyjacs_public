@@ -19,6 +19,8 @@ from django.contrib.auth import views as auth_views
 from django.views.generic.base import TemplateView
 from skyjacs_app import views
 from rest_framework import routers
+from django.conf import settings
+from django.conf.urls.static import static
 
 # templateView : responding to a GET request and returning a response
 # API is connected thorugh automatic URL routing
@@ -37,4 +39,6 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # returns django rest api
     url(r'^', include(router.urls)),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# static settings allows django api to view images
