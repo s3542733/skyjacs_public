@@ -1,30 +1,31 @@
 
-## INSTALLATION GUIDE
-
-git clone [Github](https://github.com/rmit-s3562437-james-huang/skyjacs.git)
-
-*myvenv - virtual environment: making changes to one website won't affect any others while you're also developing*
-$ python3 -m venv myvenv
-$ source myvenv/bin/activate
-
-*required frameworks*
-$ cd skyjacs_server
-$ pip install -r requirements.txt
-
-*create migrations and users*
-$ python manage.py migrate
-$ python manage.py createsuperuser
-
-*start server*
-$ python manage.py runserver
-
-
 ## API GUIDE
 
-*to access user list*
-$ curl -H 'Accept: application/json; indent=4' -u admin:password http://127.0.0.1:8000/users/
+###### Access user list<br>
+- url: http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/users/
 
-*direct though browser* http://127.0.0.1:8000/users/
+###### Access api data list<br>
+- url: TODO
 
-*to access api data list*
+## SERVER GUIDE
 
+#### ADMIN
+###### Virtual environment<br>
+```
+$ python3.6 -m venv myvenv
+$ source myvenv/bin/activate
+```
+###### Required frameworks<br>
+```
+$ cd skyjacs_server
+$ pip install -r requirements.txt
+```
+###### Create migrations and users<br>
+```
+$ python manage.py migrate
+$ python manage.py createsuperuser
+```
+###### Deploy server<br>
+```
+$ eb deploy
+```
