@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import HomeScreen from './src/components/home';
 import UserScreen from './src/components/user';
