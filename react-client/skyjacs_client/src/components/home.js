@@ -1,68 +1,58 @@
 import React from 'react';
-import { Text, View, Image, ScrollView } from 'react-native';
+import { FlatList, Text, View, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { List, ListItem, Avatar } from 'react-native-elements';
 import { TabNavigation } from 'react-navigation';
 
 export default class HomeScreen extends React.Component {
-	render() {
-		return (
-			// parent view
-			<ScrollView>
+constructor(props){
+    super(props);
+    this.state ={ isLoading: true,
+    base_url: "http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com"}
+  }
 
-		      	<View style={{
-			        flex: 1,
-			        flexDirection: 'column',
-			    }}>
-			    	// child views
+  componentDidMount(){
+    return fetch('http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/shoes/?format=json')
+      .then((response) => response.json())
+      .then((responseJson) => {
 
-			        <View style={{height: 260, backgroundColor: '#6eb7ac'}} />
+        this.setState({
+          isLoading: false,
+          dataSource: responseJson,
+        }, function(){
 
-			        // popular
+        });
 
-			        <View style={{height: 200, backgroundColor: '#ccc7b9'}}>
-			        	<View>
-			        		<Text>Popular Items</Text>
-			        	</View>
-			        	<ScrollView horizontal={true}>
-			        		
-			        	</ScrollView>
-			        </View>
+      })
+      .catch((error) =>{
+        console.error(error);
+      });
+  }
 
-			        // recently viewed
 
-			        <View style={{height: 200, backgroundColor: '#fbefda'}}>
-			        	<View>
-			        		<Text>Recently Viewed</Text>
-			        	</View>
-			        	<ScrollView horizontal={true}>
-			        		
-			        	</ScrollView>
-			        </View>
 
-			        // newly listed
+  render(){
 
-			        <View style={{height: 200, backgroundColor: '#aaaaaa'}}>
-			        	<View>
-			        		<Text>Newly Listed</Text>
-			        	</View>
-			        	<ScrollView horizontal={true}>
-			        		
-			        	</ScrollView>
-			        </View>
+    if(this.state.isLoading){
+      return(
+        <View style={{flex: 1, padding: 20}}>
+          <ActivityIndicator/>
+        </View>
+      )
+    }
 
-			        // starred items
-
-			        <View style={{height: 200, backgroundColor: '#b76e79'}}>
-			        	<View>
-			        		<Text>Starred Items</Text>
-			        	</View>
-			        	<ScrollView horizontal={true}>
-			        		
-			        	</ScrollView>
-			        </View>
-
-			    </View>
-
-		    </ScrollView>
-     	);
-	}
+    return(
+      <View style={{flex: 1, paddingTop:20}}>
+        <FlatList
+          data={this.state.dataSource}
+          renderItem={({item}) => <Image 
+				source={{uri: `${item.photo}`}} 
+				style={{height: 600, width: 600}}
+				resizeMode= 'cover'
+        		/>
+    		}		
+          keyExtractor={(item, id) => id}
+        />
+      </View>
+    );
+  }
 }
