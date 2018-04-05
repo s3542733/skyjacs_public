@@ -6,7 +6,7 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+        <Text>Below is the login link!</Text>
         <GoogleLogin />
       </View>
     );

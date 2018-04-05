@@ -6,14 +6,18 @@ export class GoogleLogin extends React.Component {
 
 	constructor(props) {
 		super(props)
-	};
+	}
 
 	async signInWithGoogleAsync() {
 		try {
 			const result = await Expo.Google.logInAsync({
-				iosClientId: '339328430446-mq1rtf0s3016dpr44so5dpgsou85e59o.apps.googleusercontent.com',
+				// skyjacsdevteam@gmail.com OAuth 2.0 ClientId's
+				iosClientId: '630362784684-9ojrarjd04hpjgg0jcqg8veu3beihp0s.apps.googleusercontent.com',
+				androidClientId: '630362784684-41ulk9bm7lcavhc070kqt6movnjfe3e7.apps.googleusercontent.com',
 				scopes: ['profile', 'email'],
 			});
+
+			console.log(result);
 
 			if(result.type === 'success') {
 				return result.accessToken;
@@ -23,15 +27,13 @@ export class GoogleLogin extends React.Component {
 		} catch (e) {
 			return {error: true}
 		}
-	};
+	}
 
 	render() {
 		return (
-			<View>
-				<Button title="Sign In" onPress={this.signInWithGoogleAsync.bind(this)}/>
-			</View>
+			<Button title="Login with Google" onPress={this.signInWithGoogleAsync.bind(this)}/>
 		)
-	};
+	}
 }
 
 export default GoogleLogin
