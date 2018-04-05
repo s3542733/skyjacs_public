@@ -28,7 +28,21 @@ export default class HomeScreen extends React.Component {
   		});
 	}
 
+	// leaves gap between items
+	renderSeparator = () => {
+	    return (
+	    	<View
+	        style={{
+	        	height: '100%',
+            	width: 5,
+            	backgroundColor: 'red',
+	        }}
+	      	/>
+	    );
+	};
+
 	render(){
+		// loading items from dbs
 	    if(this.state.isLoading){
 			return(
 	        <View style={{flex: 1, padding: 20}}>
@@ -36,6 +50,7 @@ export default class HomeScreen extends React.Component {
 	        </View>
 			)
 	    }
+	    // main view
 	    return (
       	<View style={styles.container}>
 	        <View style={styles.searchContainer}>
@@ -63,8 +78,8 @@ export default class HomeScreen extends React.Component {
 								resizeMode= 'cover'
 				        		/>
 				    		}		
+				          	keyExtractor={item => item.id}
 				    		ItemSeperatorComponent={this.renderSeperator}
-				          	keyExtractor={(item, id) => id}
 				        />
 					</View>
 					<View style={styles.box}>
@@ -116,8 +131,7 @@ searchContainer: {
     zIndex: 10
 },
 content: {
-    alignItems: 'center',
-    marginBottom: 40
+    alignItems: 'center'
 },
 footer: {
     height: 40,
