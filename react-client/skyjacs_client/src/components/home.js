@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Text, View, Image, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
+import { Button, FlatList, Text, View, Image, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { List, ListItem, Avatar } from 'react-native-elements';
 import { TabNavigation } from 'react-navigation';
 
@@ -28,13 +28,6 @@ export default class HomeScreen extends React.Component {
   		});
 	}
 
-	renderSeperator = () => {
-		return(
-			<View style={styles.seperator}/>
-		);
-	};
-
-
 	render(){
 	    if(this.state.isLoading){
 			return(
@@ -43,87 +36,128 @@ export default class HomeScreen extends React.Component {
 	        </View>
 			)
 	    }
-	    return(
-			<ScrollView>
-
-			<View style={styles.header}>
-			<Text style={{backgroundColor: 'green'}}>Header</Text>
+	    return (
+      	<View style={styles.container}>
+	        <View style={styles.searchContainer}>
+		        <Button
+		        	style={styles.search}
+					title="Search Bar"
+					color="#841584"
+					accessibilityLabel="Learn more about this purple button"
+					/>
 			</View>
-
-			<View style={styles.latest}>
-				<Text style={{backgroundColor: 'green'}}>Latest</Text>
-		        <FlatList
-		        	horizontal={true}
-					data={this.state.dataSource}
-		          	renderItem={({item}) => <Image 
-						source={{uri: `${item.photo}`}} 
-						style={{height: 100, width: 150}}
-						resizeMode= 'cover'
-		        		/>
-		    		}		
-		    		ItemSeperatorComponent={this.renderSeperator}
-		          	keyExtractor={(item, id) => id}
-		        />
-			</View>
-
-			<View style={styles.popular}>
-				<Text style={{backgroundColor: 'green'}}>Popular</Text>
-				<FlatList
-		        	horizontal={true}
-					data={this.state.dataSource}
-		          	renderItem={({item}) => <Image 
-						source={{uri: `${item.photo}`}} 
-						style={{height: 100, width: 150}}
-						resizeMode= 'cover'
-		        		/>
-		    		}		
-		          	keyExtractor={(item, id) => id}
-		        />
-			</View>
-
-			<View style={styles.recent}>
-				<Text style={{backgroundColor: 'green'}}>Recently Viewed</Text>
-				<FlatList
-		        	horizontal={true}
-					data={this.state.dataSource}
-		          	renderItem={({item}) => <Image 
-						source={{uri: `${item.photo}`}} 
-						style={{height: 100, width: 150}}
-						resizeMode= 'cover'
-		        		/>
-		    		}		
-		          	keyExtractor={(item, id) => id}
-		        />
-			</View>
-
-
-	  		</ScrollView>
-	    );
-
+	        
+	        <ScrollView>
+				<View style={[styles.content]}>
+		            <View style={styles.header}>
+						<Text style={{backgroundColor: 'green'}}>Header</Text>
+					</View>
+					<View style={styles.box}>
+						<Text style={styles.boxText}>Latest</Text>
+				        <FlatList
+				        	horizontal={true}
+							data={this.state.dataSource}
+				          	renderItem={({item}) => <Image 
+								source={{uri: `${item.photo}`}} 
+								style={{height: 100, width: 150}}
+								resizeMode= 'cover'
+				        		/>
+				    		}		
+				    		ItemSeperatorComponent={this.renderSeperator}
+				          	keyExtractor={(item, id) => id}
+				        />
+					</View>
+					<View style={styles.box}>
+						<Text style={styles.boxText}>Popular</Text>
+						<FlatList
+				        	horizontal={true}
+							data={this.state.dataSource}
+				          	renderItem={({item}) => <Image 
+								source={{uri: `${item.photo}`}} 
+								style={{height: 100, width: 150}}
+								resizeMode= 'cover'
+				        		/>
+				    		}		
+				          	keyExtractor={(item, id) => id}
+				        />
+					</View>
+					<View style={styles.box}>
+						<Text style={styles.boxText}>Recently Viewed</Text>
+						<FlatList
+				        	horizontal={true}
+							data={this.state.dataSource}
+				          	renderItem={({item}) => <Image 
+								source={{uri: `${item.photo}`}} 
+								style={{height: 100, width: 150}}
+								resizeMode= 'cover'
+				        		/>
+				    		}		
+				          	keyExtractor={(item, id) => id}
+				        />
+					</View>
+				</View>
+	        </ScrollView>
+		</View>
+    	);
   	}
 }
-
+ 
 const styles = StyleSheet.create({
-	header: {
-		height: 260, 
-		backgroundColor: '#6eb7ac',
-	},
-	latest: {
-		height: 200, 
-		backgroundColor: '#fbefda',
-	},
-	popular: {
-		height: 200, 
-		backgroundColor: '#aaaaaa',
-	},
-	recent: {
-		height: 200,
-		backgroundColor: '#b76e79',
-	},
-	seperator: {
-		paddingLeft: "10%",
-	},
+container: {
+	flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingTop: 19,
+},
+searchContainer: {
+    position: 'absolute',
+    right: 30,
+    top: 50,
+    zIndex: 10
+},
+content: {
+    alignItems: 'center',
+    marginBottom: 40
+},
+footer: {
+    height: 40,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#8BC34A'
+},
+header: {
+	borderWidth: 10,
+	borderColor: '#fbefda',
+	width: '100%',
+    height: 200,
+    backgroundColor: '#aaaaaa',
+    marginBottom: 10
+},
+box: {
+	flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+	justifyContent: 'center',
+	borderWidth: 10,
+	borderColor: '#fbefda',
+	width: '100%',
+    height: 200,
+    backgroundColor: '#aaaaaa',
+    marginBottom: 10
+},
+boxText: {
+	position: 'absolute',
+	top: 0,
+	left: 0,
+	zIndex: 10, 
+	backgroundColor: 'green'
+},
+search: {
+	width: 30,
+	height: 20,
+	backgroundColor: 'black'
+}
 });
-
-
-
