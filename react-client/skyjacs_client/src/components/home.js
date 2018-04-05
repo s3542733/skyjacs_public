@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, FlatList, Text, View, Image, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
-import { List, ListItem, Avatar } from 'react-native-elements';
+import { List, ListItem, Avatar, Card } from 'react-native-elements';
 import { TabNavigation } from 'react-navigation';
 
 export default class HomeScreen extends React.Component {
@@ -27,19 +27,6 @@ export default class HomeScreen extends React.Component {
         	console.error(error);
   		});
 	}
-
-	// leaves gap between items
-	renderSeparator = () => {
-	    return (
-	    	<View
-	        style={{
-	        	height: '100%',
-            	width: 5,
-            	backgroundColor: 'red',
-	        }}
-	      	/>
-	    );
-	};
 
 	render(){
 		// loading items from dbs
@@ -72,14 +59,16 @@ export default class HomeScreen extends React.Component {
 				        <FlatList
 				        	horizontal={true}
 							data={this.state.dataSource}
-				          	renderItem={({item}) => <Image 
-								source={{uri: `${item.photo}`}} 
-								style={{height: 100, width: 150}}
-								resizeMode= 'cover'
-				        		/>
+				          	renderItem={({item}) => 
+					          	<Avatar
+					              	source={{ url: item.photo }}
+					              	containerStyle={{ padding: 0, width: 160 }}
+					              	avatarStyle={{resizeMode: "cover"}}
+					              	width={140}
+	              					height={130}
+					            />
 				    		}		
-				          	keyExtractor={item => item.id}
-				    		ItemSeperatorComponent={this.renderSeperator}
+				          	keyExtractor={(item, id) => id}
 				        />
 					</View>
 					<View style={styles.box}>
@@ -87,11 +76,14 @@ export default class HomeScreen extends React.Component {
 						<FlatList
 				        	horizontal={true}
 							data={this.state.dataSource}
-				          	renderItem={({item}) => <Image 
-								source={{uri: `${item.photo}`}} 
-								style={{height: 100, width: 150}}
-								resizeMode= 'cover'
-				        		/>
+				          	renderItem={({item}) => 
+				          		<Avatar
+					              	source={{ url: item.photo }}
+					              	containerStyle={{ padding: 0, width: 160 }}
+					              	avatarStyle={{resizeMode: "cover"}}
+					              	width={140}
+	              					height={130}
+					            />
 				    		}		
 				          	keyExtractor={(item, id) => id}
 				        />
@@ -101,11 +93,14 @@ export default class HomeScreen extends React.Component {
 						<FlatList
 				        	horizontal={true}
 							data={this.state.dataSource}
-				          	renderItem={({item}) => <Image 
-								source={{uri: `${item.photo}`}} 
-								style={{height: 100, width: 150}}
-								resizeMode= 'cover'
-				        		/>
+				          	renderItem={({item}) => 
+				          		<Avatar
+					              	source={{ url: item.photo }}
+					              	containerStyle={{ padding: 0, width: 160 }}
+					              	avatarStyle={{resizeMode: "cover"}}
+					              	width={140}
+	              					height={130}
+					            />
 				    		}		
 				          	keyExtractor={(item, id) => id}
 				        />
