@@ -5,9 +5,9 @@ from .models import Shoe
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = User
-		fields = ('url', 'username', 'email')
+		fields = ('id', 'url', 'username', 'email')
 
 class ShoeSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Shoe
-		fields = ('date_added', 'title', 'photo')
+		fields = ('id', 'date_added', 'title', 'photo')
