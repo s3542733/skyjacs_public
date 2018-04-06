@@ -41,12 +41,7 @@ export default class HomeScreen extends React.Component {
 	    return (
       	<View style={styles.container}>
 	        <View style={styles.searchContainer}>
-		        <Button
-		        	style={styles.search}
-					title="Search Bar"
-					color="#841584"
-					accessibilityLabel="Learn more about this purple button"
-					/>
+		   
 			</View>
 	        
 	        <ScrollView>
