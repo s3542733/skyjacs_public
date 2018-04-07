@@ -4,27 +4,121 @@ import { TabNavigation } from 'react-navigation';
 import NavigationBar from 'react-native-navbar';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import SelectedPhoto from './selectedPhoto';
 
 export default class PostScreen extends React.Component {
 	constructor(props){
 		super(props);
-		
+
+		this.onFocus = this.onFocus.bind(this);
+      	this.onSubmit = this.onSubmit.bind(this);
+      	this.onSubmitBrand = this.onSubmitBrand.bind(this);
+      	this.onSubmitType = this.onSubmitType.bind(this);
+      	this.onSubmitGender = this.onSubmitGender.bind(this);
+      	this.onSubmitCondition = this.onSubmitCondition.bind(this);
+      	this.onSubmitSize = this.onSubmitSize.bind(this);
+      	this.onSubmitColor = this.onSubmitColor.bind(this);
+      	this.onSubmitDescription = this.onSubmitDescription.bind(this);
+
+      	this.brandRef = this.updateRef.bind(this, 'brand');
+      	this.typeRef = this.updateRef.bind(this, 'type');
+      	this.genderRef = this.updateRef.bind(this, 'gender');
+      	this.conditionRef = this.updateRef.bind(this, 'condition');
+      	this.sizeRef = this.updateRef.bind(this, 'size');
+      	this.colorRef = this.updateRef.bind(this, 'color');
+      	this.descriptionRef = this.updateRef.bind(this, 'description');
+
+		this.state = {
+			brand: '',
+			type: '',
+			gender: '',
+			condition: '',
+			size: '',
+			color: '',
+			description: '',
+			modalVisible: false,
+	    	photos: [],
+		    index: null,
+		    showSelectedPhoto: false,
+    		uri: ''
+		};
 	}
 
-	state = {
-		brand: '',
-		type: '',
-		gender: '',
-		condition: '',
-		size: '',
-		color: '',
-		description: '',
-		modalVisible: false,
-    	photos: [],
-	    index: null
+	onFocus() {
+		let { errors = {} } = this.state;
+
+		for (let name in errors) {
+			let ref = this[name];
+
+			if (ref && ref.isFocused()) {
+				delete errors[name];
+			}	
+		}
+		this.setState({ errors })
 	}
-	
+
+	onChangeText(text) {
+		['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
+			.map((name) => ({ name, ref: this[name] }))
+			.forEach(({ name, ref }) => {
+				if (ref.isFocused()) {
+					this.setState({ [name]: text });
+				}
+			});
+	}
+
+	onSubmitBrand() {
+		this.brand.focus();
+	}
+
+	onSubmitType() {
+		this.type.focus();
+	}
+
+	onSubmitGender() {
+		this.gender.focus();
+	}
+
+	onSubmitCondition() {
+		this.condition.focus();
+	}
+
+	onSubmitSize() {
+		this.size.focus();
+	}
+
+	onSubmitColor() {
+		this.color.focus();
+	}
+
+	onSubmitDescription() {
+		this.description.focus();
+	}
+
+	updateRef(name, ref) {
+		this[name] = ref;
+	}
+
+	onSubmit() {
+		let errors = {};
+
+		['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
+			.forEach((name) => {
+				let value = this[name].value();
+
+			if(!value) {
+				errors[name] = 'Should not be empty';
+			} else {
+				// if size is not a number throw error
+			}
+		});
+
+
+		this.setState({ errors })
+	}
+
+	// getting camera data
 
 	getPhotos = () => {
     	CameraRoll.getPhotos({
@@ -37,6 +131,16 @@ export default class PostScreen extends React.Component {
   	toggleModal = () => {
     	this.setState({ modalVisible: !this.state.modalVisible });
   	}
+
+  	setIndex = (index) => {
+    	if (index === this.state.index) {
+      		index = null
+    	}
+    	this.setState({ index })
+    	alert(index)
+    	this.setState({ modalVisible: !this.state.modalVisible });
+  	}
+
 
 	handleBrand = (text) => {
 		this.setState({ brand: text })
@@ -76,7 +180,17 @@ export default class PostScreen extends React.Component {
 			'description: ' + description)
 	}
 
+	renderSelectedPhoto = (showSelectedPhoto, uri) =>  {
+		if (showSelectedPhoto) {
+			return (
+				<SelectedPhoto uri={uri} />
+			)
+		}
+	}
+
 	render() {
+		const { showSelectedPhoto, uri, errors = {} } = this.state;
+		
 		return(
 			<View style={styles.screen}>
 				<NavigationBar
@@ -87,46 +201,76 @@ export default class PostScreen extends React.Component {
 				<View style={styles.container}>
 	        		<KeyboardAwareScrollView>
 		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			error={errors.brand}
 		  					label='Brand'
 		        			data={brand}
+		        			onSubmitEditing={this.onSubmitBrand}
 		        			onChangeText={this.handleBrand}/>
 
 		        		<Dropdown
+		        			ref={this.typeRef}
+		        			onFocus={this.onFocus}
+		  					error={errors.type}
 		  					label='Type'
 		        			data={type}
+		        			onSubmitEditing={this.onSubmitType}
 		        			onChangeText={this.handleType}/>
 
 		        		<Dropdown
-		  					label='Gender'
+		        			ref={this.genderRef}
+		        			onFocus={this.onFocus}
+		  					error={errors.gender}
+		  					label='Shoe Gender'
 		        			data={gender}
+		        			onSubmitEditing={this.onSubmitGender}
 		        			onChangeText={this.handleGender}/>
 
 		        		<Dropdown
+		        			ref={this.conditionRef}
+		        			onFocus={this.onFocus}
+		  					error={errors.condition}
 		  					label='Condition'
 		        			data={condition}
+		        			onSubmitEditing={this.onSubmitCondition}
 		        			onChangeText={this.handleCondition}/>
 		        		
 		        		<TextField
-		  					label='Size'
+		        			ref={this.sizeRef}
+		        			onFocus={this.onFocus}
+		  					error={errors.size}
+		  					label='Size (US)'
+		        			onSubmitEditing={this.onSubmitSize}
 		        			onChangeText={this.handleSize}/>
 
 		        		<TextField
+		        			ref={this.colorRef}
+		        			onFocus={this.onFocus}
+		  					error={errors.color}
 		  					label='Color'
+		        			onSubmitEditing={this.onSubmitColor}
 		        			onChangeText={this.handleColor}/>/>
 
 		        		<TextField
+		        			ref={this.descriptionRef}
+		        			onFocus={this.onFocus}
+							error={errors.description}
 							label="Description"
-							onChangeText={this.handleDescription}/>
+							multiline={true}
+							onSubmitEditing={this.onSubmitDescription}
+							onChangeText={this.handleDescription}
+							characterRestriction={255}/>
+
+						{ this.renderSelectedPhoto(showSelectedPhoto, uri) }
+
 					</KeyboardAwareScrollView>
 	    		</View>
 	    		<View style={styles.postContainer}>
 		    		<Button
-			        	style={styles.post}
-						title="Upload"
-						color="black"
+						title="Submit"
 						accessibilityLabel="Learn more about this purple button"
-						onPress={() => this.post(this.state.brand, this.state.type, this.state.gender,
-							this.state.condition, this.state.size, this.state.color, this.state.description)}
+						onPress={this.onSubmit}
 						/>
 					<Button
       				title='Add Photo'
@@ -145,13 +289,18 @@ export default class PostScreen extends React.Component {
 							<ScrollView contentContainerStyle={styles.scrollView}>
 								{
 								this.state.photos.map((p, i) => {
+								const { uri } = p.node.image;
 								return (
 									<TouchableHighlight
 										style={{opacity: i === this.state.index ? 0.5 : 1
 										}}
 										key={i}
 										underlayColor='transparent'
-										onPress={() => this.setIndex(i)}>
+										onPress={() => this.setState({ 
+											showSelectedPhoto: true, 
+											uri: uri, 
+											modalVisible: !this.state.modalVisible
+										})}>
 										<Image
 											style={{
 											width: width/3,
@@ -173,6 +322,7 @@ export default class PostScreen extends React.Component {
 	}
 }
 
+// get width of screen to scale for cameraroll images
 const { width } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
@@ -193,6 +343,7 @@ const styles = StyleSheet.create({
     	paddingHorizontal: 8,
 	},
 	postContainer: {
+		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
 		position: 'absolute',
