@@ -102,20 +102,49 @@ export default class PostScreen extends React.Component {
 
 	onSubmit() {
 		let errors = {};
+		var count = 0;
 
 		['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
 			.forEach((name) => {
 				let value = this[name].value();
 
-			if(!value) {
-				errors[name] = 'Should not be empty';
-			} else {
+				if(!value) {
+					errors[name] = 'Should not be empty';
+					count++;
+				} else {
 				// if size is not a number throw error
-			}
-		});
-
-
+				}
+			});
 		this.setState({ errors })
+
+		if (this.state.showSelectedPhoto) {
+			var photo = {
+				uri: this.state.uri,
+				type: 'image/jpeg',
+				name: 'photo.jpeg'
+			}
+		}
+		var data = new FormData();
+		data.append('photo', photo);
+		data.append('title', 'random photo');
+
+		fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/shoes/", {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'multipart/form-data',
+			},
+			body: data
+		})
+			.then((response) => response.json())
+			.then((responseJson) => {
+				console.log(responseJson);
+			})
+			.catch((error) => {
+				console.log(error)
+				postSubmit(["Oops, something when wrong"]);
+			})
+
 	}
 
 	// getting camera data
@@ -190,7 +219,7 @@ export default class PostScreen extends React.Component {
 
 	render() {
 		const { showSelectedPhoto, uri, errors = {} } = this.state;
-		
+
 		return(
 			<View style={styles.screen}>
 				<NavigationBar
