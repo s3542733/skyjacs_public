@@ -29,7 +29,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'listings', views.ListingViewSet)
 router.register(r'notifications', views.NotificationViewSet)
-router.register(r'specs', views.SpecViewSet)
+#router.register(r'specs', views.SpecViewSet)
 router.register(r'images', views.ImageViewSet)
 
 urlpatterns = [
