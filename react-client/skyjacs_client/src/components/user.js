@@ -7,33 +7,12 @@ import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import SelectedPhoto from './selectedPhoto';
 
-//variables
-var userId = '2';
 
 export default class UserScreen extends React.Component {
 	constructor(props){
 		super(props);
 
-		// this.fetchUserName = this.fetchUserName.bind(this);
-
-		this.onFocus = this.onFocus.bind(this);
-      	this.onSubmit = this.onSubmit.bind(this);
-      	this.onSubmitBrand = this.onSubmitBrand.bind(this);
-      	this.onSubmitType = this.onSubmitType.bind(this);
-      	this.onSubmitGender = this.onSubmitGender.bind(this);
-      	this.onSubmitCondition = this.onSubmitCondition.bind(this);
-      	this.onSubmitSize = this.onSubmitSize.bind(this);
-      	this.onSubmitColor = this.onSubmitColor.bind(this);
-
-      	this.brandRef = this.updateRef.bind(this, 'brand');
-      	this.typeRef = this.updateRef.bind(this, 'type');
-      	this.genderRef = this.updateRef.bind(this, 'gender');
-      	this.conditionRef = this.updateRef.bind(this, 'condition');
-      	this.sizeRef = this.updateRef.bind(this, 'size');
-      	this.colorRef = this.updateRef.bind(this, 'color');
-
 		this.state = {
-			dataSource: [],
 			username: '',
 			email: '',
 			brand: '',
@@ -42,11 +21,8 @@ export default class UserScreen extends React.Component {
 			condition: '',
 			size: '',
 			color: '',
-			modalVisible: false,
-	    	photos: [],
 		    index: null,
 		    showSelectedPhoto: false,
-    		uri: ''
 		};
 	}
 	//get dummy test user info
@@ -77,19 +53,6 @@ export default class UserScreen extends React.Component {
 
 	}
 
-	onFocus() {
-		let { errors = {} } = this.state;
-
-		for (let name in errors) {
-			let ref = this[name];
-
-			if (ref && ref.isFocused()) {
-				delete errors[name];
-			}	
-		}
-		this.setState({ errors })
-	}
-
 	onChangeText(text) {
 		['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
 			.map((name) => ({ name, ref: this[name] }))
@@ -97,69 +60,14 @@ export default class UserScreen extends React.Component {
 				if (ref.isFocused()) {
 					this.setState({ [name]: text });
 				}
-			});
-	}
-
-	onSubmitBrand() {
-		this.brand.focus();
-	}
-
-	onSubmitType() {
-		this.type.focus();
-	}
-
-	onSubmitGender() {
-		this.gender.focus();
-	}
-
-	onSubmitCondition() {
-		this.condition.focus();
-	}
-
-	onSubmitSize() {
-		this.size.focus();
-	}
-
-	onSubmitColor() {
-		this.color.focus();
-	}
-
-	onSubmitDescription() {
-		this.description.focus();
-	}
-
-	updateRef(name, ref) {
-		this[name] = ref;
+		});
 	}
 
 	//submit function need to rework
 	onSubmit() {
-		let errors = {};
 		var count = 0;
-
-		['brand', 'type', 'gender', 'condition', 'size', 'color']
-			.forEach((name) => {
-				let value = this[name].value();
-
-				if(!value) {
-					errors[name] = 'Should not be empty';
-					count++;
-				} else {
-				// if size is not a number throw error
-				}
-			});
-		this.setState({ errors })
-
-		if (this.state.showSelectedPhoto) {
-			var photo = {
-				uri: this.state.uri,
-				type: 'image/jpeg',
-				name: 'photo.jpeg'
-			}
-		}
 		var data = new FormData();
-		data.append('photo', photo);
-		data.append('title', 'random photo');
+		data.append('title');
 
 		fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/shoes/", {
 			method: 'GET',
@@ -179,20 +87,6 @@ export default class UserScreen extends React.Component {
 			})
 
 	}
-
-	// getting camera data
-  	toggleModal = () => {
-    	this.setState({ modalVisible: !this.state.modalVisible });
-  	}
-
-  	setIndex = (index) => {
-    	if (index === this.state.index) {
-      		index = null
-    	}
-    	this.setState({ index })
-    	alert(index)
-    	this.setState({ modalVisible: !this.state.modalVisible });
-  	}
 
 	handleBrand = (text) => {
 		this.setState({ brand: text })
@@ -218,22 +112,9 @@ export default class UserScreen extends React.Component {
 		this.setState({ color: text })
 	}
 
-	post = (brand, type, gender, condition, size, color) => {
-		alert('brand: ' + brand + '\n' +
-			'type: ' + type + '\n' +
-			'gender: ' + gender + '\n' +
-			'condition: ' + condition + '\n' +
-			'size: ' + size + '\n' +
-			'color: ' + color + '\n' )
-	}
-
 	render() {
-
-
-		const { showSelectedPhoto, uri, errors = {}, dataSource, username } = this.state;
-
 		const titleConfig = {
-  			title: username,
+  			title: this.state.username,
 		};
 
 		return(
@@ -252,53 +133,41 @@ export default class UserScreen extends React.Component {
 		        		<Dropdown
 		        			ref={this.brandRef}
 		        			onFocus={this.onFocus}
-		        			error={errors.brand}
 		  					label='Brand'
 		        			data={brand}
-		        			onSubmitEditing={this.onSubmitBrand}
 		        			onChangeText={this.handleBrand}/>
 
 		        		<Dropdown
 		        			ref={this.typeRef}
 		        			onFocus={this.onFocus}
-		  					error={errors.type}
 		  					label='Type'
 		        			data={type}
-		        			onSubmitEditing={this.onSubmitType}
 		        			onChangeText={this.handleType}/>
 
 		        		<Dropdown
 		        			ref={this.genderRef}
 		        			onFocus={this.onFocus}
-		  					error={errors.gender}
 		  					label='Shoe Gender'
 		        			data={gender}
-		        			onSubmitEditing={this.onSubmitGender}
 		        			onChangeText={this.handleGender}/>
 
 		        		<Dropdown
 		        			ref={this.conditionRef}
 		        			onFocus={this.onFocus}
-		  					error={errors.condition}
 		  					label='Condition'
 		        			data={condition}
-		        			onSubmitEditing={this.onSubmitCondition}
 		        			onChangeText={this.handleCondition}/>
 		        		
 		        		<TextField
 		        			ref={this.sizeRef}
 		        			onFocus={this.onFocus}
-		  					error={errors.size}
 		  					label='Size (US)'
-		        			onSubmitEditing={this.onSubmitSize}
 		        			onChangeText={this.handleSize}/>
 
 		        		<TextField
 		        			ref={this.colorRef}
 		        			onFocus={this.onFocus}
-		  					error={errors.color}
 		  					label='Color'
-		        			onSubmitEditing={this.onSubmitColor}
 		        			onChangeText={this.handleColor}/>/>
 
 					</KeyboardAwareScrollView>
@@ -309,46 +178,6 @@ export default class UserScreen extends React.Component {
 						accessibilityLabel="Learn more about this purple button"
 						onPress={this.onSubmit}
 						/>
-
-        			<Modal
-						animationType={"slide"}
-						transparent={false}
-						visible={this.state.modalVisible}
-						onRequestClose={() => console.log('closed')}>
-						<View style={styles.modalContainer}>
-							<Button
-								title='Close'
-								onPress={this.toggleModal}
-							/>
-							<ScrollView contentContainerStyle={styles.scrollView}>
-								{
-								this.state.photos.map((p, i) => {
-								const { uri } = p.node.image;
-								return (
-									<TouchableHighlight
-										style={{opacity: i === this.state.index ? 0.5 : 1
-										}}
-										key={i}
-										underlayColor='transparent'
-										onPress={() => this.setState({ 
-											showSelectedPhoto: true, 
-											uri: uri, 
-											modalVisible: !this.state.modalVisible
-										})}>
-										<Image
-											style={{
-											width: width/3,
-											height: width/3
-											}}
-											source={{uri: p.node.image.uri}}
-										/>
-									</TouchableHighlight>
-									)
-								})
-							}
-							</ScrollView>
-						</View>
-        			</Modal>
 	    		</View>
 	    		<View style={styles.footer}/>
 			</View>
