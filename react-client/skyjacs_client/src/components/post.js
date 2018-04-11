@@ -124,6 +124,7 @@ export default class PostScreen extends React.Component {
 				name: 'photo.jpeg'
 			}
 		}
+		
 		var data = new FormData();
 		data.append('photo', photo);
 		data.append('title', 'random photo');
