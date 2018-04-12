@@ -1,15 +1,27 @@
 from __future__ import unicode_literals
 from django.shortcuts import render
-from rest_framework import viewsets, generics
-from django.contrib.auth.models import User
-from .serializers import UserSerializer
-from .serializers import ShoeSerializer
-from .models import Shoe
+from rest_framework import viewsets
+#from django.contrib.auth.models import User
+from skyjacs_app.models import User, Listing, Notification, Image
+from skyjacs_app.serializers import UserSerializer, ListingSerializer, NotificationSerializer, ImageSerializer
+
 
 class UserViewSet(viewsets.ModelViewSet):
-	queryset = User.objects.all().order_by('-date_joined')
+	queryset = User.objects.all().order_by('uid')
 	serializer_class = UserSerializer
 
-class ShoesViewSet(viewsets.ModelViewSet):
-	queryset = Shoe.objects.all().order_by('-date_added')
-	serializer_class = ShoeSerializer
+class ListingViewSet(viewsets.ModelViewSet):
+	queryset = Listing.objects.all().order_by('uid')
+	serializer_class = ListingSerializer
+
+class NotificationViewSet(viewsets.ModelViewSet):
+	queryset = Notification.objects.all().order_by('uid')
+	serializer_class = NotificationSerializer
+
+#class SpecViewSet(viewsets.ModelViewSet):
+#	queryset = Spec.objects.all().order_by('uid')
+#	serializer_class = SpecSerializer
+
+class ImageViewSet(viewsets.ModelViewSet):
+	queryset = Image.objects.all().order_by('uid')
+	serializer_class = ImageSerializer

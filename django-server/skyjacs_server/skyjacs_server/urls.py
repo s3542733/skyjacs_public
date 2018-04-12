@@ -1,5 +1,5 @@
-"""skyjacs_server URL Configuration
 
+"""skyjacs_server URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
 Examples:
@@ -14,31 +14,29 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.conf.urls.static import static
+from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
+#from django.contrib.auth import views as auth_views
 from django.views.generic.base import TemplateView
 from skyjacs_app import views
 from rest_framework import routers
-from django.conf import settings
-from django.conf.urls.static import static
 
 # templateView : responding to a GET request and returning a response
 # API is connected thorugh automatic URL routing
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
-router.register(r'shoes', views.ShoesViewSet)
+router.register(r'listings', views.ListingViewSet)
+router.register(r'notifications', views.NotificationViewSet)
+#router.register(r'specs', views.SpecViewSet)
+router.register(r'images', views.ImageViewSet)
 
 urlpatterns = [
-    # website config
     url(r'^admin/', admin.site.urls),
-    url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
-    url(r'^logout/$', auth_views.logout, {'template_name': 'logout.html'}, name='logout'),
-    url(r'^home/$', TemplateView.as_view(template_name='home.html'), name='home'),
-    # API config
+    #url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
+    #url(r'^logout/$', auth_views.logout, {'template_name': 'logout.html'}, name='logout'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    # returns django rest api
     url(r'^', include(router.urls)),
+    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# static settings allows django api to view images
