@@ -1,11 +1,12 @@
 import React from 'react';
 import { Modal, CameraRoll, Image, Dimensions, RefreshControl, Button, Text, ScrollView, View, TouchableHighlight, StyleSheet } from 'react-native';
 import { TabNavigation } from 'react-navigation';
-import NavigationBar from 'react-native-navbar';
+import { CheckBox } from 'react-native-elements'
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import SelectedPhoto from './selectedPhoto';
+import ImageUpload from './imageUpload';
 
 export default class PostScreen extends React.Component {
 	constructor(props){
@@ -30,6 +31,7 @@ export default class PostScreen extends React.Component {
       	this.descriptionRef = this.updateRef.bind(this, 'description');
 
 		this.state = {
+			checked: false,
 			brand: '',
 			type: '',
 			gender: '',
@@ -101,50 +103,52 @@ export default class PostScreen extends React.Component {
 	}
 
 	onSubmit() {
-		let errors = {};
-		var count = 0;
+		// let errors = {};
+		// var count = 0;
 
-		['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
-			.forEach((name) => {
-				let value = this[name].value();
+		// ['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
+		// 	.forEach((name) => {
+		// 		let value = this[name].value();
 
-				if(!value) {
-					errors[name] = 'Should not be empty';
-					count++;
-				} else {
-				// if size is not a number throw error
-				}
-			});
-		this.setState({ errors })
+		// 		if(!value) {
+		// 			errors[name] = 'Should not be empty';
+		// 			count++;
+		// 		} else {
+		// 		// if size is not a number throw error
+		// 		}
+		// 	});
+		// this.setState({ errors })
 
-		if (this.state.showSelectedPhoto) {
-			var photo = {
-				uri: this.state.uri,
-				type: 'image/jpeg',
-				name: 'photo.jpeg'
-			}
-		}
+		// if (this.state.showSelectedPhoto) {
+		// 	var photo = {
+		// 		uri: this.state.uri,
+		// 		type: 'image/jpeg',
+		// 		name: 'photo.jpeg'
+		// 	}
+		// }
 		
-		var data = new FormData();
-		data.append('photo', photo);
-		data.append('title', 'random photo');
+		// var data = new FormData();
+		// data.append('photo', photo);
+		// data.append('title', 'random photo');
 
-		fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/shoes/", {
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'multipart/form-data',
-			},
-			body: data
-		})
-			.then((response) => response.json())
-			.then((responseJson) => {
-				console.log(responseJson);
-			})
-			.catch((error) => {
-				console.log(error)
-				postSubmit(["Oops, something when wrong"]);
-			})
+		// fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/listing/", {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		'Accept': 'application/json',
+		// 		'Content-Type': 'multipart/form-data',
+		// 	},
+		// 	body: data
+		// })
+		// 	.then((response) => response.json())
+		// 	.then((responseJson) => {
+		// 		console.log(responseJson);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log(error)
+		// 		postSubmit(["Oops, something when wrong"]);
+		// 	})
+		
+		this.props.navigation.navigate('ImageUpload');
 
 	}
 
@@ -223,11 +227,6 @@ export default class PostScreen extends React.Component {
 
 		return(
 			<View style={styles.screen}>
-				<NavigationBar
-	      			tintColor={'green'}
-	        		title={titleConfig}
-	        		rightButton={rightButtonConfig}
-  				/>
 				<View style={styles.container}>
 	        		<KeyboardAwareScrollView>
 		        		<Dropdown
@@ -238,6 +237,11 @@ export default class PostScreen extends React.Component {
 		        			data={brand}
 		        			onSubmitEditing={this.onSubmitBrand}
 		        			onChangeText={this.handleBrand}/>
+
+		        		<CheckBox
+					     	title='Click Here'
+							checked={!this.state.checked}
+						/>
 
 		        		<Dropdown
 		        			ref={this.typeRef}
@@ -300,7 +304,7 @@ export default class PostScreen extends React.Component {
 		    		<Button
 						title="Submit"
 						accessibilityLabel="Learn more about this purple button"
-						onPress={this.onSubmit}
+						onPress={() => this.props.navigation.navigate('ImageUpload')}
 						/>
 					<Button
       				title='Add Photo'
@@ -397,7 +401,7 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		bottom: 0,
-		backgroundColor: 'green'
+		backgroundColor: 'white'
 	}
 
 });

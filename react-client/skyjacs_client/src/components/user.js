@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, CameraRoll, Image, Dimensions, RefreshControl, Button, Text, ScrollView, View, TouchableHighlight, StyleSheet } from 'react-native';
 import { TabNavigation } from 'react-navigation';
 import NavigationBar from 'react-native-navbar';
+import { CheckBox } from 'react-native-elements'
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -13,6 +14,7 @@ export default class UserScreen extends React.Component {
 		super(props);
 
 		this.state = {
+			checked: false,
 			username: '',
 			email: '',
 			brand: '',
@@ -136,6 +138,13 @@ export default class UserScreen extends React.Component {
 		  					label='Brand'
 		        			data={brand}
 		        			onChangeText={this.handleBrand}/>
+
+
+		        		<CheckBox
+					     	title='Click Here'
+							checked={this.state.checked}
+							// onPress={() => this.setState( checked: true)}
+						/>
 
 		        		<Dropdown
 		        			ref={this.typeRef}

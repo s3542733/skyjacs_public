@@ -11,7 +11,7 @@ export default class HomeScreen extends React.Component {
 	}	
 
   	componentDidMount(){
-    	return fetch('http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/shoes/?format=json')
+    	return fetch('http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/images/?format=json')
       	.then((response) => response.json())
       	.then((responseJson) => {
 
@@ -56,7 +56,7 @@ export default class HomeScreen extends React.Component {
 							data={this.state.dataSource}
 				          	renderItem={({item}) => 
 					          	<Avatar
-					              	source={{ url: item.photo }}
+					              	source={{ url: item.image_url }}
 					              	containerStyle={{ padding: 0, width: 160 }}
 					              	avatarStyle={{resizeMode: "cover"}}
 					              	width={140}
@@ -73,7 +73,7 @@ export default class HomeScreen extends React.Component {
 							data={this.state.dataSource}
 				          	renderItem={({item}) => 
 				          		<Avatar
-					              	source={{ url: item.photo }}
+					              	source={{ url: item.image_url }}
 					              	containerStyle={{ padding: 0, width: 160 }}
 					              	avatarStyle={{resizeMode: "cover"}}
 					              	width={140}
@@ -90,7 +90,7 @@ export default class HomeScreen extends React.Component {
 							data={this.state.dataSource}
 				          	renderItem={({item}) => 
 				          		<Avatar
-					              	source={{ url: item.photo }}
+					              	source={{ url: item.image_url }}
 					              	containerStyle={{ padding: 0, width: 160 }}
 					              	avatarStyle={{resizeMode: "cover"}}
 					              	width={140}
