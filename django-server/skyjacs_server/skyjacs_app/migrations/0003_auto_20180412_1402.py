@@ -41,6 +41,7 @@ class Migration(migrations.Migration):
                 ('model_strict', models.BooleanField(default=False)),
                 ('item_colour', models.CharField(default='Unknown', max_length=255)),
                 ('colour_priority', models.BooleanField(default=False)),
+                ('colour_strict', models.BooleanField(default=False)),
                 ('priority_strict', models.BooleanField(default=False)),
                 ('item_condition', models.CharField(default='Unknown', max_length=64)),
                 ('condition_priority', models.BooleanField(default=False)),

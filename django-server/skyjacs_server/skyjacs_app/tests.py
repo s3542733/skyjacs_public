@@ -17,3 +17,6 @@ class ModelTestCase(TestCase):
         self.user.save()
         new_count = User.objects.count()
         self.assertNotEqual(old_count, new_count)
+
+    def test_model_check_created_user(self):
+        self.assertEqual(self.User_name, self.email, self.user_admin)
