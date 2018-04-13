@@ -31,7 +31,6 @@ export default class PostScreen extends React.Component {
       	this.descriptionRef = this.updateRef.bind(this, 'description');
 
 		this.state = {
-			checked: false,
 			brand: '',
 			type: '',
 			gender: '',
@@ -237,12 +236,6 @@ export default class PostScreen extends React.Component {
 		        			data={brand}
 		        			onSubmitEditing={this.onSubmitBrand}
 		        			onChangeText={this.handleBrand}/>
-
-		        		<CheckBox
-					     	title='Click Here'
-							checked={!this.state.checked}
-						/>
-
 		        		<Dropdown
 		        			ref={this.typeRef}
 		        			onFocus={this.onFocus}
@@ -362,6 +355,7 @@ const { width } = Dimensions.get('window')
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
+		backgroundColor: 'white'
 	},
 	modalContainer: {
     	paddingTop: 20,
@@ -375,6 +369,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 4,
     	marginVertical: 8,
     	paddingHorizontal: 8,
+    	paddingBottom: 40
 	},
 	postContainer: {
 		flexDirection: 'row',
