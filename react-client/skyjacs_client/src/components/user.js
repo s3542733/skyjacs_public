@@ -1,28 +1,45 @@
 import React from 'react';
-import { Modal, CameraRoll, Image, Dimensions, RefreshControl, Button, Text, ScrollView, View, TouchableHighlight, StyleSheet } from 'react-native';
+import { Modal, CameraRoll, Image, Dimensions, RefreshControl, Button, Text, ScrollView, View, TouchableHighlight, StyleSheet, FlatList } from 'react-native';
 import { TabNavigation } from 'react-navigation';
-import NavigationBar from 'react-native-navbar';
-import { CheckBox } from 'react-native-elements'
+import { CheckBox } from 'react-native-elements' 
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import SelectedPhoto from './selectedPhoto';
-
 
 export default class UserScreen extends React.Component {
 	constructor(props){
 		super(props);
 
 		this.state = {
+			value: 0,
 			checked: false,
 			username: '',
 			email: '',
 			brand: '',
 			type: '',
+			model: '',
 			gender: '',
 			condition: '',
 			size: '',
 			color: '',
+			material: '',
+			brandPriority: false,
+			typePriority: false,
+			modelPriority: false,
+			genderPriority: false,
+			conditionPriority: false,
+			sizePriority: false,
+			colorPriority: false,
+			materialPriority: false,
+			brandStrict: false,
+			modelStrict: false,
+			typeStrict: false,
+			genderStrict: false,
+			conditionStrict: false,
+			sizeStrict: false,
+			colorStrict: false,
+			materialStrict: false,
 		    index: null,
 		    showSelectedPhoto: false,
 		};
@@ -65,14 +82,43 @@ export default class UserScreen extends React.Component {
 		});
 	}
 
+	_onSelect = ( item ) => {
+      console.log(item);
+    };
+
 	//submit function need to rework
 	onSubmit() {
 		var count = 0;
 		var data = new FormData();
-		data.append('title');
+		
+		// test dummy 
+	 	data.append("user", "http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/users/1/")
+        data.append("listing_type", "Buying")
+        data.append("item_sex", this.state.gender)
+        data.append("sex_priority", this.state.genderPriority)
+        data.append("sex_strict", this.state.genderStrict)
+        data.append("item_type", this.state.type)
+        data.append("type_priority", this.state.typePriority)
+        data.append("type_strict", this.state.typeStrict)
+        data.append("item_brand", this.state.brand)
+        data.append("brand_priority", this.state.brandPriority)
+        data.append("brand_strict", this.state.brandStrict)
+        data.append("item_model", this.state.model)
+        data.append("model_priority", this.state.modelPriority)
+        data.append("model_strict", this.state.modelStrict)
+        data.append("item_condition", this.state.condition)
+        data.append("condition_priority", this.state.conditionPriority)
+        data.append("condition_strict", this.state.conditionStrict)
+        data.append("item_colour", this.state.color)
+        data.append("item_material", this.state.material)
+        data.append("material_priority", this.state.materialPriority)
+        data.append("material_strict", this.state.materialStrict)
+        data.append("item_size", this.state.size)
+        data.append("size_priority", this.state.sizePriority)
+        data.append("size_strict", this.state.sizeStrict)
 
-		fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/shoes/", {
-			method: 'GET',
+		fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/listings/", {
+			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'multipart/form-data',
@@ -88,33 +134,115 @@ export default class UserScreen extends React.Component {
 				postSubmit(["Oops, something when wrong"]);
 			})
 
+		this.props.navigation.navigate('Match')
 	}
 
 	handleBrand = (text) => {
 		this.setState({ brand: text })
 	}
 
+	handleBrandPriority = (text) => {
+		if (text == 'Priority') {
+			this.setState({ brandPriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ brandStrict: true })		
+		}
+	}
+
+	handleModel = (text) => {
+		this.setState({ model: text })
+	}
+
+	handleModelPriority = (text) => {
+		if (text == 'Priority') {
+			this.setState({ modelPriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ modelStrict: true })		
+		}
+	}
+
 	handleType = (text) => {
 		this.setState({ type: text})
+	}
+
+	handleTypePriority = (text) => {
+		if (text == 'Priority') {
+			this.setState({ typePriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ typeStrict: true })		
+		}
 	}
 
 	handleGender = (text) => {
 		this.setState({ gender: text})
 	}
 
+	handleGenderPriority = (text) => {
+		if (text == 'Priority') {
+			this.setState({ genderPriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ genderStrict: true })		
+		}
+	}
+
 	handleCondition = (text) => {
 		this.setState({ condition: text })
+	}
+
+	handleConditionPriority = (text) => {
+		if (text == 'Priority') {
+			this.setState({ conditionPriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ conditionStrict: true })		
+		}
 	}
 
 	handleSize = (text) => { 
 		this.setState({ size: text })
 	}
 
+	handleSizePriority = (text) => { 
+		if (text == 'Priority') {
+			this.setState({ sizePriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ sizeStrict: true })		
+		}
+	}
+
 	handleColor = (text) => {
 		this.setState({ color: text })
 	}
 
+	handleColorPriority = (text) => {
+		if (text == 'Priority') {
+			this.setState({ colorPriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ colorStrict: true })		
+		}
+	}
+
+	handleMaterial = (text) => {
+		this.setState({ material: text })
+	}
+
+	handleMaterialPriority = (text) => {
+		if (text == 'Priority') {
+			this.setState({ materialPriority: true })		
+		}
+		if (text == 'Strict') {
+			this.setState({ materialStrict: true })		
+		}
+	}
+
 	render() {
+
 		const titleConfig = {
   			title: this.state.username,
 		};
@@ -122,29 +250,39 @@ export default class UserScreen extends React.Component {
 		return(
 			
 			<View style={styles.screen}>
-				<NavigationBar
-	      			tintColor={'green'}
-	        		title={titleConfig}
-	        		rightButton={rightButtonConfig}
-  				/>
-				<View style={styles.userHeader}>
-					
-				</View>
 				<View style={styles.container}>
 	        		<KeyboardAwareScrollView>
-		        		<Dropdown
+
+		    			<Dropdown
 		        			ref={this.brandRef}
 		        			onFocus={this.onFocus}
 		  					label='Brand'
 		        			data={brand}
 		        			onChangeText={this.handleBrand}/>
 
+		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Brand - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleBrandPriority}/>
 
-		        		<CheckBox
-					     	title='Click Here'
-							checked={this.state.checked}
-							// onPress={() => this.setState( checked: true)}
-						/>
+		        		<TextField
+		        			ref={this.colorRef}
+		        			onFocus={this.onFocus}
+		  					label='Model'
+		        			onChangeText={this.handleModel}/>
+
+		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Model - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleModelPriority}/>
 
 		        		<Dropdown
 		        			ref={this.typeRef}
@@ -154,6 +292,15 @@ export default class UserScreen extends React.Component {
 		        			onChangeText={this.handleType}/>
 
 		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Type - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleTypePriority}/>
+
+		        		<Dropdown
 		        			ref={this.genderRef}
 		        			onFocus={this.onFocus}
 		  					label='Shoe Gender'
@@ -161,23 +308,76 @@ export default class UserScreen extends React.Component {
 		        			onChangeText={this.handleGender}/>
 
 		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Shoe Gender - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleGenderPriority}/>
+
+		        		<Dropdown
 		        			ref={this.conditionRef}
 		        			onFocus={this.onFocus}
 		  					label='Condition'
 		        			data={condition}
 		        			onChangeText={this.handleCondition}/>
+
+		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Condition - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleConditionPriority}/>
+
+		        		<Dropdown
+		        			ref={this.conditionRef}
+		        			onFocus={this.onFocus}
+		  					label='Material'
+		        			data={material}
+		        			onChangeText={this.handleMaterial}/>
+
+		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Material - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleMaterialPriority}/>
 		        		
-		        		<TextField
+		        		<Dropdown
 		        			ref={this.sizeRef}
 		        			onFocus={this.onFocus}
-		  					label='Size (US)'
+		  					label='Size (UK)'
+		        			data={size}
 		        			onChangeText={this.handleSize}/>
+
+		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Size - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleSizePriority}/>
 
 		        		<TextField
 		        			ref={this.colorRef}
 		        			onFocus={this.onFocus}
 		  					label='Color'
-		        			onChangeText={this.handleColor}/>/>
+		        			onChangeText={this.handleColor}/>
+
+		        		<Dropdown
+		        			ref={this.brandRef}
+		        			onFocus={this.onFocus}
+		        			baseColor={'#edc374'}
+		        			value={'None'}
+		  					label='Color - Priority'
+		        			data={setting}
+		        			onChangeText={this.handleColorPriority}/>
 
 					</KeyboardAwareScrollView>
 	    		</View>
@@ -185,7 +385,7 @@ export default class UserScreen extends React.Component {
 		    		<Button
 						title="Search"
 						accessibilityLabel="Learn more about this purple button"
-						onPress={this.onSubmit}
+						onPress={this.onSubmit.bind(this)}
 						/>
 	    		</View>
 	    		<View style={styles.footer}/>
@@ -205,16 +405,15 @@ const rightButtonConfig = {
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
+		backgroundColor: 'white'
+	},
+	radioFormContainer: {
+		marginHorizontal: 2,
+    	marginVertical: 2,
 	},
 	modalContainer: {
     	paddingTop: 20,
     	flex: 1
-	},
-	userHeader: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		position: 'absolute',
-		width: '100%',
 	},
   	scrollView: {
     	flexWrap: 'wrap',
@@ -222,8 +421,9 @@ const styles = StyleSheet.create({
   	},
 	container: {
 		marginHorizontal: 4,
-    	marginVertical: 8,
-    	paddingHorizontal: 8,
+    	marginVertical: 12,
+    	paddingHorizontal: 12,
+    	paddingBottom: 40
 	},
 	postContainer: {
 		flexDirection: 'row',
@@ -250,10 +450,18 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		bottom: 0,
-		backgroundColor: 'green'
+		backgroundColor: 'white'
 	}
 
 });
+
+const setting = [{
+	value: 'None',
+}, {
+	value: 'Strict',
+}, {
+	value: 'Priority',
+}];
 
 const brand = [{
  	value: 'Adidas',
@@ -310,3 +518,62 @@ const condition = [{
 }, {
 	value: 'Boxed Mint',
 }];
+
+const material = [{
+	value: 'Canvas'
+}, {
+	value: 'Real Leather'
+}, {
+	value: 'Artificial Leather'
+}, {
+	value: 'Plastic/Synthetic'
+}, {
+	value: 'Mesh'
+}]
+
+const size = [{
+	value: 4
+}, {
+	value: 4.5
+}, {
+	value: 5
+}, {
+	value: 5.5
+}, {
+	value: 6
+}, {
+	value: 6.5
+}, {
+	value: 7
+}, {
+	value: 7.5
+}, {
+	value: 8
+}, {
+	value: 8.5
+}, {
+	value: 9
+}, {
+	value: 9.5
+}, {
+	value: 10
+}, {
+	value: 10.5
+}, {
+	value: 11.5
+}, {
+	value: 12
+}, {
+	value: 12.5
+}, {
+	value: 13
+}, {
+	value: 13.5
+}, {
+	value: 14
+}, {
+	value: 14.5
+}]
+
+
+

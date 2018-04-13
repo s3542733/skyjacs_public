@@ -8,6 +8,22 @@ import StarredScreen from './starred';
 import PostScreen from './post';
 import NotificationScreen from './notification';
 import ImageUploadScreen from './imageUpload';
+import MatchScreen from './match';
+
+export const UserStack = StackNavigator({
+	User: {
+		screen: UserScreen,
+		navigationOptions: {
+			title: 'User'
+		},
+	},
+	Match: {
+		screen: MatchScreen,
+		navigationOptions: ({ navigation }) => ({
+			title: "Found Matches",
+		}),
+	},
+})
 
 export const PostStack = StackNavigator({
 	Post: {
@@ -26,7 +42,12 @@ export const PostStack = StackNavigator({
 
 export const Tabs = TabNavigator({
 	Home: { screen: HomeScreen },
-	User: { screen: UserScreen },
+	User: { 
+		screen: UserStack,
+		navigationOptions: {
+			tabBarLabel: 'User'
+		}
+	},
 	Post: { 
 		screen: PostStack,
 		navigationOptions: {
