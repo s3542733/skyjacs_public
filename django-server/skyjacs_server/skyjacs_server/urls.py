@@ -1,4 +1,3 @@
-
 """skyjacs_server URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -39,4 +38,5 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
+    url(r'^matches/(?P<pk>[0-9]+)$', views.MatchingView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
