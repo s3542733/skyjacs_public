@@ -8,7 +8,6 @@ from skyjacs_app.models import User, Listing, Notification, Image
 from skyjacs_app.serializers import UserSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
-import urllib.request
 
 SLIPON_REL = {
 	'Slip On' : 5 ,
