@@ -33,10 +33,12 @@ export default class PostScreen extends React.Component {
 		this.state = {
 			brand: '',
 			type: '',
+			model: '',
 			gender: '',
 			condition: '',
 			size: '',
 			color: '',
+			material: '',
 			description: '',
 			modalVisible: false,
 	    	photos: [],
@@ -102,52 +104,61 @@ export default class PostScreen extends React.Component {
 	}
 
 	onSubmit() {
-		// let errors = {};
-		// var count = 0;
+		let errors = {};
+		var count = 0;
 
-		// ['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
-		// 	.forEach((name) => {
-		// 		let value = this[name].value();
+		['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
+			.forEach((name) => {
+				let value = this[name].value();
 
-		// 		if(!value) {
-		// 			errors[name] = 'Should not be empty';
-		// 			count++;
-		// 		} else {
-		// 		// if size is not a number throw error
-		// 		}
-		// 	});
-		// this.setState({ errors })
+				if(!value) {
+					errors[name] = 'Should not be empty';
+					count++;
+				} else {
+				// if size is not a number throw error
+				}
+			});
+		this.setState({ errors })
 
-		// if (this.state.showSelectedPhoto) {
-		// 	var photo = {
-		// 		uri: this.state.uri,
-		// 		type: 'image/jpeg',
-		// 		name: 'photo.jpeg'
-		// 	}
-		// }
+
+		// ignore for now
+		if (this.state.showSelectedPhoto) {
+			var photo = {
+				uri: this.state.uri,
+				type: 'image/jpeg',
+				name: 'photo.jpeg'
+			}
+		}
 		
-		// var data = new FormData();
-		// data.append('photo', photo);
-		// data.append('title', 'random photo');
+		var data = new FormData();
+		data.append("user", "http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/users/1/")
+        data.append("listing_type", "Selling")
+        data.append("item_sex", this.state.gender)
+        data.append("item_type", this.state.type)
+        data.append("item_brand", this.state.brand)
+        data.append("item_model", this.state.model)
+		data.append("item_condition", this.state.condition)
+        data.append("item_colour", this.state.color)
+        data.append("item_material", this.state.material)
+        data.append("item_size", this.state.size)
 
-		// fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/listing/", {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Accept': 'application/json',
-		// 		'Content-Type': 'multipart/form-data',
-		// 	},
-		// 	body: data
-		// })
-		// 	.then((response) => response.json())
-		// 	.then((responseJson) => {
-		// 		console.log(responseJson);
-		// 	})
-		// 	.catch((error) => {
-		// 		console.log(error)
-		// 		postSubmit(["Oops, something when wrong"]);
-		// 	})
+		fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/listings/", {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'multipart/form-data',
+			},
+			body: data
+		})
+			.then((response) => response.json())
+			.then((responseJson) => {
+				console.log(responseJson);
+			})
+			.catch((error) => {
+				console.log(error);
+			})
 		
-		this.props.navigation.navigate('ImageUpload');
+		//this.props.navigation.navigate('ImageUpload');
 
 	}
 
@@ -174,6 +185,10 @@ export default class PostScreen extends React.Component {
     	this.setState({ modalVisible: !this.state.modalVisible });
   	}
 
+  	handleModel = (text) => {
+		this.setState({ model: text })
+	}
+
 
 	handleBrand = (text) => {
 		this.setState({ brand: text })
@@ -197,6 +212,10 @@ export default class PostScreen extends React.Component {
 
 	handleColor = (text) => {
 		this.setState({ color: text })
+	}
+
+	handleMaterial = (text) => {
+		this.setState({ material: text })
 	}
 
 	handleDescription = (text) => {
@@ -236,6 +255,13 @@ export default class PostScreen extends React.Component {
 		        			data={brand}
 		        			onSubmitEditing={this.onSubmitBrand}
 		        			onChangeText={this.handleBrand}/>
+
+		        		<TextField
+		        			ref={this.colorRef}
+		        			onFocus={this.onFocus}
+		  					label='Model'
+		        			onChangeText={this.handleModel}/>
+
 		        		<Dropdown
 		        			ref={this.typeRef}
 		        			onFocus={this.onFocus}
@@ -262,13 +288,19 @@ export default class PostScreen extends React.Component {
 		        			data={condition}
 		        			onSubmitEditing={this.onSubmitCondition}
 		        			onChangeText={this.handleCondition}/>
+
+		        		<Dropdown
+		        			ref={this.conditionRef}
+		        			onFocus={this.onFocus}
+		  					label='Material'
+		        			data={material}
+		        			onChangeText={this.handleMaterial}/>
 		        		
-		        		<TextField
+		        		<Dropdown
 		        			ref={this.sizeRef}
 		        			onFocus={this.onFocus}
-		  					error={errors.size}
-		  					label='Size (US)'
-		        			onSubmitEditing={this.onSubmitSize}
+		  					label='Size (UK)'
+		        			data={size}
 		        			onChangeText={this.handleSize}/>
 
 		        		<TextField
@@ -296,8 +328,7 @@ export default class PostScreen extends React.Component {
 	    		<View style={styles.postContainer}>
 		    		<Button
 						title="Submit"
-						accessibilityLabel="Learn more about this purple button"
-						onPress={() => this.props.navigation.navigate('ImageUpload')}
+						onPress={this.onSubmit.bind(this)}
 						/>
 					<Button
       				title='Add Photo'
@@ -369,7 +400,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 4,
     	marginVertical: 8,
     	paddingHorizontal: 8,
-    	paddingBottom: 40
+    	paddingBottom: 50
 	},
 	postContainer: {
 		flexDirection: 'row',
@@ -435,17 +466,19 @@ const brand = [{
 }];
 
 const type = [{
- 	value: 'Low top Sneakers',
+ 	value: 'Low Top',
 }, {
-  	value: 'High top Sneakers',
+  	value: 'High Top',
 }, {
-  	value: 'Slip on Sneakers',
+  	value: 'Slip On',
 }, {
 	value: 'Runners/Joggers',
 }, {
 	value: 'Basketball',
 }, {
 	value: 'Skaters',
+}, {
+	value: 'Cageless',
 }];
 
 const gender = [{
@@ -465,4 +498,61 @@ const condition = [{
 }, {
 	value: 'Boxed Mint',
 }];
+
+const material = [{
+	value: 'Canvas'
+}, {
+	value: 'Real Leather'
+}, {
+	value: 'Artificial Leather'
+}, {
+	value: 'Plastic/Synthetic'
+}, {
+	value: 'Mesh'
+}]
+
+const size = [{
+	value: 4
+}, {
+	value: 4.5
+}, {
+	value: 5
+}, {
+	value: 5.5
+}, {
+	value: 6
+}, {
+	value: 6.5
+}, {
+	value: 7
+}, {
+	value: 7.5
+}, {
+	value: 8
+}, {
+	value: 8.5
+}, {
+	value: 9
+}, {
+	value: 9.5
+}, {
+	value: 10
+}, {
+	value: 10.5
+}, {
+	value: 11.5
+}, {
+	value: 12
+}, {
+	value: 12.5
+}, {
+	value: 13
+}, {
+	value: 13.5
+}, {
+	value: 14
+}, {
+	value: 14.5
+}]
+
 

@@ -88,51 +88,51 @@ export default class UserScreen extends React.Component {
 
 	//submit function need to rework
 	onSubmit() {
-		var count = 0;
-		var data = new FormData();
+		// var count = 0;
+		// var data = new FormData();
 		
-		// test dummy 
-	 	data.append("user", "http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/users/1/")
-        data.append("listing_type", "Buying")
-        data.append("item_sex", this.state.gender)
-        data.append("sex_priority", this.state.genderPriority)
-        data.append("sex_strict", this.state.genderStrict)
-        data.append("item_type", this.state.type)
-        data.append("type_priority", this.state.typePriority)
-        data.append("type_strict", this.state.typeStrict)
-        data.append("item_brand", this.state.brand)
-        data.append("brand_priority", this.state.brandPriority)
-        data.append("brand_strict", this.state.brandStrict)
-        data.append("item_model", this.state.model)
-        data.append("model_priority", this.state.modelPriority)
-        data.append("model_strict", this.state.modelStrict)
-        data.append("item_condition", this.state.condition)
-        data.append("condition_priority", this.state.conditionPriority)
-        data.append("condition_strict", this.state.conditionStrict)
-        data.append("item_colour", this.state.color)
-        data.append("item_material", this.state.material)
-        data.append("material_priority", this.state.materialPriority)
-        data.append("material_strict", this.state.materialStrict)
-        data.append("item_size", this.state.size)
-        data.append("size_priority", this.state.sizePriority)
-        data.append("size_strict", this.state.sizeStrict)
+		// // test dummy 
+	 // 	data.append("user", "http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/users/2/")
+  //       data.append("listing_type", "Buying")
+  //       data.append("item_sex", this.state.gender)
+  //       data.append("sex_priority", this.state.genderPriority)
+  //       data.append("sex_strict", this.state.genderStrict)
+  //       data.append("item_type", this.state.type)
+  //       data.append("type_priority", this.state.typePriority)
+  //       data.append("type_strict", this.state.typeStrict)
+  //       data.append("item_brand", this.state.brand)
+  //       data.append("brand_priority", this.state.brandPriority)
+  //       data.append("brand_strict", this.state.brandStrict)
+  //       data.append("item_model", this.state.model)
+  //       data.append("model_priority", this.state.modelPriority)
+  //       data.append("model_strict", this.state.modelStrict)
+  //       data.append("item_condition", this.state.condition)
+  //       data.append("condition_priority", this.state.conditionPriority)
+  //       data.append("condition_strict", this.state.conditionStrict)
+  //       data.append("item_colour", this.state.color)
+  //       data.append("item_material", this.state.material)
+  //       data.append("material_priority", this.state.materialPriority)
+  //       data.append("material_strict", this.state.materialStrict)
+  //       data.append("item_size", this.state.size)
+  //       data.append("size_priority", this.state.sizePriority)
+  //       data.append("size_strict", this.state.sizeStrict)
 
-		fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/listings/", {
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'multipart/form-data',
-			},
-			body: data
-		})
-			.then((response) => response.json())
-			.then((responseJson) => {
-				console.log(responseJson);
-			})
-			.catch((error) => {
-				console.log(error)
-				postSubmit(["Oops, something when wrong"]);
-			})
+		// fetch("http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/listings/", {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		'Accept': 'application/json',
+		// 		'Content-Type': 'multipart/form-data',
+		// 	},
+		// 	body: data
+		// })
+		// 	.then((response) => response.json())
+		// 	.then((responseJson) => {
+		// 		console.log(responseJson);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log(error)
+		// 		postSubmit(["Oops, something when wrong"]);
+		// 	})
 
 		this.props.navigation.navigate('Match')
 	}
@@ -488,17 +488,19 @@ const brand = [{
 }];
 
 const type = [{
- 	value: 'Low top Sneakers',
+ 	value: 'Low Top',
 }, {
-  	value: 'High top Sneakers',
+  	value: 'High Top',
 }, {
-  	value: 'Slip on Sneakers',
+  	value: 'Slip On',
 }, {
 	value: 'Runners/Joggers',
 }, {
 	value: 'Basketball',
 }, {
 	value: 'Skaters',
+}, {
+	value: 'Cageless',
 }];
 
 const gender = [{
