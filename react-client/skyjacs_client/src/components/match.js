@@ -2,37 +2,54 @@ import React from 'react';
 import { Modal, ScrollView, Image, CameraRoll, Button, View, Text, TouchableHighlight, StyleSheet } from 'react-native'; 
 
 export default class MatchScreen extends React.Component {
+
 	state = {
-      names: [
-         {'name': 'Ben', 'id': 1},
-         {'name': 'Susan', 'id': 2},
-         {'name': 'Robert', 'id': 3},
-         {'name': 'Mary', 'id': 4},
-         {'name': 'Daniel', 'id': 5},
-         {'name': 'Laura', 'id': 6},
-         {'name': 'John', 'id': 7},
-         {'name': 'Debra', 'id': 8},
-         {'name': 'Aron', 'id': 9},
-         {'name': 'Ann', 'id': 10},
-         {'name': 'Steve', 'id': 11},
-         {'name': 'Olivia', 'id': 12}
-      ]
-   }
-   render() {
-      return (
-         <View>
-            <ScrollView>
-               {
-                  this.state.names.map((item, index) => (
-                     <View key = {item.id} style = {styles.item}>
-                        <Text>{item.name}</Text>
-                     </View>
-                  ))
-               }
-            </ScrollView>
-         </View>
-      )
-   }
+		dataSource: [],
+	}
+
+	componentDidMount(){
+    	return fetch('http://django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com/matches/2')
+      	.then((response) => response.json())
+      	.then((responseJson) => {
+
+        this.setState({
+			isLoading: false,
+          	dataSource: responseJson,
+        },function(){
+
+        });
+
+  		})
+      		.catch((error) =>{
+        	console.error(error);
+  		});
+	}
+
+	render() {
+   		const { dataSource } = this.state;
+		return (
+			<View>
+				<ScrollView>
+				{
+					this.state.dataSource.map((item, index) => (
+						<View key = {item.uid} style = {styles.item}>
+							<Text>
+							Brand: {item.item_brand}{"\n"}
+							Type: {item.item_type}{"\n"}
+							Model: {item.item_model}{"\n"}
+							Gender: {item.item_gender}{"\n"}
+							Condition: {item.item_condition}{"\n"}
+							Size: {item.item_size}{"\n"}
+							Colour: {item.item_colour}{"\n"}
+							Material: {item.item_material}{"\n"}
+							Match Percentage: {item.item_matching}%</Text>
+						</View>
+					))
+				}
+				</ScrollView>
+			</View>
+		)
+	}
 }
 
 const styles = StyleSheet.create ({
