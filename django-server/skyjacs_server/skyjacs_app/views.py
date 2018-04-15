@@ -6,10 +6,8 @@ from rest_framework import viewsets
 #from django.contrib.auth.models import User
 from skyjacs_app.models import User, Listing, Notification, Image
 from skyjacs_app.serializers import UserSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
-#from fuzzywuzzy import fuzz
-#from fuzzywuzzy import process
-import fuzzywuzzy
-#import urllib.request
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 
 SLIPON_REL = {
 	'Slip On' : 5 ,
@@ -151,10 +149,10 @@ def matchModel(pkSpec, dbSpec, strictList):
 		return -1
 
 	if 'model' in strictList:
-		if fuzzywuzzy.fuzz.ratio(pkSpec, dbSpec) != 100:
+		if fuzz.ratio(pkSpec, dbSpec) != 100:
 			return -2
 
-	return (fuzzywuzz.fuzz.partial_ratio(pkSpec, dbSpec) + fuzzywuzzy.fuzz.token_sort_ratio(pkSpec, dbSpec) + fuzzywuzzy.fuzz.ratio(pkSpec, dbSpec))/3
+	return (fuzz.partial_ratio(pkSpec, dbSpec) + fuzz.token_sort_ratio(pkSpec, dbSpec) + fuzz.ratio(pkSpec, dbSpec))/3
 
 def matchCondition(pkSpec, dbSpec, strictList):
 
@@ -203,10 +201,10 @@ def matchColour(pkSpec, dbSpec, strictList):
 		return -1
 
 	if 'colour' in strictList:
-		if fuzzywuzzy.fuzz.token_sort_ratio(pkSpec, dbSpec) != 100:
+		if fuzz.token_sort_ratio(pkSpec, dbSpec) != 100:
 			return -2
 
-	return (fuzzywuzzy.fuzz.token_sort_ratio(pkSpec, dbSpec))
+	return (fuzz.token_sort_ratio(pkSpec, dbSpec))
 
 def matchSize(pkSpec, dbSpec, strictList):
 
