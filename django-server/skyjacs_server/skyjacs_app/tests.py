@@ -25,9 +25,17 @@ class SkyjacsTestCase(TestCase):
         self.assertEqual('test',newUser.full_name)
         self.assertEqual('False',newUser.user_admin)
 
-    def test_skyjacs_matchType(self):
+    def test_skyjacs_views_matchType(self):
         #testing users view
         empty_pkSpec = matchType('','something','type')
         self.assertEqual(empty_pkSpec, -1)
         empty_dbSpec = matchType('something','','type')
         self.assertEqual(empty_dbSpec, 100)
+        match1 = matchType('Runners/Joggers','Runners/Joggers','type')
+        self.assertEqual(match1, 100)
+        match2 = matchType('Basketball','Cageless','type')
+        self.assertLessEqual(match2, 100)
+
+    def test_skyjacs_views_matchSex(self):
+        empty_pkSpec = matchSex('','','sex')
+        self.assertEqual(empty_pkSpec, -1)
