@@ -9,13 +9,27 @@ import PostScreen from './post';
 import NotificationScreen from './notification';
 import ImageUploadScreen from './imageUpload';
 import MatchScreen from './match';
+import LoginScreen from './login';
+import CreateScreen from './create';
 
 export const UserStack = StackNavigator({
+	Login: {
+		screen: LoginScreen,
+		navigationOptions: {
+			title: "Login",
+		},
+	},
 	User: {
 		screen: UserScreen,
-		navigationOptions: {
-			title: 'User'
-		},
+		navigationOptions: ({ navigation }) => ({
+			title: "Create Match",
+		}),
+	},
+	Create: {
+		screen: CreateScreen,
+		navigationOptions: ({ navigation }) => ({
+			title: "Create Match",
+		}),
 	},
 	Match: {
 		screen: MatchScreen,
