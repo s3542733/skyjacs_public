@@ -8,7 +8,6 @@ from skyjacs_app.models import User, Listing, Notification, Image
 from skyjacs_app.serializers import UserSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
-import urllib.request
 
 SLIPON_REL = {
 	'Slip On' : 5 ,
@@ -300,7 +299,7 @@ class MatchingView(APIView):
 	def get(self, request, pk, format=None):
 	
 		pkSpec = Listing.objects.get(pk=pk)
-		dbSpecs = Listing.objects.all()
+		dbSpecs = Listing.objects.all().exclude(listing_type=pkSpec.listing_type)
 
 		strictList = []
 		priorityList = []
