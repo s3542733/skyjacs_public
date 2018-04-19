@@ -1,61 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, ScrollView, View, Text, Image, ImageBackground, StyleSheet, Linking, ListView, Platform } from 'react-native';
-import { Card, Icon, Rating } from 'react-native-elements';
-
-export default class UserScreen extends React.Component {
-
-	renderHeader = () => {
-		const { avatar, avatarBackground, name, rating } = this.props
-
-		return(
-			<View style={styles.headerContainer}>
-				<ImageBackground
-				style={styles.headerBackgroundImage}
-				blurRadius={10}
-				source={{ uri: avatarBackground }}>
-					<View style={styles.headerColumn}>
-						<Image
-							style={styles.userImage}
-							source={{ uri: avatar }}/>
-						<Text style={styles.username}>{name}</Text>
-						<Rating
-							showRating
-							type="star"
-							frations={1}
-							startingValue={3.6}
-							imageSize={20}
-							style={{ paddingVertical: 10 }}
-						/>
-					</View>
-				</ImageBackground>
-			</View>
-		);
-	}
-
-	renderBody = () => {
-		return(
-			<TouchableOpacity style={styles.buttonContainer} 
-				onPress={() => this.props.navigation.navigate('Create')}>
-				<Text style={styles.buttonText}>CREATE MATCH</Text>
-			</TouchableOpacity> 
-		);
-	}
-
-	render() {
-		return (
- 			<ScrollView style={styles.scroll}>
- 				<View style={styles.container}> 
- 					<Card containerStyle={styles.cardContainer}>
- 						{this.renderHeader()}
- 					</Card>
- 					<View style={{ padding: 20 }}>
- 						{this.renderBody()}
- 					</View>
- 				</View>
- 			</ScrollView>
-		);
-	}
-}
+import { TouchableOpacity, ScrollView, View, Text, Image, ImageBackground, StyleSheet, Platform } from 'react-native';
+import { Card, Rating } from 'react-native-elements';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -131,13 +77,89 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     textAlign: 'center',
   },
-  buttonContainer:{
-        backgroundColor: '#2980b6',
-        paddingVertical: 15
-	},
-	buttonText:{
-	    color: '#fff',
-	    textAlign: 'center',
-	    fontWeight: '700'
-	}
-})
+  buttonContainer: {
+    backgroundColor: '#2980b6',
+    paddingVertical: 15,
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '700',
+  },
+});
+
+export default class UserScreen extends React.Component {
+  static defaultProps = {
+    name: 'james huang',
+    avatar: '',
+    avatarBackground: '',
+  }
+
+  static propTypes = {
+    name: PropTypes.string,
+    avatar: PropTypes.string,
+    avatarBackground: PropTypes,
+  }
+
+  renderHeader = () => {
+    const {
+      avatar,
+      avatarBackground,
+      name,
+    } = this.props;
+
+    return (
+      <View style={styles.headerContainer}>
+        <ImageBackground
+          style={styles.headerBackgroundImage}
+          blurRadius={10}
+          source={{ uri: avatarBackground }}
+        >
+          <View style={styles.headerColumn}>
+            <Image
+              style={styles.userImage}
+              source={{ uri: avatar }}
+            />
+            <Text style={styles.username}>{name}</Text>
+            <Rating
+              showRating
+              type="star"
+              frations={1}
+              startingValue={3.6}
+              imageSize={20}
+              style={{ paddingVertical: 10 }}
+            />
+          </View>
+        </ImageBackground>
+      </View>
+    );
+  }
+
+  renderBody = () => {
+    const { navigate } = this.props.navigation;
+
+    return (
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={() => navigate('Create')}
+      >
+        <Text style={styles.buttonText}>CREATE MATCH</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  render() {
+    return (
+      <ScrollView style={styles.scroll}>
+        <View style={styles.container}>
+          <Card containerStyle={styles.cardContainer}>
+            {this.renderHeader()}
+          </Card>
+          <View style={{ padding: 20 }}>
+            {this.renderBody()}
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
+}

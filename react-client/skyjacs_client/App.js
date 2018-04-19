@@ -2,7 +2,7 @@ import React from 'react';
 import { Root } from './src/components/index';
 
 export default class App extends React.Component {
-	render() {
-		return <Root />;
-	}
+  render() {
+    return <Root />;
+  }
 }

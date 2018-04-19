@@ -1,5 +1,3 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 
 import HomeScreen from './home';
@@ -13,72 +11,71 @@ import LoginScreen from './login';
 import CreateScreen from './create';
 
 export const UserStack = StackNavigator({
-	Login: {
-		screen: LoginScreen,
-		navigationOptions: {
-			title: "Login",
-		},
-	},
-	User: {
-		screen: UserScreen,
-		navigationOptions: ({ navigation }) => ({
-			title: "Create Match",
-		}),
-	},
-	Create: {
-		screen: CreateScreen,
-		navigationOptions: ({ navigation }) => ({
-			title: "Create Match",
-		}),
-	},
-	Match: {
-		screen: MatchScreen,
-		navigationOptions: ({ navigation }) => ({
-			title: "Found Matches",
-		}),
-	},
-})
+  Login: {
+    screen: LoginScreen,
+    navigationOptions: {
+      title: 'Login',
+    },
+  },
+  User: {
+    screen: UserScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'User',
+    }),
+  },
+  Create: {
+    screen: CreateScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Create Match',
+    }),
+  },
+  Match: {
+    screen: MatchScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Found Matches',
+    }),
+  },
+});
 
 export const PostStack = StackNavigator({
-	Post: {
-		screen: PostScreen,
-		navigationOptions: {
-			title: 'Post'
-		},
-	},
-	ImageUpload: {
-		screen: ImageUploadScreen,
-		navigationOptions: ({ navigation }) => ({
-			title: 'Image Upload',
-		}),
-	},
+  Post: {
+    screen: PostScreen,
+    navigationOptions: {
+      title: 'Post',
+    },
+  },
+  ImageUpload: {
+    screen: ImageUploadScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Image Upload',
+    }),
+  },
 });
 
 export const Tabs = TabNavigator({
-	Home: { screen: HomeScreen },
-	User: { 
-		screen: UserStack,
-		navigationOptions: {
-			tabBarLabel: 'User'
-		}
-	},
-	Post: { 
-		screen: PostStack,
-		navigationOptions: {
-			tabBarLabel: 'Post'
-		}
+  Home: { screen: HomeScreen },
+  User: {
+    screen: UserStack,
+    navigationOptions: {
+      tabBarLabel: 'User',
+    },
+  },
+  Post: {
+    screen: PostStack,
+    navigationOptions: {
+      tabBarLabel: 'Post',
+    },
 
-	},
-	Starred: { screen: StarredScreen },
-	Notification: { screen: NotificationScreen },
+  },
+  Starred: { screen: StarredScreen },
+  Notification: { screen: NotificationScreen },
 });
 
-// app calls root which calls the tab screen
 export const Root = StackNavigator({
-	Tabs: {
-		screen: Tabs,
-	},
-}, 	{
-		mode: 'modal',
-		headerMode: 'none',
+  Tabs: {
+    screen: Tabs,
+  },
+}, {
+  mode: 'modal',
+  headerMode: 'none',
 });
