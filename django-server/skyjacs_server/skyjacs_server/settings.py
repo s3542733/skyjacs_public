@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'skyjacs_app',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

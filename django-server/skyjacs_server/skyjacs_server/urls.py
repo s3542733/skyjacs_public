@@ -17,7 +17,6 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
-#from django.contrib.auth import views as auth_views
 from django.views.generic.base import TemplateView
 from skyjacs_app import views
 from rest_framework import routers
@@ -27,17 +26,17 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'profiles', views.ProfileViewSet)
 router.register(r'listings', views.ListingViewSet)
 router.register(r'notifications', views.NotificationViewSet)
-#router.register(r'specs', views.SpecViewSet)
 router.register(r'images', views.ImageViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    #url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
-    #url(r'^logout/$', auth_views.logout, {'template_name': 'logout.html'}, name='logout'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^matches/(?P<pk>[0-9]+)$', views.MatchingView.as_view())
+    url(r'^matches/(?P<pk>[0-9]+)$', views.MatchingView.as_view()),
+    url(r'^newuser/', views.NewUserView.as_view()),
+    url(r'^login/', views.LoginView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,10 +2,15 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import viewsets
-#from django.contrib.auth.models import User
-from skyjacs_app.models import User, Listing, Notification, Image
-from skyjacs_app.serializers import UserSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
+from rest_framework import viewsets, mixins
+from django.conf import settings
+from django.shortcuts import redirect
+from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from skyjacs_app.models import Profile, Listing, Notification, Image
+from skyjacs_app.serializers import UserSerializer, ProfileSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
@@ -274,21 +279,63 @@ def prioritiseField(field):
 
 	return field * 1.5
 
-class UserViewSet(viewsets.ModelViewSet):
-	queryset = User.objects.all().order_by('uid')
+class UserViewSet(
+	mixins.RetrieveModelMixin, 
+	mixins.UpdateModelMixin, 
+	mixins.DestroyModelMixin, 
+	mixins.ListModelMixin, 
+	viewsets.GenericViewSet):
+	queryset = User.objects.all().order_by('id')
 	serializer_class = UserSerializer
 
+class ProfileViewSet(viewsets.ModelViewSet):
+	queryset = Profile.objects.all().order_by('uid')
+	serializer_class = ProfileSerializer
+
+class NewUserView(APIView):
+
+	def post(self, request, format=None):
+
+		email = request.POST.get('email')
+		username = request.POST.get('username')
+		first_name = request.POST.get('first_name')
+		last_name = request.POST.get('last_name')
+		password = make_password(request.POST.get('password'), salt=None, hasher='default')
+
+		newUser = User.objects.create(
+			email=email, 
+			username=username,
+			password=password,
+			first_name=first_name,
+			last_name=last_name)
+
+		newUserProfile = Profile.objects.create(
+			user=newUser)
+
+		queryset = newUser
+		serializer = UserSerializer(queryset)
+
+		return Response(serializer.data)
+
+class LoginView(APIView):
+
+	def post(self, request, format=None):
+		username = request.POST.get('username')
+		password = request.POST.get('password')
+		user = authenticate(request, username=username, password=password)
+		if user is not None:
+			login(request, user)
+			return Response("User logged in and authenticated.")
+		else:
+			return Response("Something went wrong.")
+
 class ListingViewSet(viewsets.ModelViewSet):
-	queryset = Listing.objects.all().order_by('uid')
+	queryset = Listing.objects.all().order_by('uid')	
 	serializer_class = ListingSerializer
 
 class NotificationViewSet(viewsets.ModelViewSet):
 	queryset = Notification.objects.all().order_by('uid')
 	serializer_class = NotificationSerializer
-
-#class SpecViewSet(viewsets.ModelViewSet):
-#	queryset = Spec.objects.all().order_by('uid')
-#	serializer_class = SpecSerializer
 
 class ImageViewSet(viewsets.ModelViewSet):
 	queryset = Image.objects.all().order_by('uid')
@@ -365,5 +412,5 @@ class MatchingView(APIView):
 							dbSpec.item_matching = 100.0
 
 		queryset = dbSpecs
-		serializer = MatchingSerializer(dbSpecs, many=True)	
+		serializer_class = MatchingSerializer(dbSpecs, many=True)	
 		return Response(serializer.data)
