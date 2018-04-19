@@ -174,9 +174,9 @@ def matchCondition(pkSpec, dbSpec, strictList):
 	if pkSpecVal == dbSpecVal:
 		return 100
 	elif (pkSpecVal > dbSpecVal):
-		return 100 - ((pkSpecVal - dbSpecVal)/5 * 100)
+		return (100 - ((pkSpecVal - dbSpecVal)/5 * 100))
 	elif (pkSpecVal < dbSpecVal):
-		return 100 - ((dbSpecVal - pkSpecVal)/5 * 100)
+		return (100 - ((dbSpecVal - pkSpecVal)/5 * 100))
 
 	return 0
 
@@ -208,7 +208,7 @@ def matchColour(pkSpec, dbSpec, strictList):
 
 def matchSize(pkSpec, dbSpec, strictList):
 
-	if pkSpec == 0.0 or dbSpec:
+	if pkSpec == 0.0 or dbSpec == 0.0:
 		return -1
 
 	if 'size' in strictList:
