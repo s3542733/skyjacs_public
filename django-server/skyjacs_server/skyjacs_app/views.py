@@ -90,11 +90,11 @@ TYPEOPTS = {
 }
 
 CONDITIONOPTS = {
-	'Damaged' : 1,
-	'Well-worn' : 2,
-	'Good Condition' : 3,
-	'New/Little use' : 4,
-	'Boxed Mint' : 5,
+	'Damaged' : 1.0,
+	'Well-worn' : 2.0,
+	'Good Condition' : 3.0,
+	'New/Little use' : 4.0,
+	'Boxed Mint' : 5.0,
 }
 
 def matchType(pkSpec, dbSpec, strictList):
@@ -163,7 +163,7 @@ def matchCondition(pkSpec, dbSpec, strictList):
 
 		
 	if dbSpec == '':
-		dbSpecVal = 5
+		dbSpecVal = 5.0
 	else:
 		dbSpecVal = CONDITIONOPTS[dbSpec]
 

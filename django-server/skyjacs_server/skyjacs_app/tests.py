@@ -117,16 +117,19 @@ class SkyjacsTestCase(TestCase):
         empty_dbSpec = matchSize(1,0.0,'')
         self.assertEqual(empty_dbSpec, -1)
         self.assertEqual(empty_pkSpec, empty_dbSpec)
-        Case1 = matchSize(1,2,'size')
-        Case2 = matchSize(5,5,'')
-        Case3 = matchSize(5,4,'')
-        Case4 = matchSize(4,8,'')
-        self.assertEqual(Case1, -2)
-        self.assertEqual(Case2, 100)
+        Case1 = matchSize(1.0,2.0,'size')
+        Case2 = matchSize(5.0,5.0,'')
+        Case3 = matchSize(5.0,4.0,'')
+        Case4 = matchSize(4.0,8.0,'')
+        self.assertEqual(Case1, -2.0)
+        self.assertEqual(Case2, 100.0)
         self.assertAlmostEqual(Case3, 92.59,2)
         self.assertAlmostEqual(Case4, 70.37,2)
     
     def test_skyjacs_views_getStrictList(self):
-        pkSpec.type_strict = True
-        typeCase = getStrict(pkSpec)
-        self.assertEqual(typeCase, 'type')
+        user = self.create_user()
+        testListing = Listing(user,type_strict = True)
+        Case1 = getStrict(testListing)
+        strictList = []
+        strictList.append('type')
+        self.assertEqual(Case1, strictList)
