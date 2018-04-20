@@ -67,6 +67,16 @@ export default class CreateScreen extends React.Component {
     super(props);
 
     this.onSubmit = this.onSubmit.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
+
+    this.modelRef = this.updateRef.bind(this, 'model');
+    this.materialRef = this.updateRef.bind(this, 'material');
+    this.brandRef = this.updateRef.bind(this, 'brand');
+    this.typeRef = this.updateRef.bind(this, 'type');
+    this.genderRef = this.updateRef.bind(this, 'gender');
+    this.conditionRef = this.updateRef.bind(this, 'condition');
+    this.sizeRef = this.updateRef.bind(this, 'size');
+    this.colorRef = this.updateRef.bind(this, 'color');
 
     this.state = {
       brand: '',
@@ -96,19 +106,6 @@ export default class CreateScreen extends React.Component {
     };
   }
 
-  // Gets user information - although this is not the proper method
-  // function() {
-  //   //
-  //   // SET USER DATA
-  //   // DUMMY TEST HERE
-  //   this.state.dataSource.map(
-  //     function(user) {
-  //       if ('sotoambak' === user.username) {
-  //         this.setState({ username: user.username });
-  //       }
-  //     }.bind(this));
-  // }.bind(this),
-
   componentDidMount() {
     fetch(`${IP_ADDRESS}users`)
       .then(response => response.json())
@@ -123,7 +120,7 @@ export default class CreateScreen extends React.Component {
   }
 
   onChangeText(text) {
-    ['brand', 'type', 'gender', 'condition', 'size', 'color', 'description']
+    ['brand', 'model', 'material', 'type', 'gender', 'condition', 'size', 'color']
       .map(name => ({ name, ref: this[name] }))
       .forEach(({ name, ref }) => {
         if (ref.isFocused()) {
@@ -132,12 +129,11 @@ export default class CreateScreen extends React.Component {
       });
   }
 
-  // submit function need to rework
   onSubmit() {
     const data = new FormData();
 
     // test dummy
-    data.append('user', `${IP_ADDRESS} + users/2/`);
+    data.append('user', `${IP_ADDRESS}users/2/`);
     data.append('listing_type', 'Buying');
     data.append('item_sex', this.state.gender);
     data.append('sex_priority', this.state.genderPriority);
@@ -164,7 +160,7 @@ export default class CreateScreen extends React.Component {
     data.append('size_priority', this.state.sizePriority);
     data.append('size_strict', this.state.sizeStrict);
 
-    fetch(`${IP_ADDRESS} + listings/`, {
+    fetch(`${IP_ADDRESS}listings/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -178,20 +174,14 @@ export default class CreateScreen extends React.Component {
       })
       .catch((error) => {
         console.log(error);
-        this.postSubmit(['Oops, something when wrong']);
       });
 
     this.props.navigation.navigate('Match');
   }
 
-  _onSelect = (item) => {
-    console.log(item);
-  };
-
-
-  handleBrand = (text) => {
-    this.setState({ brand: text });
-  };
+  updateRef(name, ref) {
+    this[name] = ref;
+  }
 
   handleBrandPriority = (text) => {
     if (text === 'Priority') {
@@ -200,10 +190,6 @@ export default class CreateScreen extends React.Component {
     if (text === 'Strict') {
       this.setState({ brandStrict: true });
     }
-  };
-
-  handleModel = (text) => {
-    this.setState({ model: text });
   };
 
   handleModelPriority = (text) => {
@@ -215,10 +201,6 @@ export default class CreateScreen extends React.Component {
     }
   };
 
-  handleType = (text) => {
-    this.setState({ type: text });
-  };
-
   handleTypePriority = (text) => {
     if (text === 'Priority') {
       this.setState({ typePriority: true });
@@ -226,10 +208,6 @@ export default class CreateScreen extends React.Component {
     if (text === 'Strict') {
       this.setState({ typeStrict: true });
     }
-  };
-
-  handleGender = (text) => {
-    this.setState({ gender: text });
   };
 
   handleGenderPriority = (text) => {
@@ -241,10 +219,6 @@ export default class CreateScreen extends React.Component {
     }
   };
 
-  handleCondition = (text) => {
-    this.setState({ condition: text });
-  };
-
   handleConditionPriority = (text) => {
     if (text === 'Priority') {
       this.setState({ conditionPriority: true });
@@ -252,10 +226,6 @@ export default class CreateScreen extends React.Component {
     if (text === 'Strict') {
       this.setState({ conditionStrict: true });
     }
-  };
-
-  handleSize = (text) => {
-    this.setState({ size: text });
   };
 
   handleSizePriority = (text) => {
@@ -267,10 +237,6 @@ export default class CreateScreen extends React.Component {
     }
   };
 
-  handleColor = (text) => {
-    this.setState({ color: text });
-  };
-
   handleColorPriority = (text) => {
     if (text === 'Priority') {
       this.setState({ colorPriority: true });
@@ -278,10 +244,6 @@ export default class CreateScreen extends React.Component {
     if (text === 'Strict') {
       this.setState({ colorStrict: true });
     }
-  };
-
-  handleMaterial = (text) => {
-    this.setState({ material: text });
   };
 
   handleMaterialPriority = (text) => {
@@ -300,15 +262,13 @@ export default class CreateScreen extends React.Component {
           <KeyboardAwareScrollView>
             <Dropdown
               ref={this.brandRef}
-              onFocus={this.onFocus}
               label="Brand"
               data={brand}
               onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.brandRef}
-              onFocus={this.onFocus}
+              ref={this.brandPriorityRef}
               baseColor="#edc374"
               value="None"
               label="Brand - Priority"
@@ -318,14 +278,12 @@ export default class CreateScreen extends React.Component {
 
             <TextField
               ref={this.modelRef}
-              onFocus={this.onFocus}
               label="Model"
-              onChangeText={this.handleModel}
+              onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.modelRef}
-              onFocus={this.onFocus}
+              ref={this.modelPriorityRef}
               baseColor="#edc374"
               value="None"
               label="Model - Priority"
@@ -335,15 +293,13 @@ export default class CreateScreen extends React.Component {
 
             <Dropdown
               ref={this.typeRef}
-              onFocus={this.onFocus}
               label="Type"
               data={type}
-              onChangeText={this.handleType}
+              onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.typeRef}
-              onFocus={this.onFocus}
+              ref={this.typePriorityRef}
               baseColor="#edc374"
               value="None"
               label="Type - Priority"
@@ -353,15 +309,13 @@ export default class CreateScreen extends React.Component {
 
             <Dropdown
               ref={this.genderRef}
-              onFocus={this.onFocus}
               label="Shoe Gender"
               data={gender}
-              onChangeText={this.handleGender}
+              onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.genderRef}
-              onFocus={this.onFocus}
+              ref={this.genderPriorityRef}
               baseColor="#edc374"
               value="None"
               label="Shoe Gender - Priority"
@@ -371,15 +325,13 @@ export default class CreateScreen extends React.Component {
 
             <Dropdown
               ref={this.conditionRef}
-              onFocus={this.onFocus}
               label="Condition"
               data={condition}
-              onChangeText={this.handleCondition}
+              onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.conditionRef}
-              onFocus={this.onFocus}
+              ref={this.conditionPriorityRef}
               baseColor="#edc374"
               value="None"
               label="Condition - Priority"
@@ -388,16 +340,14 @@ export default class CreateScreen extends React.Component {
             />
 
             <Dropdown
-              ref={this.conditionRef}
-              onFocus={this.onFocus}
+              ref={this.materialRef}
               label="Material"
               data={material}
-              onChangeText={this.handleMaterial}
+              onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.materialRef}
-              onFocus={this.onFocus}
+              ref={this.materialPriorityRef}
               baseColor="#edc374"
               value="None"
               label="Material - Priority"
@@ -407,15 +357,13 @@ export default class CreateScreen extends React.Component {
 
             <Dropdown
               ref={this.sizeRef}
-              onFocus={this.onFocus}
               label="Size (UK)"
               data={size}
-              onChangeText={this.handleSize}
+              onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.sizeRef}
-              onFocus={this.onFocus}
+              ref={this.sizePriorityRef}
               baseColor="#edc374"
               value="None"
               label="Size - Priority"
@@ -425,14 +373,12 @@ export default class CreateScreen extends React.Component {
 
             <TextField
               ref={this.colorRef}
-              onFocus={this.onFocus}
               label="Color"
-              onChangeText={this.handleColor}
+              onChangeText={this.onChangeText}
             />
 
             <Dropdown
-              ref={this.colorRef}
-              onFocus={this.onFocus}
+              ref={this.colorPriorityRef}
               baseColor="#edc374"
               value="None"
               label="Color - Priority"

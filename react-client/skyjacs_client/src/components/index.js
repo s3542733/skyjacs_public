@@ -5,10 +5,10 @@ import UserScreen from './user';
 import StarredScreen from './starred';
 import PostScreen from './post';
 import NotificationScreen from './notification';
-import ImageUploadScreen from './imageUpload';
 import MatchScreen from './match';
 import LoginScreen from './login';
 import CreateScreen from './create';
+// import ImageUploadScreen from './imageUpload';
 
 export const UserStack = StackNavigator({
   Login: {
@@ -43,12 +43,6 @@ export const PostStack = StackNavigator({
     navigationOptions: {
       title: 'Post',
     },
-  },
-  ImageUpload: {
-    screen: ImageUploadScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Image Upload',
-    }),
   },
 });
 
