@@ -33,10 +33,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   container: {
-    marginHorizontal: 4,
-    marginVertical: 8,
-    paddingHorizontal: 8,
-    paddingBottom: 50,
+    // marginHorizontal: 4,
+    // marginVertical: 8,
+    // paddingHorizontal: 8,
+    // paddingBottom: 50,
   },
   postContainer: {
     flexDirection: 'row',
@@ -259,23 +259,52 @@ export default class PostScreen extends React.Component {
       <View style={styles.screen}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
-            <Dropdown
-              ref={this.brandRef}
+            <TextField
+              textColor="red"
+              ref={this.titlelRef}
               onFocus={this.onFocus}
-              error={errors.brand}
-              label="Brand"
-              data={brand}
-              onSubmitEditing={this.onSubmitBrand}
+              error={errors.title}
+              label="Title"
+              onSubmitEditing={this.onSubmitTitle}
               onChangeText={this.onChangeText}
+              characterRestriction={25}
             />
             <TextField
-              ref={this.modelRef}
+              ref={this.descriptionRef}
               onFocus={this.onFocus}
-              error={errors.model}
-              label="Model"
-              onSubmitEditing={this.onSubmitModel}
+              error={errors.description}
+              label="Description"
+              multiline
+              blurOnSubmit
+              onSubmitEditing={this.onSubmitDescription}
               onChangeText={this.onChangeText}
+              characterRestriction={120}
             />
+
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1 }}>
+                <TextField
+                  ref={this.modelRef}
+                  onFocus={this.onFocus}
+                  error={errors.model}
+                  label="Model"
+                  onSubmitEditing={this.onSubmitModel}
+                  onChangeText={this.onChangeText}
+                />
+              </View>
+              <View style={{ width: 200, marginLeft: 8 }}>
+                <Dropdown
+                  ref={this.brandRef}
+                  onFocus={this.onFocus}
+                  error={errors.brand}
+                  label="Brand"
+                  data={brand}
+                  onSubmitEditing={this.onSubmitBrand}
+                  onChangeText={this.onChangeText}
+                />
+              </View>
+            </View>
+
             <Dropdown
               ref={this.typeRef}
               onFocus={this.onFocus}
@@ -328,17 +357,6 @@ export default class PostScreen extends React.Component {
               label="Color"
               onSubmitEditing={this.onSubmitColor}
               onChangeText={this.onChangeText}
-            />
-            <TextField
-              ref={this.descriptionRef}
-              onFocus={this.onFocus}
-              error={errors.description}
-              label="Description"
-              multiline
-              blurOnSubmit
-              onSubmitEditing={this.onSubmitDescription}
-              onChangeText={this.onChangeText}
-              characterRestriction={255}
             />
             {this.renderSelectedPhoto(showSelectedPhoto, uri)}
           </KeyboardAwareScrollView>

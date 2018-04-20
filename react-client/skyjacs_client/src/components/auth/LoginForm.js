@@ -25,10 +25,6 @@ const styles = StyleSheet.create({
 });
 
 export default class LoginForm extends Component {
-  onButtonPress() {
-    this.props.navigation.navigate('MatchScreen');
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -58,7 +54,7 @@ export default class LoginForm extends Component {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => this.props.navigation.navigate('Sign')}
+          onPress={() => this.props.navigation.navigate('SignUp')}
         >
           <Text style={styles.buttonText}>SIGN UP</Text>
         </TouchableOpacity>

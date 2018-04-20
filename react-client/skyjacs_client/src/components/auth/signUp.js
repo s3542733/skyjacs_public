@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, KeyboardAvoidingView, StyleSheet, Image } from 'react-native';
-import LoginForm from './LoginForm';
+import SignUpForm from './SignUpForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,15 +19,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class LoginScreen extends React.Component {
+export default class SignUpScreen extends React.Component {
   render() {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <View style={styles.loginContainer}>
-          <Image resizeMode="contain" style={styles.logo} source={require('../images/skyjacs_logo.png')} />
+          <Image resizeMode="contain" style={styles.logo} source={require('../../images/skyjacs_logo.png')} />
         </View>
         <View style={styles.formContainer}>
-          <LoginForm {...this.props} />
+          <SignUpForm {...this.props} />
         </View>
       </KeyboardAvoidingView>
     );

@@ -1,38 +1,41 @@
 import { TabNavigator, StackNavigator } from 'react-navigation';
-
+// tabs
 import HomeScreen from './home';
-import UserScreen from './user';
 import StarredScreen from './starred';
 import PostScreen from './post';
 import NotificationScreen from './notification';
-import MatchScreen from './match';
-import LoginScreen from './login';
+// user stack
+import UserScreen from './user';
 import CreateScreen from './create';
-// import ImageUploadScreen from './imageUpload';
+import MatchScreen from './match';
+import DetailScreen from './detail';
+// login stack
+import SignInScreen from './auth/signIn';
+import SignUpScreen from './auth/signUp';
 
 export const UserStack = StackNavigator({
-  Login: {
-    screen: LoginScreen,
-    navigationOptions: {
-      title: 'Login',
-    },
-  },
   User: {
     screen: UserScreen,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({
       title: 'User',
     }),
   },
   Create: {
     screen: CreateScreen,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({
       title: 'Create Match',
     }),
   },
   Match: {
     screen: MatchScreen,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({
       title: 'Found Matches',
+    }),
+  },
+  Detail: {
+    screen: DetailScreen,
+    navigationOptions: ({
+      title: 'Detail View',
     }),
   },
 });
@@ -66,10 +69,15 @@ export const Tabs = TabNavigator({
 });
 
 export const Root = StackNavigator({
+  SignIn: {
+    screen: SignInScreen,
+  },
+  SignUp: {
+    screen: SignUpScreen,
+  },
   Tabs: {
     screen: Tabs,
   },
 }, {
-  mode: 'modal',
   headerMode: 'none',
 });
