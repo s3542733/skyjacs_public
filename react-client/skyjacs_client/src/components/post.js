@@ -9,10 +9,13 @@ import {
   View,
   TouchableHighlight,
   StyleSheet,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Card } from 'react-native-elements';
 import SelectedPhoto from './selectedPhoto';
 import IP_ADDRESS from './constants';
 import { brand, type, gender, condition, material, size } from './createConstants';
@@ -20,50 +23,36 @@ import { brand, type, gender, condition, material, size } from './createConstant
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   modalContainer: {
     paddingTop: 20,
     flex: 1,
+  },
+  screen: {
+    flex: 1,
+    backgroundColor: 'white',
   },
   scrollView: {
     flexWrap: 'wrap',
     flexDirection: 'row',
   },
   container: {
-    // marginHorizontal: 4,
-    // marginVertical: 8,
-    // paddingHorizontal: 8,
-    // paddingBottom: 50,
+    flex: 1,
+    paddingBottom: 90,
   },
   postContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    width: '100%',
-    bottom: 7,
-    zIndex: 10,
+    justifyContent: 'space-between',
+    padding: 20,
   },
-  input: {
-    margin: 15,
-    height: 50,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    fontSize: 18,
+  buttonContainer: {
+    backgroundColor: '#2980b6',
+    padding: 15,
   },
-  footer: {
-    height: 60,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'white',
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '700',
   },
 });
 
@@ -252,173 +241,191 @@ export default class PostScreen extends React.Component {
     return false;
   };
 
-  render() {
+  renderPost = () => {
     const { showSelectedPhoto, uri, errors = {} } = this.state;
+    return (
+      <KeyboardAwareScrollView>
+        <TextField
+          textColor="red"
+          ref={this.titlelRef}
+          onFocus={this.onFocus}
+          error={errors.title}
+          label="Title"
+          onSubmitEditing={this.onSubmitTitle}
+          onChangeText={this.onChangeText}
+          characterRestriction={25}
+        />
+        <TextField
+          ref={this.descriptionRef}
+          onFocus={this.onFocus}
+          error={errors.description}
+          label="Description"
+          multiline
+          blurOnSubmit
+          onSubmitEditing={this.onSubmitDescription}
+          onChangeText={this.onChangeText}
+          characterRestriction={120}
+        />
 
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flex: 1 }}>
+            <TextField
+              ref={this.modelRef}
+              onFocus={this.onFocus}
+              error={errors.model}
+              label="Model"
+              onSubmitEditing={this.onSubmitModel}
+              onChangeText={this.onChangeText}
+            />
+          </View>
+          <View style={{ width: 200, marginLeft: 8 }}>
+            <Dropdown
+              ref={this.brandRef}
+              onFocus={this.onFocus}
+              error={errors.brand}
+              label="Brand"
+              data={brand}
+              onSubmitEditing={this.onSubmitBrand}
+              onChangeText={this.onChangeText}
+            />
+          </View>
+        </View>
+
+        <Dropdown
+          ref={this.typeRef}
+          onFocus={this.onFocus}
+          error={errors.type}
+          label="Type"
+          data={type}
+          onSubmitEditing={this.onSubmitType}
+          onChangeText={this.onChangeText}
+        />
+        <Dropdown
+          ref={this.genderRef}
+          onFocus={this.onFocus}
+          error={errors.gender}
+          label="Shoe Gender"
+          data={gender}
+          onSubmitEditing={this.onSubmitGender}
+          onChangeText={this.onChangeText}
+        />
+        <Dropdown
+          ref={this.conditionRef}
+          onFocus={this.onFocus}
+          error={errors.condition}
+          label="Condition"
+          data={condition}
+          onSubmitEditing={this.onSubmitCondition}
+          onChangeText={this.onChangeText}
+        />
+        <Dropdown
+          ref={this.materialRef}
+          onFocus={this.onFocus}
+          error={errors.material}
+          label="Material"
+          data={material}
+          onSubmitEditing={this.onSubmitMaterial}
+          onChangeText={this.onChangeText}
+        />
+        <Dropdown
+          ref={this.sizeRef}
+          onFocus={this.onFocus}
+          error={errors.size}
+          label="Size (UK)"
+          data={size}
+          onSubmitEditing={this.onSubmitSize}
+          onChangeText={this.onChangeText}
+        />
+        <TextField
+          ref={this.colorRef}
+          onFocus={this.onFocus}
+          error={errors.color}
+          label="Color"
+          onSubmitEditing={this.onSubmitColor}
+          onChangeText={this.onChangeText}
+        />
+        {this.renderSelectedPhoto(showSelectedPhoto, uri)}
+      </KeyboardAwareScrollView>
+    );
+  }
+
+  renderModal = () => {
+    return (
+      <View style={styles.modalContainer}>
+        <Button title="Close" onPress={this.toggleModal} />
+        <ScrollView
+          contentContainerStyle={styles.scrollView}
+        >
+          {this.state.photos.map((p, i) => {
+            const { uri } = p.node.image;
+            return (
+              <TouchableHighlight
+                style={{
+                  opacity:
+                    i === this.state.index
+                      ? 0.5
+                      : 1,
+                }}
+                key={i}
+                underlayColor="transparent"
+                onPress={() =>
+                  this.setState({
+                    showSelectedPhoto: true,
+                    uri: uri,
+                    modalVisible: !this.state
+                      .modalVisible,
+                  })
+                }
+              >
+                <Image
+                  style={{
+                    width: width / 3,
+                    height: width / 3,
+                  }}
+                  source={{
+                    uri: p.node.image.uri,
+                  }}
+                />
+              </TouchableHighlight>
+            );
+          })}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  render() {
     return (
       <View style={styles.screen}>
         <View style={styles.container}>
-          <KeyboardAwareScrollView>
-            <TextField
-              textColor="red"
-              ref={this.titlelRef}
-              onFocus={this.onFocus}
-              error={errors.title}
-              label="Title"
-              onSubmitEditing={this.onSubmitTitle}
-              onChangeText={this.onChangeText}
-              characterRestriction={25}
-            />
-            <TextField
-              ref={this.descriptionRef}
-              onFocus={this.onFocus}
-              error={errors.description}
-              label="Description"
-              multiline
-              blurOnSubmit
-              onSubmitEditing={this.onSubmitDescription}
-              onChangeText={this.onChangeText}
-              characterRestriction={120}
-            />
-
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flex: 1 }}>
-                <TextField
-                  ref={this.modelRef}
-                  onFocus={this.onFocus}
-                  error={errors.model}
-                  label="Model"
-                  onSubmitEditing={this.onSubmitModel}
-                  onChangeText={this.onChangeText}
-                />
-              </View>
-              <View style={{ width: 200, marginLeft: 8 }}>
-                <Dropdown
-                  ref={this.brandRef}
-                  onFocus={this.onFocus}
-                  error={errors.brand}
-                  label="Brand"
-                  data={brand}
-                  onSubmitEditing={this.onSubmitBrand}
-                  onChangeText={this.onChangeText}
-                />
-              </View>
-            </View>
-
-            <Dropdown
-              ref={this.typeRef}
-              onFocus={this.onFocus}
-              error={errors.type}
-              label="Type"
-              data={type}
-              onSubmitEditing={this.onSubmitType}
-              onChangeText={this.onChangeText}
-            />
-            <Dropdown
-              ref={this.genderRef}
-              onFocus={this.onFocus}
-              error={errors.gender}
-              label="Shoe Gender"
-              data={gender}
-              onSubmitEditing={this.onSubmitGender}
-              onChangeText={this.onChangeText}
-            />
-            <Dropdown
-              ref={this.conditionRef}
-              onFocus={this.onFocus}
-              error={errors.condition}
-              label="Condition"
-              data={condition}
-              onSubmitEditing={this.onSubmitCondition}
-              onChangeText={this.onChangeText}
-            />
-            <Dropdown
-              ref={this.materialRef}
-              onFocus={this.onFocus}
-              error={errors.material}
-              label="Material"
-              data={material}
-              onSubmitEditing={this.onSubmitMaterial}
-              onChangeText={this.onChangeText}
-            />
-            <Dropdown
-              ref={this.sizeRef}
-              onFocus={this.onFocus}
-              error={errors.size}
-              label="Size (UK)"
-              data={size}
-              onSubmitEditing={this.onSubmitSize}
-              onChangeText={this.onChangeText}
-            />
-            <TextField
-              ref={this.colorRef}
-              onFocus={this.onFocus}
-              error={errors.color}
-              label="Color"
-              onSubmitEditing={this.onSubmitColor}
-              onChangeText={this.onChangeText}
-            />
-            {this.renderSelectedPhoto(showSelectedPhoto, uri)}
-          </KeyboardAwareScrollView>
+          <Card>
+            {this.renderPost()}
+          </Card>
+          <View style={styles.postContainer}>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={this.onSubmit}
+            >
+              <Text style={styles.buttonText}>SUBMIT ITEM</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => {
+                this.toggleModal();
+                this.getPhotos();
+              }}
+            >
+              <Text style={styles.buttonText}>ADD PHOTO</Text>
+            </TouchableOpacity>
+            <Modal
+              animationType="slide"
+              transparent={false}
+              visible={this.state.modalVisible}
+            >
+              {this.renderModal()}
+            </Modal>
+          </View>
         </View>
-        <View style={styles.postContainer}>
-          <Button title="Submit" onPress={this.onSubmit} />
-          <Button
-            title="Add Photo"
-            onPress={() => {
-              this.toggleModal();
-              this.getPhotos();
-            }}
-          />
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={this.state.modalVisible}
-            onRequestClose={() => console.log("closed")}
-          >
-            <View style={styles.modalContainer}>
-              <Button title="Close" onPress={this.toggleModal} />
-              <ScrollView
-                contentContainerStyle={styles.scrollView}
-              >
-                {this.state.photos.map((p, i) => {
-                  const { uri } = p.node.image;
-                  return (
-                    <TouchableHighlight
-                      style={{
-                        opacity:
-                          i === this.state.index
-                            ? 0.5
-                            : 1,
-                      }}
-                      key={i}
-                      underlayColor="transparent"
-                      onPress={() =>
-                        this.setState({
-                          showSelectedPhoto: true,
-                          uri: uri,
-                          modalVisible: !this.state
-                            .modalVisible,
-                        })
-                      }
-                    >
-                      <Image
-                        style={{
-                          width: width / 3,
-                          height: width / 3,
-                        }}
-                        source={{
-                          uri: p.node.image.uri,
-                        }}
-                      />
-                    </TouchableHighlight>
-                  );
-                })}
-              </ScrollView>
-            </View>
-          </Modal>
-        </View>
-        <View style={styles.footer} />
       </View>
     );
   }

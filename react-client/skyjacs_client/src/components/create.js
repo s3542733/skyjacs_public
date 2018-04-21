@@ -3,62 +3,40 @@ import {
   Button,
   View,
   StyleSheet,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import IP_ADDRESS from './constants';
 import { brand, type, setting, gender, condition, material, size } from './createConstants';
+import { Card } from 'react-native-elements';
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'white',
   },
-  radioFormContainer: {
-    marginHorizontal: 2,
-    marginVertical: 2,
-  },
-  modalContainer: {
-    paddingTop: 20,
-    flex: 1,
-  },
   scrollView: {
     flexWrap: 'wrap',
     flexDirection: 'row',
   },
   container: {
-    marginHorizontal: 4,
-    marginVertical: 12,
-    paddingHorizontal: 12,
-    paddingBottom: 40,
+    flex: 1,
   },
   postContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    width: '100%',
-    bottom: 7,
-    zIndex: 10,
+    padding: 20,
+    justifyContent: 'flex-end',
   },
-  input: {
-    margin: 15,
-    height: 50,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    fontSize: 18,
+  buttonContainer: {
+    backgroundColor: '#2980b6',
+    padding: 15,
   },
-  footer: {
-    height: 60,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'white',
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '700',
   },
 });
 
@@ -255,146 +233,154 @@ export default class CreateScreen extends React.Component {
     }
   };
 
+  renderForm = () => {
+    return (
+      <KeyboardAwareScrollView>
+        <Dropdown
+          ref={this.brandRef}
+          label="Brand"
+          data={brand}
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.brandPriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Brand - Priority"
+          data={setting}
+          onChangeText={this.handleBrandPriority}
+        />
+
+        <TextField
+          ref={this.modelRef}
+          label="Model"
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.modelPriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Model - Priority"
+          data={setting}
+          onChangeText={this.handleModelPriority}
+        />
+
+        <Dropdown
+          ref={this.typeRef}
+          label="Type"
+          data={type}
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.typePriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Type - Priority"
+          data={setting}
+          onChangeText={this.handleTypePriority}
+        />
+
+        <Dropdown
+          ref={this.genderRef}
+          label="Shoe Gender"
+          data={gender}
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.genderPriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Shoe Gender - Priority"
+          data={setting}
+          onChangeText={this.handleGenderPriority}
+        />
+
+        <Dropdown
+          ref={this.conditionRef}
+          label="Condition"
+          data={condition}
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.conditionPriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Condition - Priority"
+          data={setting}
+          onChangeText={this.handleConditionPriority}
+        />
+
+        <Dropdown
+          ref={this.materialRef}
+          label="Material"
+          data={material}
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.materialPriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Material - Priority"
+          data={setting}
+          onChangeText={this.handleMaterialPriority}
+        />
+
+        <Dropdown
+          ref={this.sizeRef}
+          label="Size (UK)"
+          data={size}
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.sizePriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Size - Priority"
+          data={setting}
+          onChangeText={this.handleSizePriority}
+        />
+
+        <TextField
+          ref={this.colorRef}
+          label="Color"
+          onChangeText={this.onChangeText}
+        />
+
+        <Dropdown
+          ref={this.colorPriorityRef}
+          baseColor="#edc374"
+          value="None"
+          label="Color - Priority"
+          data={setting}
+          onChangeText={this.handleColorPriority}
+        />
+      </KeyboardAwareScrollView>
+    );
+  }
+
   render() {
     return (
       <View style={styles.screen}>
         <View style={styles.container}>
-          <KeyboardAwareScrollView>
-            <Dropdown
-              ref={this.brandRef}
-              label="Brand"
-              data={brand}
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.brandPriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Brand - Priority"
-              data={setting}
-              onChangeText={this.handleBrandPriority}
-            />
-
-            <TextField
-              ref={this.modelRef}
-              label="Model"
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.modelPriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Model - Priority"
-              data={setting}
-              onChangeText={this.handleModelPriority}
-            />
-
-            <Dropdown
-              ref={this.typeRef}
-              label="Type"
-              data={type}
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.typePriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Type - Priority"
-              data={setting}
-              onChangeText={this.handleTypePriority}
-            />
-
-            <Dropdown
-              ref={this.genderRef}
-              label="Shoe Gender"
-              data={gender}
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.genderPriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Shoe Gender - Priority"
-              data={setting}
-              onChangeText={this.handleGenderPriority}
-            />
-
-            <Dropdown
-              ref={this.conditionRef}
-              label="Condition"
-              data={condition}
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.conditionPriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Condition - Priority"
-              data={setting}
-              onChangeText={this.handleConditionPriority}
-            />
-
-            <Dropdown
-              ref={this.materialRef}
-              label="Material"
-              data={material}
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.materialPriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Material - Priority"
-              data={setting}
-              onChangeText={this.handleMaterialPriority}
-            />
-
-            <Dropdown
-              ref={this.sizeRef}
-              label="Size (UK)"
-              data={size}
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.sizePriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Size - Priority"
-              data={setting}
-              onChangeText={this.handleSizePriority}
-            />
-
-            <TextField
-              ref={this.colorRef}
-              label="Color"
-              onChangeText={this.onChangeText}
-            />
-
-            <Dropdown
-              ref={this.colorPriorityRef}
-              baseColor="#edc374"
-              value="None"
-              label="Color - Priority"
-              data={setting}
-              onChangeText={this.handleColorPriority}
-            />
-          </KeyboardAwareScrollView>
+          <Card>
+            {this.renderForm()}
+          </Card>
         </View>
         <View style={styles.postContainer}>
-          <Button
-            title="Search"
-            accessibilityLabel="Learn more about this purple button"
+          <TouchableOpacity
+            style={styles.buttonContainer}
             onPress={this.onSubmit}
-          />
+          >
+            <Text style={styles.buttonText}>CREATE MATCH</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.footer} />
       </View>
     );
   }
