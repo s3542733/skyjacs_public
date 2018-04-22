@@ -16,9 +16,10 @@ import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Card } from 'react-native-elements';
+import { material, sanFranciscoWeights } from 'react-native-typography';
 import SelectedPhoto from './selectedPhoto';
 import IP_ADDRESS from './constants';
-import { brand, type, gender, condition, material, size } from './createConstants';
+import { brand, type, gender, condition, materials, size } from './createConstants';
 
 const { width } = Dimensions.get('window');
 
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   buttonContainer: {
+    borderRadius: 5,
     backgroundColor: '#2980b6',
     padding: 15,
   },
@@ -89,11 +91,11 @@ export default class PostScreen extends React.Component {
     this.onSubmitSize = this.onSubmitSize.bind(this);
     this.onSubmitColor = this.onSubmitColor.bind(this);
     this.onSubmitDescription = this.onSubmitDescription.bind(this);
-    this.onSubmitMaterial = this.onSubmitMaterial.bind(this);
+    this.onSubmitMaterials = this.onSubmitMaterials.bind(this);
     this.onSubmitModel = this.onSubmitModel.bind(this);
 
     this.modelRef = this.updateRef.bind(this, 'model');
-    this.materialRef = this.updateRef.bind(this, 'material');
+    this.materialsRef = this.updateRef.bind(this, 'materials');
     this.brandRef = this.updateRef.bind(this, 'brand');
     this.typeRef = this.updateRef.bind(this, 'type');
     this.genderRef = this.updateRef.bind(this, 'gender');
@@ -110,7 +112,7 @@ export default class PostScreen extends React.Component {
       condition: '',
       size: '',
       color: '',
-      material: '',
+      materials: '',
       description: '',
       modalVisible: false,
       photos: [],
@@ -134,7 +136,7 @@ export default class PostScreen extends React.Component {
   }
 
   onChangeText(text) {
-    ['brand', 'material', 'model', 'type', 'gender', 'condition', 'size', 'color', 'description']
+    ['brand', 'materials', 'model', 'type', 'gender', 'condition', 'size', 'color', 'description']
       .map(name => ({ name, ref: this[name] }))
       .forEach(({ name, ref }) => {
         if (ref.isFocused()) {
@@ -171,8 +173,8 @@ export default class PostScreen extends React.Component {
     this.description.focus();
   }
 
-  onSubmitMaterial() {
-    this.material.focus();
+  onSubmitMaterials() {
+    this.materials.focus();
   }
 
   onSubmitModel() {
@@ -184,7 +186,7 @@ export default class PostScreen extends React.Component {
     const data = new FormData();
     const photodata = new FormData();
 
-    ['brand', 'model', 'material', 'type', 'gender', 'condition', 'size', 'color', 'description']
+    ['brand', 'model', 'materials', 'type', 'gender', 'condition', 'size', 'color', 'description']
       .forEach((name) => {
         const value = this[name].value();
         if (!value) {
@@ -207,7 +209,7 @@ export default class PostScreen extends React.Component {
       data.append('item_model', this.state.model);
       data.append('item_condition', this.state.condition);
       data.append('item_colour', this.state.color);
-      data.append('item_material', this.state.material);
+      data.append('item_materials', this.state.materials);
       data.append('item_size', this.state.size);
       data.append('item_notes', this.state.description);
       PostScreen.postData(data, 'listings/');
@@ -245,6 +247,9 @@ export default class PostScreen extends React.Component {
     const { showSelectedPhoto, uri, errors = {} } = this.state;
     return (
       <KeyboardAwareScrollView>
+        <Text style={[material.headline, sanFranciscoWeights.semibold]}>
+          Describe your shoe to us!
+        </Text>
         <TextField
           textColor="red"
           ref={this.titlelRef}
@@ -319,12 +324,12 @@ export default class PostScreen extends React.Component {
           onChangeText={this.onChangeText}
         />
         <Dropdown
-          ref={this.materialRef}
+          ref={this.materialsRef}
           onFocus={this.onFocus}
-          error={errors.material}
-          label="Material"
-          data={material}
-          onSubmitEditing={this.onSubmitMaterial}
+          error={errors.materials}
+          label="Materials"
+          data={materials}
+          onSubmitEditing={this.onSubmitMaterials}
           onChangeText={this.onChangeText}
         />
         <Dropdown
@@ -398,7 +403,7 @@ export default class PostScreen extends React.Component {
     return (
       <View style={styles.screen}>
         <View style={styles.container}>
-          <Card>
+          <Card style={{ flex: 1 }}>
             {this.renderPost()}
           </Card>
           <View style={styles.postContainer}>

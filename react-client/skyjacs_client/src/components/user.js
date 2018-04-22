@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, View, Text, Image, ImageBackground, StyleSheet } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Text, Image, ImageBackground, StyleSheet } from 'react-native';
 import { Card, Rating } from 'react-native-elements';
+import { material, sanFranciscoWeights } from 'react-native-typography';
 import PropTypes from 'prop-types';
 
 /* eslint-disable global-require */
@@ -8,6 +9,7 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   cardContainer: {
     backgroundColor: '#FFF',
@@ -16,7 +18,6 @@ const styles = StyleSheet.create({
   headerBackgroundImage: {
     paddingBottom: 20,
     paddingTop: 35,
-    backgroundColor: '#2D3E4F',
   },
   headerColumn: {
     backgroundColor: 'transparent',
@@ -30,26 +31,26 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     width: 170,
   },
-  userNameText: {
-    color: '#FFF',
-    fontSize: 22,
-    fontWeight: 'bold',
-    paddingBottom: 8,
-    textAlign: 'center',
+  ratingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    padding: 15,
   },
   bodyContainer: {
     flex: 1,
     justifyContent: 'flex-end',
   },
   buttonContainer: {
-    backgroundColor: '#2980b6',
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#cccccc',
     padding: 15,
   },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: '700',
-  },
+  // buttonText: {
+  //   ...material.captionWhite,
+  //   ...systemWeights.thin,
+  // },
 });
 
 export default class UserScreen extends React.Component {
@@ -80,7 +81,7 @@ export default class UserScreen extends React.Component {
               style={styles.userImage}
               source={require('../images/default_profile_pic.png')}
             />
-            <Text style={styles.userNameText}>{name}</Text>
+            <Text style={[material.headline, sanFranciscoWeights.semibold]}>{name}</Text>
           </View>
         </ImageBackground>
       </View>
@@ -91,26 +92,52 @@ export default class UserScreen extends React.Component {
     const { navigate } = this.props.navigation;
 
     return (
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => navigate('Create')}
-      >
-        <Text style={styles.buttonText}>FIND A MATCH</Text>
-      </TouchableOpacity>
+      <View>
+        <View style={styles.buttonContainer}>
+          <Text style={[material.subheading, sanFranciscoWeights.thin]}>
+            View and Edit your user information here. You can also create match
+             or post a selling if you would like.
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigate('Post')}
+        >
+          <Text style={[material.headline, sanFranciscoWeights.thin]}>Become a Seller?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigate('Create')}
+        >
+          <Text style={[material.headline, sanFranciscoWeights.thin]}>Find a Match!</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Card containerStyle={styles.cardContainer}>
-          {this.renderHeader()}
-        </Card>
-        <View style={styles.bodyContainer}>
+        <ScrollView>
+          <Card containerStyle={styles.cardContainer}>
+            {this.renderHeader()}
+          </Card>
           <View style={{ padding: 20 }}>
-            {this.renderBody()}
+            <View style={styles.ratingContainer}>
+              <Rating
+                type="star"
+                frations={1}
+                startingValue={5}
+                imageSize={20}
+              />
+            </View>
           </View>
-        </View>
+          <View style={styles.bodyContainer}>
+            <View style={{ padding: 20 }}>
+              {this.renderBody()}
+            </View>
+          </View>
+        </ScrollView>
       </View>
     );
   }

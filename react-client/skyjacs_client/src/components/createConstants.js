@@ -97,7 +97,7 @@ export const condition = [
   },
 ];
 
-export const material = [
+export const materials = [
   {
     value: 'Canvas',
   },

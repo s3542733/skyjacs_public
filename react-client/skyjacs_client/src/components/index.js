@@ -50,7 +50,12 @@ export const PostStack = StackNavigator({
 });
 
 export const Tabs = TabNavigator({
-  Home: { screen: HomeScreen },
+  Home: {
+    screen: HomeScreen,
+    navigationOptions: {
+      title: 'Home',
+    },
+  },
   User: {
     screen: UserStack,
     navigationOptions: {

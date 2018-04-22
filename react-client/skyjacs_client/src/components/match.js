@@ -1,46 +1,57 @@
 import React from 'react';
 import { Image, TouchableOpacity, ScrollView, View, Text, StyleSheet } from 'react-native';
+import { material, sanFranciscoWeights } from 'react-native-typography';
 import IP_ADDRESS from './constants';
 
 const styles = StyleSheet.create({
   itemContainer: {
     flex: 1,
-    borderWidth: 1,
-    backgroundColor: 'yellow',
     marginBottom: 10,
-    padding: 3,
-    color: '#fff',
   },
   contentContainer: {
-    borderWidth: 1,
-    borderColor: 'black',
-    flexDirection: 'row',
-    height: 150,
-    margin: 5,
-  },
-  imageContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'green',
+    borderWidth: 0.5,
+    borderColor: 'grey',
+    borderRadius: 5,
+    height: 300,
+    backgroundColor: 'white',
   },
+  itemHeaderContainer: {
+    padding: 5,
+  },
+  // imageContainer: {
+  //   flex: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
   image: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'red',
+    flex: 1,
+    height: undefined,
+    width: undefined,
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+    borderRadius: 5,
   },
   textContainer: {
-    flex: 2,
     // justifyContent: 'center',
-    margin: 3,
-    backgroundColor: 'purple',
+    padding: 5,
+  },
+  text: {
+    color: 'grey',
   },
   percentContainer: {
-    borderRadius: 100/2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 45,
+    height: 45,
+    borderRadius: 100 / 2,
     position: 'absolute',
     zIndex: 0,
-    right: 0,
-    backgroundColor: 'blue',
+    right: 4,
+    top: 4,
+    borderColor: 'grey',
+    borderWidth: 0.5,
+    backgroundColor: 'white',
   },
 });
 
@@ -76,38 +87,46 @@ export default class SignUpScreen extends React.Component {
     const { imageUri } = this.state;
 
     return (
-      <ScrollView> {
-        this.state.dataSource.map(dataItem => (
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Detail', dataItem)}
-          >
-            <View style={styles.itemContainer}>
-              <View style={styles.contentContainer}>
-                <View style={styles.imageContainer}>
+      <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
+        <View style={{ paddingBottom: 10 }}>
+          <Text style={[material.headline, sanFranciscoWeights.semibold]}>123 Matches found</Text>
+        </View>
+        {
+          this.state.dataSource.map(dataItem => (
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Detail', dataItem)}
+            >
+              <View style={styles.itemContainer}>
+                <View style={styles.contentContainer}>
                   <Image
                     style={styles.image}
-                    source={{ uri : imageUri }}
+                    source={require('../images/shoe_images/adidas_ultra_boost.jpeg')}
                   />
+                  <View key={dataItem.uid} style={styles.textContainer}>
+                    <Text style={[material.subheading, sanFranciscoWeights.semibold]}>
+                      (2018) Shoe Name
+                    </Text>
+                    <View style={{ flexDirection: 'row', padding: 10 }}>
+                      <View style={{ paddingRight: 10 }}>
+                        <Text style={[material.content, sanFranciscoWeights.thin, styles.text]}>{'\u2022'} Brand</Text>
+                        <Text style={[material.content, sanFranciscoWeights.thin, styles.text]}>{'\u2022'} Material</Text>
+                      </View>
+                      <View>
+                        <Text style={[material.content, sanFranciscoWeights.thin, styles.text]}>{'\u2022'} Size</Text>
+                        <Text style={[material.content, sanFranciscoWeights.thin, styles.text]}>{'\u2022'} Usage</Text>
+                      </View>
+                    </View>
+                  </View>
                 </View>
-                <View key={dataItem.uid} style={styles.textContainer}>
+                <View style={styles.percentContainer}>
                   <Text>
-                    Title: Lorem Ipsum
-                  </Text>
-                  <Text>
-                    Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,
-                     consectetur, adipisci velit...
+                    100%
                   </Text>
                 </View>
               </View>
-              <View style={styles.percentContainer}>
-                <Text>
-                  Match Percentage: {dataItem.item_matching}%
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))
-      }
+            </TouchableOpacity>
+          ))
+        }
       </ScrollView>
     );
   }

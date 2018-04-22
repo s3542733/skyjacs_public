@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Button,
   View,
   StyleSheet,
   TouchableOpacity,
@@ -9,8 +8,9 @@ import {
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { material, sanFranciscoWeights } from 'react-native-typography';
 import IP_ADDRESS from './constants';
-import { brand, type, setting, gender, condition, material, size } from './createConstants';
+import { brand, type, setting, gender, condition, materials, size } from './createConstants';
 import { Card } from 'react-native-elements';
 
 const styles = StyleSheet.create({
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     backgroundColor: '#2980b6',
+    borderRadius: 5,
     padding: 15,
   },
   buttonText: {
@@ -48,7 +49,7 @@ export default class CreateScreen extends React.Component {
     this.onChangeText = this.onChangeText.bind(this);
 
     this.modelRef = this.updateRef.bind(this, 'model');
-    this.materialRef = this.updateRef.bind(this, 'material');
+    this.materialsRef = this.updateRef.bind(this, 'materials');
     this.brandRef = this.updateRef.bind(this, 'brand');
     this.typeRef = this.updateRef.bind(this, 'type');
     this.genderRef = this.updateRef.bind(this, 'gender');
@@ -64,7 +65,7 @@ export default class CreateScreen extends React.Component {
       condition: '',
       size: '',
       color: '',
-      material: '',
+      materials: '',
       brandPriority: false,
       typePriority: false,
       modelPriority: false,
@@ -72,7 +73,7 @@ export default class CreateScreen extends React.Component {
       conditionPriority: false,
       sizePriority: false,
       colorPriority: false,
-      materialPriority: false,
+      materialsPriority: false,
       brandStrict: false,
       modelStrict: false,
       typeStrict: false,
@@ -80,7 +81,7 @@ export default class CreateScreen extends React.Component {
       conditionStrict: false,
       sizeStrict: false,
       colorStrict: false,
-      materialStrict: false,
+      materialsStrict: false,
     };
   }
 
@@ -98,7 +99,7 @@ export default class CreateScreen extends React.Component {
   }
 
   onChangeText(text) {
-    ['brand', 'model', 'material', 'type', 'gender', 'condition', 'size', 'color']
+    ['brand', 'model', 'materials', 'type', 'gender', 'condition', 'size', 'color']
       .map(name => ({ name, ref: this[name] }))
       .forEach(({ name, ref }) => {
         if (ref.isFocused()) {
@@ -131,9 +132,9 @@ export default class CreateScreen extends React.Component {
     data.append('item_colour', this.state.color);
     data.append('color_priority', this.state.colorPriority);
     data.append('color_strict', this.state.colorStrict);
-    data.append('item_material', this.state.material);
-    data.append('material_priority', this.state.materialPriority);
-    data.append('material_strict', this.state.materialStrict);
+    data.append('item_materials', this.state.materials);
+    data.append('materials_priority', this.state.materialsPriority);
+    data.append('materials_strict', this.state.materialsStrict);
     data.append('item_size', this.state.size);
     data.append('size_priority', this.state.sizePriority);
     data.append('size_strict', this.state.sizeStrict);
@@ -224,18 +225,21 @@ export default class CreateScreen extends React.Component {
     }
   };
 
-  handleMaterialPriority = (text) => {
+  handleMaterialsPriority = (text) => {
     if (text === 'Priority') {
-      this.setState({ materialPriority: true });
+      this.setState({ materialsPriority: true });
     }
     if (text === 'Strict') {
-      this.setState({ materialStrict: true });
+      this.setState({ materialsStrict: true });
     }
   };
 
   renderForm = () => {
     return (
       <KeyboardAwareScrollView>
+        <Text style={[material.headline, sanFranciscoWeights.semibold]}>
+          Describe your shoe to us!
+        </Text>
         <Dropdown
           ref={this.brandRef}
           label="Brand"
@@ -316,19 +320,19 @@ export default class CreateScreen extends React.Component {
         />
 
         <Dropdown
-          ref={this.materialRef}
-          label="Material"
-          data={material}
+          ref={this.materialsRef}
+          label="Materials"
+          data={materials}
           onChangeText={this.onChangeText}
         />
 
         <Dropdown
-          ref={this.materialPriorityRef}
+          ref={this.materialsPriorityRef}
           baseColor="#edc374"
           value="None"
-          label="Material - Priority"
+          label="Materials - Priority"
           data={setting}
-          onChangeText={this.handleMaterialPriority}
+          onChangeText={this.handleMaterialsPriority}
         />
 
         <Dropdown
