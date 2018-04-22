@@ -1,6 +1,7 @@
 from django.test import TestCase
 from .models import User
 from .views import *
+from rest_framework.test import APIRequestFactory
 
 class SkyjacsTestCase(TestCase):
     #testing user model
@@ -133,3 +134,42 @@ class SkyjacsTestCase(TestCase):
         strictList = []
         strictList.append('type')
         self.assertEqual(Case1, strictList)
+    
+    def test_skyjacs_views_getPriority(self):
+        user = self.create_user()
+        testListing = Listing(user,type_priority = True)
+        Case1 = getPriority(testListing)
+        priorityList = []
+        priorityList.append('type')
+        self.assertEqual(Case1, priorityList)
+
+    def test_skyjacs_views_UserViewSet(self):
+        request = APIRequestFactory().get('')
+        user = self.create_user()
+        userview = UserViewSet.as_view({'get': 'retrieve'})
+        response = userview(request, pk=user.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_skyjacs_views_ListingViewSet(self):
+        request = APIRequestFactory().get('/skyjacs_app/Listing')
+        listingview = ListingViewSet.as_view({'get': 'retrieve'})
+        user = self.create_user()
+        listing = Listing(user, type_strict = True)
+        response = listingview(request, pk=listing.pk)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_skyjacs_views_NotificationViewSet(self):
+        request = APIRequestFactory().get('/skyjacs_app/Notification')
+        user = self.create_user()
+        notify = Notification(user,123,123)
+        notificationview = NotificationViewSet.as_view({'get': 'retrieve'})
+        response = notificationview(request, pk=notify.pk)
+        self.assertEqual(response.status_code, 200)
+
+class matchViewTest(TestCase):
+    def setUp(self, User_name='test', email='test@email.com',user_admin='False'):
+        self.user = User.objects.create(full_name=User_name,email_address=email, user_admin=user_admin)
+        self.factory = APIRequestFactory()
+
+    def test_skyjacs_views_matchView(self):
+        user = self.user

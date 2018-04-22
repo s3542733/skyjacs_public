@@ -178,8 +178,6 @@ def matchCondition(pkSpec, dbSpec, strictList):
 	elif (pkSpecVal < dbSpecVal):
 		return (100 - ((dbSpecVal - pkSpecVal)/5 * 100))
 
-	return 0
-
 
 def matchMaterial(pkSpec, dbSpec, strictList):
 
