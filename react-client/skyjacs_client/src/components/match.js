@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   contentContainer: {
+    margin: 0.1,
     flex: 1,
     borderWidth: 0.5,
     borderColor: 'grey',
@@ -19,11 +20,6 @@ const styles = StyleSheet.create({
   itemHeaderContainer: {
     padding: 5,
   },
-  // imageContainer: {
-  //   flex: 1,
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
   image: {
     flex: 1,
     height: undefined,

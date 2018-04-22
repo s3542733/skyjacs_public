@@ -11,11 +11,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     color: '#fff',
+    borderRadius: 5,
   },
   buttonContainer: {
     backgroundColor: '#2980b6',
     paddingVertical: 15,
     marginBottom: 10,
+    borderRadius: 5,
   },
   buttonText: {
     color: '#fff',

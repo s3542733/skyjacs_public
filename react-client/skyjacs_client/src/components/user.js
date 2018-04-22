@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
-    padding: 15,
+    paddingTop: 15,
   },
   bodyContainer: {
     flex: 1,
@@ -47,10 +47,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#cccccc',
     padding: 15,
   },
-  // buttonText: {
-  //   ...material.captionWhite,
-  //   ...systemWeights.thin,
-  // },
+  descContainer: {
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#cccccc',
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+  },
 });
 
 export default class UserScreen extends React.Component {
@@ -93,7 +96,7 @@ export default class UserScreen extends React.Component {
 
     return (
       <View>
-        <View style={styles.buttonContainer}>
+        <View style={styles.descContainer}>
           <Text style={[material.subheading, sanFranciscoWeights.thin]}>
             View and Edit your user information here. You can also create match
              or post a selling if you would like.
@@ -110,6 +113,12 @@ export default class UserScreen extends React.Component {
           onPress={() => navigate('Create')}
         >
           <Text style={[material.headline, sanFranciscoWeights.thin]}>Find a Match!</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigate('Post')}
+        >
+          <Text style={[material.headline, sanFranciscoWeights.thin]}>View your items</Text>
         </TouchableOpacity>
       </View>
     );

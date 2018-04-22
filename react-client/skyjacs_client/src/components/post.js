@@ -38,13 +38,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingTop: 50,
     paddingBottom: 90,
   },
   postContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 20,
+    padding: 15,
   },
   buttonContainer: {
     borderRadius: 5,
@@ -402,6 +403,14 @@ export default class PostScreen extends React.Component {
   render() {
     return (
       <View style={styles.screen}>
+        <Image
+          style={{
+            position: 'absolute',
+            resizeMode: 'repeat',
+            top: 0,
+          }}
+          source={require('../images/post_wallpaper.png')}
+        />
         <View style={styles.container}>
           <Card style={{ flex: 1 }}>
             {this.renderPost()}

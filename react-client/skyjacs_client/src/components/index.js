@@ -49,9 +49,18 @@ export const PostStack = StackNavigator({
   },
 });
 
-export const Tabs = TabNavigator({
+export const HomeStack = StackNavigator({
   Home: {
     screen: HomeScreen,
+    navigationOptions: {
+      title: 'Home',
+    },
+  },
+});
+
+export const Tabs = TabNavigator({
+  Home: {
+    screen: HomeStack,
     navigationOptions: {
       title: 'Home',
     },
