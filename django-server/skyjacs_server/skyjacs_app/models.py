@@ -1,17 +1,26 @@
 from __future__ import unicode_literals
-from django.contrib.auth.models import User
 from django.db import models
 
+class User(models.Model):
+	uid = models.AutoField(primary_key=True)
+	username = models.CharField(max_length=64, unique=True)
+	email = models.EmailField(unique=True)
+	password = models.CharField(max_length=255)
+	token = models.CharField(max_length=255, null=True)
+	date_joined = models.DateTimeField(auto_now_add=True)
+
 class Profile(models.Model):
-	id = models.AutoField(primary_key=True)
+	uid = models.AutoField(primary_key=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	first_name = models.CharField(max_length=64)
+	last_name = models.CharField(max_length=64)
 	user_rating = models.FloatField(default=0.0)
 	user_num_ratings = models.IntegerField(default=0.0)
 	user_banned = models.BooleanField(default=False)
 	user_admin = models.BooleanField(default=False)
 
 class Listing(models.Model):
-	id = models.AutoField(primary_key=True)
+	uid = models.AutoField(primary_key=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	listing_type = models.CharField(max_length=16, default='')
 	listing_title = models.CharField(max_length=255, default='')
@@ -44,12 +53,12 @@ class Listing(models.Model):
 	item_matching = models.FloatField(null=True)
 
 class Notification(models.Model):
-	id = models.AutoField(primary_key=True)
+	uid = models.AutoField(primary_key=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	user_listing_id = models.IntegerField()
 	matched_listing_id = models.IntegerField()
 
 class Image(models.Model):
-	id = models.AutoField(primary_key=True)
+	uid = models.AutoField(primary_key=True)
 	listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 	image_url = models.ImageField(blank=True, null=True, upload_to='images')

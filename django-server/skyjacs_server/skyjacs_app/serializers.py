@@ -1,16 +1,20 @@
-from skyjacs_app.models import Profile, Listing, Notification, Image
-from django.contrib.auth.models import User, Group
+from skyjacs_app.models import User, Profile, Listing, Notification, Image
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = User
-		fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'last_login', 'date_joined')
+		fields = ('uid', 'username', 'email', 'password', 'token', 'date_joined')
+
+class SensitiveUserSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = User
+		fields = ('uid', 'username', 'email', 'token', 'date_joined')
 
 class ProfileSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Profile
-		fields = ('user_rating', 'user_num_ratings', 
+		fields = ('first_name', 'last_name', 'user_rating', 'user_num_ratings', 
 			'user_banned', 'user_admin')
 
 class ListingSerializer(serializers.HyperlinkedModelSerializer):
