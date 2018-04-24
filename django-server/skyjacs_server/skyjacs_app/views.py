@@ -364,4 +364,4 @@ class MatchingView(APIView):
 
 		queryset = dbSpecs
 		serializer = MatchingSerializer(dbSpecs, many=True)	
-		return Response(serializer.data)
+		return Response(serializer.data, 200)
