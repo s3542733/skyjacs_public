@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, TouchableOpacity, ScrollView, View, Text, StyleSheet } from 'react-native';
 import { material, sanFranciscoWeights } from 'react-native-typography';
-import IP_ADDRESS from './constants';
+import { IP_ADDRESS } from './constants';
 
 const styles = StyleSheet.create({
   itemContainer: {

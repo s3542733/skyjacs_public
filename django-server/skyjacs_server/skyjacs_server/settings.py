@@ -26,7 +26,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["192.168.0.9", "django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com", "127.0.0.1"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'skyjacs_app',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

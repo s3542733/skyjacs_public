@@ -15,7 +15,7 @@ import {
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Card } from 'react-native-elements';
+import { Icon, Card } from 'react-native-elements';
 import { material, sanFranciscoWeights } from 'react-native-typography';
 import SelectedPhoto from './selectedPhoto';
 import IP_ADDRESS from './constants';
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
-    paddingBottom: 90,
+    paddingBottom: 75,
   },
   postContainer: {
     flexDirection: 'row',
@@ -60,6 +60,16 @@ const styles = StyleSheet.create({
 });
 
 export default class PostScreen extends React.Component {
+  static navigationOptions = {
+    tabBarIcon: ({tintColor}) => (
+      <Icon
+        name="md-pricetag"
+        type="ionicon"
+        color={tintColor}
+      />
+    ),
+  }
+
   static postData(data, route) {
     fetch(IP_ADDRESS + route, {
       method: 'POST',
@@ -412,7 +422,7 @@ export default class PostScreen extends React.Component {
           source={require('../images/post_wallpaper.png')}
         />
         <View style={styles.container}>
-          <Card style={{ flex: 1 }}>
+          <Card containerStyle={{ borderRadius: 5 }} style={{ flex: 1 }}>
             {this.renderPost()}
           </Card>
           <View style={styles.postContainer}>

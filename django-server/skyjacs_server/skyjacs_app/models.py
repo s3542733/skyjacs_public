@@ -1,19 +1,29 @@
 from __future__ import unicode_literals
-# from django.contrib.auth.models import User
 from django.db import models
 
 class User(models.Model):
 	uid = models.AutoField(primary_key=True)
-	full_name = models.CharField(max_length=255)
-	email_address =  models.EmailField(unique=True)
-	user_admin = models.BooleanField()
+	username = models.CharField(max_length=64, unique=True, blank=False)
+	email = models.EmailField(unique=True, blank=False)
+	password = models.CharField(max_length=255, blank=False)
+	token = models.CharField(max_length=255, null=True)
+	date_joined = models.DateTimeField(auto_now_add=True)
+
+class Profile(models.Model):
+	uid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	first_name = models.CharField(max_length=64)
+	last_name = models.CharField(max_length=64)
+	user_rating = models.FloatField(default=0.0)
+	user_num_ratings = models.IntegerField(default=0.0)
+	user_banned = models.BooleanField(default=False)
+	user_admin = models.BooleanField(default=False)
 
 class Listing(models.Model):
 	uid = models.AutoField(primary_key=True)
-	#user_id = models.IntegerField()
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	listing_type = models.CharField(max_length=16, default='Unknown')
-	listing_title = models.CharField(max_length=255, default='Unknown')
+	listing_type = models.CharField(max_length=16, default='')
+	listing_title = models.CharField(max_length=255, default='')
 	listing_date = models.DateTimeField(auto_now_add=True)
 	item_type = models.CharField(max_length=255, default='')
 	type_priority = models.BooleanField(default=False)
@@ -44,30 +54,11 @@ class Listing(models.Model):
 
 class Notification(models.Model):
 	uid = models.AutoField(primary_key=True)
-	#user_id = models.IntegerField()
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	user_listing_id = models.IntegerField()
 	matched_listing_id = models.IntegerField()
 
-
-#class Spec(models.Model):
-#	uid = models.AutoField(primary_key=True)
-#	#listing_id = models.IntegerField()
-#	listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-#	item_type = models.CharField(max_length=255)
-#	item_sex = models.CharField(max_length=8, default='Unisex')
-#	item_brand = models.CharField(max_length=255)
-#	item_model = models.CharField(max_length=255)
-#	item_condition = models.CharField(max_length=64)
-#	item_material = models.CharField(max_length=64, default='Plastic/Synthetic	')
-#	item_size = models.FloatField()
-#	item_notes = models.TextField()
-#	item_matching = models.FloatField(null=True)
-
 class Image(models.Model):
 	uid = models.AutoField(primary_key=True)
-	#user_id = models.IntegerField()
-	#user = models.ForeignKey(User, on_delete=models.CASCADE)
-	#listing_id = models.IntegerField()
 	listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 	image_url = models.ImageField(blank=True, null=True, upload_to='images')

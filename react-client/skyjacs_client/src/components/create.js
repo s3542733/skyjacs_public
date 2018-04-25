@@ -4,14 +4,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  Image,
 } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { material, sanFranciscoWeights } from 'react-native-typography';
-import IP_ADDRESS from './constants';
-import { brand, type, setting, gender, condition, materials, size } from './createConstants';
 import { Card } from 'react-native-elements';
+import { brand, type, setting, gender, condition, materials, size } from './createConstants';
+import { IP_ADDRESS } from './constants';
 
 const styles = StyleSheet.create({
   screen: {
@@ -24,9 +25,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingTop: 50,
   },
   postContainer: {
-    padding: 20,
+    padding: 15,
     justifyContent: 'flex-end',
   },
   buttonContainer: {
@@ -238,7 +240,7 @@ export default class CreateScreen extends React.Component {
     return (
       <KeyboardAwareScrollView>
         <Text style={[material.headline, sanFranciscoWeights.semibold]}>
-          Describe your shoe to us!
+          Find the perfect Shoe!
         </Text>
         <Dropdown
           ref={this.brandRef}
@@ -372,8 +374,16 @@ export default class CreateScreen extends React.Component {
   render() {
     return (
       <View style={styles.screen}>
+        <Image
+          style={{
+            position: 'absolute',
+            resizeMode: 'repeat',
+            top: 0,
+          }}
+          source={require('../images/post_wallpaper.png')}
+        />
         <View style={styles.container}>
-          <Card>
+          <Card containerStyle={{ borderRadius: 5 }}>
             {this.renderForm()}
           </Card>
         </View>

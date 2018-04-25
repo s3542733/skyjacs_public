@@ -2,81 +2,87 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins, status
+#from django.conf import settings
+#from django.shortcuts import redirect
+from django.contrib.auth.hashers import make_password, check_password
+#from django.contrib.auth.decorators import login_required
+#from django.contrib.auth import authenticate, login, logout
 #from django.contrib.auth.models import User
-from skyjacs_app.models import User, Listing, Notification, Image
-from skyjacs_app.serializers import UserSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
+from skyjacs_app.models import Profile, Listing, Notification, Image, User
+from skyjacs_app.serializers import UserSerializer, SensitiveUserSerializer, ProfileSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+import uuid
 
 SLIPON_REL = {
-	'Slip On' : 5 ,
-	'Low Top' : 4 ,
-	'Skaters' : 4 ,
-	'Cageless' : 3 ,
-	'Runners/Joggers' : 3 ,
-	'High Top' : 2 ,
-	'Basketball' : 1,
+	'Slip On' : 5.0 ,
+	'Low Top' : 4.0 ,
+	'Skaters' : 4.0 ,
+	'Cageless' : 3.0 ,
+	'Runners/Joggers' : 3.0 ,
+	'High Top' : 2.0 ,
+	'Basketball' : 1.0,
 }
 
 LOWTOP_REL = {
-	'Slip On' : 4 ,
-	'Low Top' : 5 ,
-	'Skaters' : 3 ,
-	'Cageless' : 3 ,
-	'Runners/Joggers' : 3 ,
-	'High Top' : 1 ,
-	'Basketball' : 3,
+	'Slip On' : 4.0 ,
+	'Low Top' : 5.0 ,
+	'Skaters' : 3.0 ,
+	'Cageless' : 3.0 ,
+	'Runners/Joggers' : 3.0 ,
+	'High Top' : 1.0 ,
+	'Basketball' : 3.0,
 }
 
 HIGHTOP_REL = {
-	'Slip On' : 2 ,
-	'Low Top' : 2 ,
-	'Skaters' : 3 ,
-	'Cageless' : 4 ,
-	'Runners/Joggers' : 3 ,
-	'High Top' : 5 ,
-	'Basketball' : 4,
+	'Slip On' : 2.0 ,
+	'Low Top' : 2.0 ,
+	'Skaters' : 3.0 ,
+	'Cageless' : 4.0 ,
+	'Runners/Joggers' : 3.0 ,
+	'High Top' : 5.0 ,
+	'Basketball' : 4.0,
 }
 
 SKATERS_REL = {
-	'Slip On' : 3 ,
-	'Low Top' : 4 ,
-	'Skaters' : 5 ,
-	'Cageless' : 2 ,
-	'Runners/Joggers' : 2 ,
-	'High Top' : 3 ,
-	'Basketball' : 2,
+	'Slip On' : 3.0 ,
+	'Low Top' : 4.0 ,
+	'Skaters' : 5.0 ,
+	'Cageless' : 2.0 ,
+	'Runners/Joggers' : 2.0 ,
+	'High Top' : 3.0 ,
+	'Basketball' : 2.0,
 }
 
 RUNNERSJOGGERS_REL = {
-	'Slip On' : 2 ,
-	'Low Top' : 4 ,
-	'Skaters' : 3 ,
-	'Cageless' : 4 ,
-	'Runners/Joggers' : 5 ,
-	'High Top' : 3 ,
-	'Basketball' : 4,
+	'Slip On' : 2.0 ,
+	'Low Top' : 4.0 ,
+	'Skaters' : 3.0 ,
+	'Cageless' : 4.0 ,
+	'Runners/Joggers' : 5.0 ,
+	'High Top' : 3.0 ,
+	'Basketball' : 4.0,
 }
 
 BASKETBAL_REL = {
-	'Slip On' : 1 ,
-	'Low Top' : 3 ,
-	'Skaters' : 2 ,
-	'Cageless' : 4 ,
-	'Runners/Joggers' : 4 ,
-	'High Top' : 3 ,
-	'Basketball' : 5,
+	'Slip On' : 1.0 ,
+	'Low Top' : 3.0 ,
+	'Skaters' : 2.0 ,
+	'Cageless' : 4.0 ,
+	'Runners/Joggers' : 4.0 ,
+	'High Top' : 3.0 ,
+	'Basketball' : 5.0,
 }
 
 CAGELESS_REL = {
-	'Slip On' : 3 ,
-	'Low Top' : 3 ,
-	'Skaters' : 1 ,
-	'Cageless' : 5 ,
-	'Runners/Joggers' : 3 ,
-	'High Top' : 4 ,
-	'Basketball' : 4,
+	'Slip On' : 3.0 ,
+	'Low Top' : 3.0 ,
+	'Skaters' : 1.0 ,
+	'Cageless' : 5.0 ,
+	'Runners/Joggers' : 3.0 ,
+	'High Top' : 4.0 ,
+	'Basketball' : 4.0,
 }
 
 TYPEOPTS = {
@@ -90,11 +96,11 @@ TYPEOPTS = {
 }
 
 CONDITIONOPTS = {
-	'Damaged' : 1,
-	'Well-worn' : 2,
-	'Good Condition' : 3,
-	'New/Little use' : 4,
-	'Boxed Mint' : 5,
+	'Damaged' : 1.0,
+	'Well-worn' : 2.0,
+	'Good Condition' : 3.0,
+	'New/Little use' : 4.0,
+	'Boxed Mint' : 5.0,
 }
 
 def matchType(pkSpec, dbSpec, strictList):
@@ -103,15 +109,15 @@ def matchType(pkSpec, dbSpec, strictList):
 		return -1
 
 	if dbSpec == '' :
-		dbSpecRelValue = 5
+		dbSpecRelValue = 5.0
 	else :
 		dbSpecRelValue = TYPEOPTS[pkSpec][dbSpec]
 
 	if 'type' in strictList:
-		if ((dbSpecRelValue/5) * 100) != 100:
+		if ((dbSpecRelValue/5.0) * 100) != 100:
 			return -2
 
-	return (dbSpecRelValue/5) * 100	
+	return (dbSpecRelValue/5.0) * 100	
 
 def matchSex(pkSpec, dbSpec, strictList):
 
@@ -163,7 +169,7 @@ def matchCondition(pkSpec, dbSpec, strictList):
 
 		
 	if dbSpec == '':
-		dbSpecVal = 5
+		dbSpecVal = 5.0
 	else:
 		dbSpecVal = CONDITIONOPTS[dbSpec]
 
@@ -174,9 +180,9 @@ def matchCondition(pkSpec, dbSpec, strictList):
 	if pkSpecVal == dbSpecVal:
 		return 100
 	elif (pkSpecVal > dbSpecVal):
-		return 100 - ((pkSpecVal - dbSpecVal)/5 * 100)
+		return 100.0 - ((pkSpecVal - dbSpecVal)/5.0 * 100.0)
 	elif (pkSpecVal < dbSpecVal):
-		return 100 - ((dbSpecVal - pkSpecVal)/5 * 100)
+		return 100 - ((dbSpecVal - pkSpecVal)/5.0 * 100.0)
 
 	return 0
 
@@ -219,10 +225,10 @@ def matchSize(pkSpec, dbSpec, strictList):
 		return 100
 	elif pkSpec > dbSpec:
 		diff = pkSpec - dbSpec
-		return 100 - (diff/13.5 * 100)
+		return 100.0 - (diff/13.5 * 100)
 	elif pkSpec < dbSpec:
 		diff = dbSpec - pkSpec
-		return 100 - (diff/13.5 * 100)
+		return 100.0 - (diff/13.5 * 100)
 
 def getStrict(pkSpec):
 
@@ -274,21 +280,90 @@ def prioritiseField(field):
 
 	return field * 1.5
 
-class UserViewSet(viewsets.ModelViewSet):
+def authenticate(username, token):
+	try:
+		user = User.objects.get(username=username, token=token)
+		return user
+	except User.DoesNotExist:
+		return None
+
+class UserViewSet(
+	mixins.RetrieveModelMixin, 
+	mixins.UpdateModelMixin, 
+	mixins.DestroyModelMixin, 
+	mixins.ListModelMixin, 
+	viewsets.GenericViewSet):
 	queryset = User.objects.all().order_by('uid')
 	serializer_class = UserSerializer
 
+class ProfileViewSet(viewsets.ModelViewSet):
+	queryset = Profile.objects.all().order_by('uid')
+	serializer_class = ProfileSerializer
+
+class NewUserView(APIView):
+
+	def post(self, request, format=None):
+
+		email = request.POST.get('email')
+		username = request.POST.get('username')
+		first_name = request.POST.get('first_name')
+		last_name = request.POST.get('last_name')
+		password = make_password(request.POST.get('password'), salt=None, hasher='default')
+
+		newUser = User.objects.create(
+			email=email, 
+			username=username,
+			password=password)
+
+		newUserProfile = Profile.objects.create(
+			user=newUser,
+			first_name=first_name,
+			last_name=last_name)
+
+		queryset = newUser
+		serializer = SensitiveUserSerializer(queryset)
+
+		return Response(serializer.data)
+
+class LoginView(APIView):
+
+	def post(self, request, format=None):
+
+		username = request.POST.get('username')
+		password = request.POST.get('password')
+
+		try:
+			user = User.objects.get(username=username)
+			if check_password(password, user.password):
+				token = uuid.uuid4().hex
+				user.token = token
+				user.save()
+
+				return Response(token)
+		except User.DoesNotExist:
+			return Response("Failed to login. Username or Password is incorrect.", status=status.HTTP_400_BAD_REQUEST)
+
+class LogoutView(APIView):
+
+	def post(self, request, format=None):
+		username = request.POST.get('username')
+		token = request.POST.get('token')
+
+		user = authenticate(username, token)
+		if user != None:
+			user.token = None
+			user.save()
+			return Response("You've been successfully logged out.")
+		else:
+			return Response("REDIRECT SOMEWHERE")
+
 class ListingViewSet(viewsets.ModelViewSet):
-	queryset = Listing.objects.all().order_by('uid')
+	queryset = Listing.objects.all().order_by('uid')	
 	serializer_class = ListingSerializer
 
 class NotificationViewSet(viewsets.ModelViewSet):
 	queryset = Notification.objects.all().order_by('uid')
 	serializer_class = NotificationSerializer
-
-#class SpecViewSet(viewsets.ModelViewSet):
-#	queryset = Spec.objects.all().order_by('uid')
-#	serializer_class = SpecSerializer
 
 class ImageViewSet(viewsets.ModelViewSet):
 	queryset = Image.objects.all().order_by('uid')
@@ -299,7 +374,7 @@ class MatchingView(APIView):
 	def get(self, request, pk, format=None):
 	
 		pkSpec = Listing.objects.get(pk=pk)
-		dbSpecs = Listing.objects.all()
+		dbSpecs = Listing.objects.all().exclude(listing_type=pkSpec.listing_type)
 
 		strictList = []
 		priorityList = []
@@ -365,5 +440,5 @@ class MatchingView(APIView):
 							dbSpec.item_matching = 100.0
 
 		queryset = dbSpecs
-		serializer = MatchingSerializer(dbSpecs, many=True)	
+		serializer_class = MatchingSerializer(dbSpecs, many=True)	
 		return Response(serializer.data)

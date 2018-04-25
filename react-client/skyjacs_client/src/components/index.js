@@ -80,6 +80,16 @@ export const Tabs = TabNavigator({
   },
   Starred: { screen: StarredScreen },
   Notification: { screen: NotificationScreen },
+}, {
+  animationEnabled: true,
+  swipeEnable: true,
+  tabBarPosition: 'bottom',
+  tabBarOptions: {
+    activeTintColor: '#2980b6',
+    inactiveTintColor: '#d1cece',
+    showIcon: true,
+    showLabel: false,
+  },
 });
 
 export const Root = StackNavigator({

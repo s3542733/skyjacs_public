@@ -1,7 +1,13 @@
 import React from 'react';
-import { Image, ScrollView, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
+import { AsyncStorage, Image, ScrollView, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { material, sanFranciscoWeights } from 'react-native-typography';
-import IP_ADDRESES from './constants';
+import { Icon } from 'react-native-elements';
+import { IP_ADDRESS, ACCESS_TOKEN } from './constants';
+
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
 
 const styles = StyleSheet.create({
   screen: {
@@ -33,13 +39,23 @@ const styles = StyleSheet.create({
 });
 
 export default class HomeScreen extends React.Component {
-  constructor(props) {
-    super(props);
+  static navigationOptions = {
+    tabBarIcon: ({ tintColor }) => (
+      <Icon
+        name="md-home"
+        type="ionicon"
+        color={tintColor}
+      />
+    ),
+  }
+
+  constructor() {
+    super();
     this.state = { isLoading: true };
   }
 
   componentDidMount() {
-    return fetch(`${IP_ADDRESES}`)
+    return fetch(`${IP_ADDRESS}`)
       .then(response => response.json())
       .then((responseJson) => {
         this.setState({
@@ -52,6 +68,15 @@ export default class HomeScreen extends React.Component {
       });
   }
 
+  async getToken() {
+    try {
+      const token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      console.log(`Token: ${token}`);
+    } catch (error) {
+      console.log('ERROR: failed to get token');
+    }
+  }
+
   render() {
     // loading screen
     if (this.state.isLoading) {
@@ -61,6 +86,9 @@ export default class HomeScreen extends React.Component {
         </View>
       );
     }
+
+    this.getToken();
+
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>

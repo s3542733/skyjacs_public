@@ -1,10 +1,15 @@
 import React from 'react';
 import { ScrollView, TouchableOpacity, View, Text, Image, ImageBackground, StyleSheet } from 'react-native';
-import { Card, Rating } from 'react-native-elements';
+import { Icon, Card, Rating } from 'react-native-elements';
 import { material, sanFranciscoWeights } from 'react-native-typography';
 import PropTypes from 'prop-types';
+import { ACCESS_TOKEN } from './constants';
 
 /* eslint-disable global-require */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
 
 const styles = StyleSheet.create({
   container: {
@@ -57,6 +62,16 @@ const styles = StyleSheet.create({
 });
 
 export default class UserScreen extends React.Component {
+  static navigationOptions = {
+    tabBarIcon: ({ tintColor }) => (
+      <Icon
+        name="md-person"
+        type="ionicon"
+        color={tintColor}
+      />
+    ),
+  }
+
   static defaultProps = {
     name: 'username',
     // avatar: '../images/default_profile_pic.png',
@@ -67,6 +82,15 @@ export default class UserScreen extends React.Component {
     name: PropTypes.string,
     // avatar: PropTypes.string,
     // avatarBackground: PropTypes.string,
+  }
+
+  async getToken() {
+    try {
+      const token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      console.log(`Token: ${token}`);
+    } catch (error) {
+      console.log('ERROR: failed to get token');
+    }
   }
 
   renderHeader = () => {
@@ -119,6 +143,12 @@ export default class UserScreen extends React.Component {
           onPress={() => navigate('Post')}
         >
           <Text style={[material.headline, sanFranciscoWeights.thin]}>View your items</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigate('Post')}
+        >
+          <Text style={[material.headline, sanFranciscoWeights.thin]}>Edit profile</Text>
         </TouchableOpacity>
       </View>
     );
