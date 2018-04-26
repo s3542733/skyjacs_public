@@ -15,7 +15,13 @@ class ListingListViewSet(APIView):
 		if token != "":
 			user = authenticate(token)
 			if user != None:
-				req_user = User.objects.get(pk=int(request.POST.get('user_id')))
+				if request.POST.get('user_id') != None:
+					try:
+						req_user = User.objects.get(pk=int(request.POST.get('user_id')))
+					except:
+						return Response({'message' : "Requested user doesn't exist."})
+				else: 
+					req_user = ''
 				listing_type = request.POST.get('listing_type')
 				listing_title = request.POST.get('listing_title')
 				item_type = request.POST.get('item_type')
@@ -43,6 +49,12 @@ class ListingListViewSet(APIView):
 				size_priority = request.POST.get('size_priority')
 				size_strict = request.POST.get('size_strict')
 				item_notes =request.POST.get('item_notes')
+				
+				#admin_fields = {'req_user' : req_user, 'listing_type' : listing_type, 'listing_title' : listing_title, 'item_type' : item_type, 'type_priority' : type_priority, 'type_strict' : type_strict, 'item_sex' : item_sex,
+				#'sex_priority' : sex_priority, 'sex_strict' : sex_strict, 'item_brand' : item_brand, 'brand_priority' : brand_priority, 'brand_strict' : brand_strict, 'item_model' : item_model, 'model_priority' : model_priority, 'model_strict' : model_strict,
+				#'item_colour' : item_colour, 'colour_priority' : colour_priority, 'colour_strict' : colour_strict, 'item_material' : item_material, '' : material_priority, '' : material_strict, '' : item_size,
+				#'size_priority' : size_priority, 'size_strict, item_notes' : size_strict, 'item_notes' : item_notes}
+				
 				if user.user_admin == True:
 					listing = Listing.objects.create(user=req_user, listing_type=listing_type, 
 						listing_title=listing_title, item_type=item_type, type_priority=type_priority,
@@ -54,9 +66,7 @@ class ListingListViewSet(APIView):
 						condition_strict=condition_strict, item_material=item_material, material_priority=material_priority,
 						material_strict=material_strict, item_size=item_size, size_priority=size_priority, size_strict=size_strict,
 						item_notes=item_notes)
-					queryset = listing
-					serializer = ListingSerializer(queryset, context={'request':request})
-					return Response("Successfully created item for {req_user.username}.")
+					return Response({'message' : "Successfully created item for {req_user.username}."}, headers={'token':user.token})
 				else:	
 					listing = Listing.objects.create(user=user, listing_type=listing_type, 
 						listing_title=listing_title, item_type=item_type, type_priority=type_priority,
@@ -68,11 +78,9 @@ class ListingListViewSet(APIView):
 						condition_strict=condition_strict, item_material=item_material, material_priority=material_priority,
 						material_strict=material_strict, item_size=item_size, size_priority=size_priority, size_strict=size_strict,
 						item_notes=item_notes)
-					queryset = listing
-					serializer = ListingSerializer(queryset, context={'request':request})
-					return Response("Successfully created item!")
-			return Response("Please login to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
-		return Respones("Please login to start browsing", status=status.HTTP_401_UNAUTHORIZED)
+					return Response({'message' : 'Successfully created item!', 'listing_uid' : listing.uid}, headers={'token':user.token})
+			return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
+		return Respones({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 	def get(self, request, format=None):
 		token = self.request.META.get('HTTP_TOKEN')
@@ -91,7 +99,7 @@ class ListingListViewSet(APIView):
 
 					return Response(serializer.data)
 
-		return Response("Please log in to browse.", status=status.HTTP_401_UNAUTHORIZED)
+		return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class ListingDetailViewSet(APIView):
 
@@ -103,17 +111,17 @@ class ListingDetailViewSet(APIView):
 				if user.user_admin == True:
 					try:
 						queryset = Listing.objects.get(pk=pk)
-						serializer = ListingSerializer(queryset)
+						serializer = ListingSerializer(queryset, context={'request':request})
 
-						return Response(serializer.data)
+						return Response(serializer.data, headers={'token':user.token})
 					except Listing.DoesNotExist:
 						return Response("That listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
 				else:
 					try:
 						queryset = Listing.objects.get(pk=pk, user=user)
-						serializer = ListingSerializer(queryset)
+						serializer = ListingSerializer(queryset, context={'request':request})
 
-						return Response(serializer.data)
+						return Response(serializer.data, headers={'token':user.token})
 					except Listing.DoesNotExist:
 						return Response("That listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -127,10 +135,10 @@ class ListingDetailViewSet(APIView):
 				if user.user_admin == True:
 					listing = Listing.objects.get(pk=pk)
 					listing.delete()
-					return Response("Successfully removed listing.", status=status.HTTP_204_NO_CONTENT)
+					return Response("Successfully removed listing.", status=status.HTTP_204_NO_CONTENT, headers={'token':user.token})
 				else:
 					listing = Listing.objects.get(pk=pk, user=user)
 					listing.delete()
-					return Response("Successfully removed listing.", status=status.HTTP_204_NO_CONTENT)
+					return Response("Successfully removed listing.", status=status.HTTP_204_NO_CONTENT, headers={'token':user.token})
 
 		return Response("Please login to start browsing.", status=status.HTTP_400_BAD_REQUEST)

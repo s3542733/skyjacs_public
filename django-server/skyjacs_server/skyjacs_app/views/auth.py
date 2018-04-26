@@ -40,7 +40,7 @@ class NewUserView(APIView):
 			first_name=first_name,
 			last_name=last_name)
 
-		return Response("User successfully created. Login to start browsing!")
+		return Response({'message' : 'User created! Login to start browsing!'})
 
 class LoginView(APIView):
 
@@ -56,7 +56,7 @@ class LoginView(APIView):
 				user.save()
 				return Response(user.token)
 		except User.DoesNotExist:
-			return Response("Failed to login. Username or Password is incorrect.", status=status.HTTP_400_BAD_REQUEST)
+			return Response({'message' : 'Login failed. Incorrect username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
 
@@ -67,6 +67,6 @@ class LogoutView(APIView):
 		if user != None:
 			user.token = None
 			user.save()
-			return Response("You've been successfully logged out.")
+			return Response({'message' : "You've been logged out"})
 		else:
-			return Response("You weren't even logged in.", status=status.HTTP_400_BAD_REQUEST)
+			return Response({'message' : 'Log in to browse.'}, status=status.HTTP_400_BAD_REQUEST)

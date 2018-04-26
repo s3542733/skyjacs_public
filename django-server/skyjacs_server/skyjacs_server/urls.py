@@ -38,6 +38,6 @@ urlpatterns = [
     url(r'^register/', views.users.RegisterView.as_view()),
     url(r'^login/', views.auth.LoginView.as_view()),
     url(r'^logout/', views.auth.LogoutView.as_view()),
-    url(r'^listings/', views.listings.ListingListViewSet.as_view()),
+    url(r'^listings/$', views.listings.ListingListViewSet.as_view()),
     url(r'^listings/(?P<pk>[0-9]+)$', views.listings.ListingDetailViewSet.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

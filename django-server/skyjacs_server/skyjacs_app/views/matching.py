@@ -4,37 +4,38 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets, mixins, status
 from skyjacs_app.models import Listing, User
+from skyjacs_app.views.auth import authenticate
 from skyjacs_app.serializers import ListingSerializer, MatchingSerializer
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
 SLIPON_REL = {
-	'Slip On' : 5.0 ,
-	'Low Top' : 4.0 ,
-	'Skaters' : 4.0 ,
-	'Cageless' : 3.0 ,
-	'Runners/Joggers' : 3.0 ,
-	'High Top' : 2.0 ,
+	'Slip On' : 5.0,
+	'Low Top' : 4.0,
+	'Skaters' : 4.0,
+	'Cageless' : 3.0,
+	'Runners/Joggers' : 3.0,
+	'High Top' : 2.0,
 	'Basketball' : 1.0,
 }
 
 LOWTOP_REL = {
-	'Slip On' : 4.0 ,
-	'Low Top' : 5.0 ,
-	'Skaters' : 3.0 ,
-	'Cageless' : 3.0 ,
-	'Runners/Joggers' : 3.0 ,
-	'High Top' : 1.0 ,
+	'Slip On' : 4.0,
+	'Low Top' : 5.0,
+	'Skaters' : 3.0,
+	'Cageless' : 3.0,
+	'Runners/Joggers' : 3.0,
+	'High Top' : 1.0,
 	'Basketball' : 3.0,
 }
 
 HIGHTOP_REL = {
-	'Slip On' : 2.0 ,
-	'Low Top' : 2.0 ,
-	'Skaters' : 3.0 ,
-	'Cageless' : 4.0 ,
-	'Runners/Joggers' : 3.0 ,
-	'High Top' : 5.0 ,
+	'Slip On' : 2.0,
+	'Low Top' : 2.0,
+	'Skaters' : 3.0,
+	'Cageless' : 4.0,
+	'Runners/Joggers' : 3.0,
+	'High Top' : 5.0,
 	'Basketball' : 4.0,
 }
 
@@ -272,9 +273,28 @@ def getPriority(pkSpec):
 class MatchingView(APIView):
 
 	def get(self, request, pk, format=None):
-	
-		pkSpec = Listing.objects.get(pk=pk)
+
+		token = request.META.get('HTTP_TOKEN');
+		user = authenticate(token)
+		if user != None:
+			if user.user_admin == True:
+				try:
+					pkSpec = Listing.objects.get(pk=pk)
+				except Listing.DoesNotExist:
+					return Response("Listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
+			else:
+				try:
+					pkSpec = Listing.objects.get(pk=pk, user=user)
+				except Listing.DoesNotExist:
+					return Response("Listing does not exists.", status=status.HTTP_400_BAD_REQUEST)
+		else:
+			return Response("Please log in to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
+
+		
 		dbSpecs = Listing.objects.all().exclude(listing_type=pkSpec.listing_type)
+
+		if not dbSpecs:
+			return Response("There are no listings to compare to at this time.", status=status.HTTP_400_BAD_REQUEST)
 
 		strictList = []
 		priorityList = []
@@ -338,5 +358,5 @@ class MatchingView(APIView):
 							dbSpec.item_matching = 100.0
 
 		queryset = dbSpecs
-		serializer_class = MatchingSerializer(dbSpecs, many=True)	
+		serializer = MatchingSerializer(dbSpecs, many=True)	
 		return Response(serializer.data)
