@@ -2,18 +2,11 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import viewsets, mixins
-#from django.conf import settings
-#from django.shortcuts import redirect
-from django.contrib.auth.hashers import make_password, check_password
-#from django.contrib.auth.decorators import login_required
-#from django.contrib.auth import authenticate, login, logout
-#from django.contrib.auth.models import User
-from skyjacs_app.models import Profile, Listing, Notification, Image, User
-from skyjacs_app.serializers import UserSerializer, SensitiveUserSerializer, ProfileSerializer, ListingSerializer, NotificationSerializer, ImageSerializer, MatchingSerializer
+from rest_framework import viewsets, mixins, status
+from skyjacs_app.models import Listing, User
+from skyjacs_app.serializers import ListingSerializer, MatchingSerializer
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
-import uuid
 
 SLIPON_REL = {
 	'Slip On' : 5.0 ,
@@ -276,101 +269,6 @@ def getPriority(pkSpec):
 
 	return priorityList
 
-def prioritiseField(field):
-
-	return field * 1.5
-
-def authenticate(username, token):
-	try:
-		user = User.objects.get(username=username, token=token)
-		return user
-	except User.DoesNotExist:
-		return None
-
-class UserViewSet(
-	mixins.RetrieveModelMixin, 
-	mixins.UpdateModelMixin, 
-	mixins.DestroyModelMixin, 
-	mixins.ListModelMixin, 
-	viewsets.GenericViewSet):
-	queryset = User.objects.all().order_by('uid')
-	serializer_class = UserSerializer
-
-class ProfileViewSet(viewsets.ModelViewSet):
-	queryset = Profile.objects.all().order_by('uid')
-	serializer_class = ProfileSerializer
-
-class NewUserView(APIView):
-
-	def post(self, request, format=None):
-
-		email = request.POST.get('email')
-		username = request.POST.get('username')
-		first_name = request.POST.get('first_name')
-		last_name = request.POST.get('last_name')
-		password = make_password(request.POST.get('password'), salt=None, hasher='default')
-
-		newUser = User.objects.create(
-			email=email, 
-			username=username,
-			password=password)
-
-		newUserProfile = Profile.objects.create(
-			user=newUser,
-			first_name=first_name,
-			last_name=last_name)
-
-		queryset = newUser
-		serializer = SensitiveUserSerializer(queryset)
-
-		return Response(serializer.data)
-
-class LoginView(APIView):
-
-	def post(self, request, format=None):
-
-		username = request.POST.get('username')
-		password = request.POST.get('password')
-
-		try:
-			user = User.objects.get(username=username)
-			if check_password(password, user.password):
-				token = uuid.uuid4().hex
-				user.token = token
-				user.save()
-
-				queryset = user
-				serializer = SensitiveUserSerializer(user)
-				return Response(serializer.data)
-		except User.DoesNotExist:
-			return Response("Failed to login. Username or Password is incorrect.")
-
-class LogoutView(APIView):
-
-	def post(self, request, format=None):
-		username = request.POST.get('username')
-		token = request.POST.get('token')
-
-		user = authenticate(username, token)
-		if user != None:
-			user.token = None
-			user.save()
-			return Response("You've been successfully logged out.")
-		else:
-			return Response("REDIRECT SOMEWHERE")
-
-class ListingViewSet(viewsets.ModelViewSet):
-	queryset = Listing.objects.all().order_by('uid')	
-	serializer_class = ListingSerializer
-
-class NotificationViewSet(viewsets.ModelViewSet):
-	queryset = Notification.objects.all().order_by('uid')
-	serializer_class = NotificationSerializer
-
-class ImageViewSet(viewsets.ModelViewSet):
-	queryset = Image.objects.all().order_by('uid')
-	serializer_class = ImageSerializer
-
 class MatchingView(APIView):
 
 	def get(self, request, pk, format=None):
@@ -430,8 +328,6 @@ class MatchingView(APIView):
 							totalPc = totalPc + value
 						else:
 							validFields = validFields - 1
-					#totalPc = (typePc + sexPc + brandPc + modelPc + 
-					#colourPc + conditionPc + materialPc + sizePc)/validFields
 					if dbSpec.item_matching != -2:
 						if validFields == 0 :
 							dbSpec.item_matching = 100.0
