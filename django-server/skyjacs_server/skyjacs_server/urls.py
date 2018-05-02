@@ -27,17 +27,21 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'users', views.users.UserViewSet)
 router.register(r'profiles', views.profiles.ProfileViewSet)
-router.register(r'images', views.images.ImageViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^matches/(?P<pk>[0-9]+)$', views.matching.MatchingView.as_view()),
+    url(r'^buyingmatches/(?P<pk>[0-9]+)$', views.matching.BuyingMatchingView.as_view()),
+    url(r'^sellingmatches/(?P<pk>[0-9]+)$', views.matching.SellingMatchingView.as_view()),
     url(r'^register/', views.users.RegisterView.as_view()),
     url(r'^login/', views.auth.LoginView.as_view()),
     url(r'^logout/', views.auth.LogoutView.as_view()),
-    url(r'^listings/$', views.listings.ListingListViewSet.as_view()),
-    url(r'^listings/(?P<pk>[0-9]+)$', views.listings.ListingDetailViewSet.as_view()),
+    url(r'^buyings/$', views.buying.BuyingListViewSet.as_view()),
+    url(r'^buyings/(?P<pk>[0-9]+)$', views.buying.BuyingDetailViewSet.as_view()),
+    url(r'^sellings/$', views.selling.SellingListViewSet.as_view()),
+    url(r'^sellings/(?P<pk>[0-9]+)$', views.selling.SellingDetailViewSet.as_view()),
+#    url(r'^listings/$', views.listings.ListingListViewSet.as_view()),
+#   url(r'^listings/(?P<pk>[0-9]+)$', views.listings.ListingDetailViewSet.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

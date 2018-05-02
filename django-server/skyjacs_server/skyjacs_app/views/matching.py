@@ -3,9 +3,10 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets, mixins, status
-from skyjacs_app.models import Listing, User
+from skyjacs_app.models import Buying, Selling, User
 from skyjacs_app.views.auth import authenticate
-from skyjacs_app.serializers import ListingSerializer, MatchingSerializer
+from skyjacs_app.serializers import BuyingSerializer, SellingSerializer
+from django.db.models import Q
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
@@ -224,139 +225,287 @@ def matchSize(pkSpec, dbSpec, strictList):
 		diff = dbSpec - pkSpec
 		return 100.0 - (diff/13.5 * 100)
 
-def getStrict(pkSpec):
+#def getStrict(pkSpec):
+#
+#	strictList = []
+#
+#	if pkSpec.type_strict == True:
+#		strictList.append('type')
+#	if pkSpec.sex_strict == True:
+#		strictList.append('sex')
+#	if pkSpec.brand_strict  == True:
+#		strictList.append('brand')
+#	if pkSpec.model_strict  == True:
+#		strictList.append('model')
+#	if pkSpec.colour_strict  == True:
+#		strictList.append('colour')
+#	if pkSpec.condition_strict  == True:
+#		strictList.append('condition')
+#	if pkSpec.material_strict  == True:
+#		strictList.append('material')
+#	if pkSpec.size_strict  == True:
+#		strictList.append('size')
+#
+#	return strictList
 
-	strictList = []
-
-	if pkSpec.type_strict == True:
-		strictList.append('type')
-	if pkSpec.sex_strict == True:
-		strictList.append('sex')
-	if pkSpec.brand_strict  == True:
-		strictList.append('brand')
-	if pkSpec.model_strict  == True:
-		strictList.append('model')
-	if pkSpec.colour_strict  == True:
-		strictList.append('colour')
-	if pkSpec.condition_strict  == True:
-		strictList.append('condition')
-	if pkSpec.material_strict  == True:
-		strictList.append('material')
-	if pkSpec.size_strict  == True:
-		strictList.append('size')
-
-	return strictList
-
-def getPriority(pkSpec):
+def getStrictList(pkSpec):
 
 	priorityList = []
 
-	if pkSpec.type_priority == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('type')
-	if pkSpec.sex_priority == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('sex')
-	if pkSpec.brand_priority  == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('brand')
-	if pkSpec.model_priority  == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('model')
-	if pkSpec.colour_priority  == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('colour')
-	if pkSpec.condition_priority  == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('condition')
-	if pkSpec.material_priority  == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('material')
-	if pkSpec.size_priority  == True:
+	if pkSpec.type_priority == 3:
 		priorityList.append('size')
 
 	return priorityList
 
-class MatchingView(APIView):
+def setPriority(fieldPc, priorityLevel):
+
+	if fieldPc > 0:
+		if priorityLevel == 0:
+			return fieldPc
+		elif priorityLevel == 1:
+			return fieldPC * 1.5
+		elif priorityLevel == 2:
+			return fieldPC * 0.5
+	else:
+		return fieldPc
+
+class BuyingMatchingView(APIView):
 
 	def get(self, request, pk, format=None):
+
+		pkSpec = None
+		dbSpecs = None
+
+		token = request.META.get('HTTP_TOKEN');
+		user = authenticate(token)
+		
+		if user != None:
+			if user.user_admin == True:
+				try:
+					pkSpec = Buying.objects.get(pk=pk)
+				except Buying.DoesNotExist:
+					return Response("Listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
+			else:
+				try:
+					pkSpec = Buying.objects.get(pk=pk, user=user)
+				except Buying.DoesNotExist:
+					return Response("Listing does not exists.", status=status.HTTP_400_BAD_REQUEST)
+		else:
+			return Response("Please log in to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
+
+		dbSpecs = Selling.objects.exclude(user=pkSpec.user)
+		if not dbSpecs:
+			return Response("There are no listings to compare to at this time.", status=status.HTTP_400_BAD_REQUEST)
+
+		strictList = getStrictList(pkSpec)
+
+		for dbSpec in dbSpecs:
+			if dbSpec.item_price <= pkSpec.max_price and dbSpec.item_price >= pkSpec.min_price:
+				validFields = 8
+				typePc = setPriority(matchType(pkSpec.item_type, dbSpec.item_type, strictList))
+				sexPc = setPriority(matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList))
+				brandPc = setPriority(matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList))
+				modelPc = 0
+				if brandPc == 100 or brandPc == -1:
+					modelPc = setPriority(matchModel(pkSpec.item_model, dbSpec.item_model, strictList))
+				colourPc = setPriority(matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList))
+				conditionPc = setPriority(matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList))
+				materialPc = setPriority(matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList))
+				sizePc = setPriority(matchSize(pkSpec.item_size, dbSpec.item_size, strictList))
+				totalPc = 0.0
+				valueList = [typePc, sexPc, brandPc, modelPc, colourPc, conditionPc, materialPc, sizePc]
+				for value in valueList:
+					if value == -2:
+						dbSpec.item_matching = -2
+						break
+					if value != -1:
+						totalPc = totalPc + value
+					else:
+						validFields = validFields - 1
+				if dbSpec.item_matching != -2:
+						if validFields == 0 :
+							dbSpec.item_matching = 100.0
+						else:
+							dbSpec.item_matching = totalPc/validFields
+						if dbSpec.item_matching > 100.0:
+							dbSpec.item_matching = 100.0
+			else:
+				dbSpec.item_matching = -2
+
+		queryset = dbSpecs
+		serializer = SellingSerializer(queryset, many=True)	
+		return Response(serializer.data)
+
+class SellingMatchingView(APIView):
+
+	def get(self, request, pk, format=None):
+
+		pkSpec = None
+		dbSpec = None
 
 		token = request.META.get('HTTP_TOKEN');
 		user = authenticate(token)
 		if user != None:
 			if user.user_admin == True:
 				try:
-					pkSpec = Listing.objects.get(pk=pk)
-				except Listing.DoesNotExist:
+					pkSpec = Selling.objects.get(pk=pk)
+				except Selling.DoesNotExist:
 					return Response("Listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
 			else:
 				try:
-					pkSpec = Listing.objects.get(pk=pk, user=user)
+					pkSpec = Selling.objects.get(pk=pk, user=user)
 				except Listing.DoesNotExist:
 					return Response("Listing does not exists.", status=status.HTTP_400_BAD_REQUEST)
 		else:
 			return Response("Please log in to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
 
-		
-		dbSpecs = Listing.objects.all().exclude(listing_type=pkSpec.listing_type)
-
+		dbSpecs = Buying.objects.exclude(user=pkSpec.user)
 		if not dbSpecs:
 			return Response("There are no listings to compare to at this time.", status=status.HTTP_400_BAD_REQUEST)
 
 		strictList = []
-		priorityList = []
-
-		if pkSpec.listing_type == "Buying":
-
-			strictList = getStrict(pkSpec)
-			priorityList = getPriority(pkSpec)
 
 		for dbSpec in dbSpecs:
-			if dbSpec.uid != pkSpec.uid:
-				if dbSpec.listing_type != pkSpec.listing_type:
-					validFields = 8
-					typePc = matchType(pkSpec.item_type, dbSpec.item_type, strictList)
-					sexPc = matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList)
-					brandPc = matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList)
-					modelPc = 0
-					if brandPc == 100 or brandPc == -1:
-						modelPc = matchModel(pkSpec.item_model, dbSpec.item_model, strictList)
-					colourPc = matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList)
-					conditionPc = matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList)
-					materialPc = matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList)
-					sizePc = matchSize(pkSpec.item_size, dbSpec.item_size, strictList)
-					valueList = [typePc, sexPc, brandPc, modelPc, colourPc, conditionPc, materialPc, sizePc]
-					print(valueList)
-					totalPc = 0
-					if priorityList != []:
-						for priority in priorityList:
-							if priority == 'type' and typePc != -1:
-								typePc = prioritiseField(typePc)
-							elif priority == 'sex' and sexPc != -1:
-								sexPc = prioritiseField(sexPc)
-							elif priority == 'brand' and brandPc != -1:
-								brandPc = prioritiseField(brandPc)
-							elif priority == 'model' and modelPc != -1:
-								modelPc = prioritiseField(modelPc)
-							elif priority == 'colour' and colourPc != -1:
-								colourPc = prioritiseField(colourPc)
-							elif priority == 'condition' and conditionPc != -1:
-								conditionPc = prioritiseField(conditionPc)
-							elif priority == 'material' and materialPc != -1:
-								materialPc = prioritiseField(materialPc)
-							elif priority == 'size' and sizePc != -1:
-								sizePc = prioritiseField(sizePc)
-
-					for value in valueList:
-						if value == -2:
-							dbSpec.item_matching = None
-							break
-						if value != -1:
-							totalPc = totalPc + value
-						else:
-							validFields = validFields - 1
-					if dbSpec.item_matching != -2:
+			if dbSpec.min_price <= pkSpec.item_price and dbSpec.max_price >= pkSpec.item_price:
+				validFields = 8
+				typePc = setPriority(matchType(pkSpec.item_type, dbSpec.item_type, strictList))
+				sexPc = setPriority(matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList))
+				brandPc = setPriority(matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList))
+				modelPc = 0
+				if brandPc == 100 or brandPc == -1:
+					modelPc = setPriority(matchModel(pkSpec.item_model, dbSpec.item_model, strictList))
+				colourPc = setPriority(matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList))
+				conditionPc = setPriority(matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList))
+				materialPc = setPriority(matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList))
+				sizePc = setPriority(matchSize(pkSpec.item_size, dbSpec.item_size, strictList))
+				totalPc = 0.0
+				valueList = [typePc, sexPc, brandPc, modelPc, colourPc, conditionPc, materialPc, sizePc]
+				for value in valueList:
+					if value == -2:
+						dbSpec.item_matching = -2
+						break
+					if value != -1:
+						totalPc = totalPc + value
+					else:
+						validFields = validFields - 1
+				if dbSpec.item_matching != -2:
 						if validFields == 0 :
 							dbSpec.item_matching = 100.0
 						else:
 							dbSpec.item_matching = totalPc/validFields
-
 						if dbSpec.item_matching > 100.0:
 							dbSpec.item_matching = 100.0
+			else:
+				dbSpec.item_matching = -2
 
 		queryset = dbSpecs
-		serializer = MatchingSerializer(dbSpecs, many=True)	
+		serializer = BuyingSerializer(queryset, many=True)	
 		return Response(serializer.data)
+
+#class MatchingView(APIView):
+#
+#	def get(self, request, pk, format=None):
+#
+#		token = request.META.get('HTTP_TOKEN');
+#		user = authenticate(token)
+#		if user != None:
+#			if user.user_admin == True:
+#				try:
+#					pkSpec = Listing.objects.get(pk=pk)
+#				except Listing.DoesNotExist:
+#					return Response("Listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
+#			else:
+#				try:
+#					pkSpec = Listing.objects.get(pk=pk, user=user)
+#				except Listing.DoesNotExist:
+#					return Response("Listing does not exists.", status=status.HTTP_400_BAD_REQUEST)
+#		else:
+#			return Response("Please log in to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
+#
+#		dbSpecs = Listing.objects.filter(listing_type=pkSpec.listing_type)
+#		if not dbSpecs:
+#			return Response("There are no listings to compare to at this time.", status=status.HTTP_400_BAD_REQUEST)
+#
+#		strictList = []
+#		priorityList = []
+#
+#		if pkSpec.listing_type == "Buying":
+#
+#			strictList = getStrict(pkSpec)
+#			priorityList = getPriority(pkSpec)
+#
+#		for dbSpec in dbSpecs:
+#			if dbSpec.uid != pkSpec.uid:
+#				if dbSpec.listing_type != pkSpec.listing_type:
+#					validFields = 8
+#					typePc = matchType(pkSpec.item_type, dbSpec.item_type, strictList)
+#					sexPc = matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList)
+#					brandPc = matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList)
+#					modelPc = 0
+#					if brandPc == 100 or brandPc == -1:
+#						modelPc = matchModel(pkSpec.item_model, dbSpec.item_model, strictList)
+#					colourPc = matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList)
+#					conditionPc = matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList)
+#					materialPc = matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList)
+#					sizePc = matchSize(pkSpec.item_size, dbSpec.item_size, strictList)
+#					valueList = [typePc, sexPc, brandPc, modelPc, colourPc, conditionPc, materialPc, sizePc]
+#					print(valueList)
+#					totalPc = 0
+#					if priorityList != []:
+#						for priority in priorityList:
+#							if priority == 'type' and typePc != -1:
+#								typePc = prioritiseField(typePc)
+#							elif priority == 'sex' and sexPc != -1:
+#								sexPc = prioritiseField(sexPc)
+#							elif priority == 'brand' and brandPc != -1:
+#								brandPc = prioritiseField(brandPc)
+#							elif priority == 'model' and modelPc != -1:
+#								modelPc = prioritiseField(modelPc)
+#							elif priority == 'colour' and colourPc != -1:
+#								colourPc = prioritiseField(colourPc)
+#							elif priority == 'condition' and conditionPc != -1:
+#								conditionPc = prioritiseField(conditionPc)
+#							elif priority == 'material' and materialPc != -1:
+#								materialPc = prioritiseField(materialPc)
+#							elif priority == 'size' and sizePc != -1:
+#								sizePc = prioritiseField(sizePc)
+#
+#					for value in valueList:
+#						if value == -2:
+#							dbSpec.item_matching = None
+#							break
+#						if value != -1:
+#							totalPc = totalPc + value
+#						else:
+#							validFields = validFields - 1
+#					if dbSpec.item_matching != -2:
+#						if validFields == 0 :
+#							dbSpec.item_matching = 100.0
+#						else:
+#							dbSpec.item_matching = totalPc/validFields
+#
+#						if dbSpec.item_matching > 100.0:
+#							dbSpec.item_matching = 100.0
+#					try:
+#						image = Image.objects.get(listing=dbSpec)
+#						dbSpec.image_url = image.image_url
+#					except Image.DoesNotExist:
+#						dbSpec.image_url = None
+#
+#		queryset = dbSpecs
+#		serializer = MatchingSerializer(queryset, many=True)	
+#		return Response(serializer.data)

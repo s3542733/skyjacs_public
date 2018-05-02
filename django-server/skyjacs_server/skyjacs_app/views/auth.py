@@ -15,7 +15,6 @@ def create_token():
 def authenticate(token):
 	try:
 		user = User.objects.get(token=token)
-		#user.token = create_token()
 		return user
 	except User.DoesNotExist:
 		return None
@@ -55,6 +54,8 @@ class LoginView(APIView):
 				user.token = create_token()
 				user.save()
 				return Response(user.token)
+			else:
+				return Response({'message' : 'Login failed. Incorrect username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 		except User.DoesNotExist:
 			return Response({'message' : 'Login failed. Incorrect username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
