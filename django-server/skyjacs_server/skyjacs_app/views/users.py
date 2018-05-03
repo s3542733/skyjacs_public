@@ -40,6 +40,7 @@ class RegisterView(APIView):
 		
 		newUserProfile = Profile.objects.create(
 			user=newUser,
+			user_uid=newUser.uid,
 			first_name=first_name,
 			last_name=last_name)
 

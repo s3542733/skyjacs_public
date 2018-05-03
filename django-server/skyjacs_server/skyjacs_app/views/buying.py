@@ -21,9 +21,12 @@ class BuyingListViewSet(APIView):
 						req_user = User.objects.get(pk=int(request.POST.get('user_id')))
 					except:
 						return Response({'message' : "Requested user doesn't exist."})
+				# Each thing that has request.POST.get() needs to be from a form.
+				# Try and enforce float format i.e 0.0 for float fields.
 				listing_title = request.POST.get('listing_title')
-				min_price = request.POST.get('min_price')
-				max_price = request.POST.get('max_price')
+				listing_type = 'buying'
+				min_price = float(request.POST.get('min_price'))
+				max_price = float(request.POST.get('max_price'))
 				item_type = request.POST.get('item_type')
 				type_priority = request.POST.get('type_priority')
 				item_sex = request.POST.get('item_sex')
@@ -38,7 +41,7 @@ class BuyingListViewSet(APIView):
 				condition_priority = request.POST.get('condition_priority')
 				item_material = request.POST.get('item_material')
 				material_priority = request.POST.get('material_priority')
-				item_size = request.POST.get('item_size')
+				item_size = float(request.POST.get('item_size'))
 				size_priority = request.POST.get('size_priority')
 				item_notes =request.POST.get('item_notes')
 				
@@ -47,7 +50,7 @@ class BuyingListViewSet(APIView):
 					item_image = request.FILES.get('item_image')
 
 				if user.user_admin == True:
-					buying = Buying.objects.create(user=req_user, listing_title=listing_title, 
+					buying = Buying.objects.create(user=req_user, listing_title=listing_title, listing_type=listing_type,
 						item_type=item_type, type_priority=type_priority, item_sex=item_sex, 
 						sex_priority=sex_priority, item_brand=item_brand, brand_priority=brand_priority, 
 						item_model=item_model, model_priority=model_priority, item_colour=item_colour, 
@@ -86,6 +89,9 @@ class BuyingListViewSet(APIView):
 
 class BuyingDetailViewSet(APIView):
 
+	# pk needs to be the uid of the buying
+	# to pass it in as pk, put it in the url
+	# e.g /buying/{uid}
 	def get(self, request, pk, format=None):
 		token = request.META.get('HTTP_TOKEN')
 		if token != "":
@@ -108,6 +114,8 @@ class BuyingDetailViewSet(APIView):
 
 		return Response("Please login to start browsing.", status=status.HTTP_400_BAD_REQUEST)
 
+	# Same thing as above, but make sure that the
+	# request type is DELETE and not post or get.
 	def delete(self, request, pk, format=None):
 		token = request.META.get('HTTP_TOKEN')
 		if token != "":

@@ -8,6 +8,10 @@ from skyjacs_app.models import Selling, User
 from skyjacs_app.serializers import SellingSerializer
 from skyjacs_app.views.auth import authenticate
 
+	# Pretty much the same instructions as in buying.
+	# There are some minor differences, but you can pretty
+	# much follow what is in buying for this too.
+
 class SellingListViewSet(APIView):
 
 	def post(self, request, format=None):		
@@ -21,8 +25,11 @@ class SellingListViewSet(APIView):
 						req_user = User.objects.get(pk=int(request.POST.get('user_id')))
 					except:
 						return Response({'message' : "Requested user doesn't exist."})
+				# Each thing that has request.POST.get() needs to be from a form.
+				# Try and enforce float format i.e 0.0 for float fields.
 				listing_title = request.POST.get('listing_title')
-				item_price = request.POST.get('item_price')
+				listing_type = 'selling'
+				item_price = float(request.POST.get('item_price'))
 				item_type = request.POST.get('item_type')
 				item_sex = request.POST.get('item_sex')
 				item_brand = request.POST.get('item_brand')
@@ -30,7 +37,7 @@ class SellingListViewSet(APIView):
 				item_colour =  request.POST.get('item_colour')
 				item_condition = request.POST.get('item_condition')
 				item_material = request.POST.get('item_material')
-				item_size = request.POST.get('item_size')
+				item_size = float(request.POST.get('item_size'))
 				item_notes =request.POST.get('item_notes')
 				
 				item_image = None
@@ -38,7 +45,7 @@ class SellingListViewSet(APIView):
 					item_image = request.FILES.get('item_image')
 
 				if user.user_admin == True:
-					selling = Selling.objects.create(user=req_user, item_price=item_price, 
+					selling = Selling.objects.create(user=req_user, item_price=item_price, listing_type=listing_type,
 						listing_title=listing_title, item_sex=item_sex, item_brand=item_brand, 
 						item_model=item_model, item_colour=item_colour, item_condition=item_condition, 
 						item_material=item_material, item_size=item_size, item_notes=item_notes, image_url=item_image)

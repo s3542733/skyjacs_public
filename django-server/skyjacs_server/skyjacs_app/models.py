@@ -10,14 +10,18 @@ class User(models.Model):
 	user_admin = models.BooleanField(default=False)
 	date_joined = models.DateTimeField(auto_now_add=True)
 
+class Rating(models.Model):
+	uid = models.AutoField(primary_key=True)
+	rated_user = models.ForeignKey(User, related_name="user_that_is_rated", on_delete=models.CASCADE)
+	rating_user = models.ForeignKey(User, related_name="user_that_is_rating", on_delete=models.CASCADE)
+	rating_value = models.FloatField(default=5.0)
+
 class Profile(models.Model):
 	uid = models.AutoField(primary_key=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	first_name = models.CharField(max_length=64, blank=False)
 	last_name = models.CharField(max_length=64, blank=False)
 	user_rating = models.FloatField(default=0.0)
-	user_num_ratings = models.IntegerField(default=0.0)
-	user_banned = models.BooleanField(default=False)
 
 class Recent(models.Model):
 	uid = models.AutoField(primary_key=True)
@@ -30,6 +34,7 @@ class Buying(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	listing_title = models.CharField(max_length=255, default='')
 	listing_date = models.DateTimeField(auto_now_add=True)
+	listing_type = models.CharField(max_length=12)
 	min_price = models.FloatField(default=0.0, blank=True)
 	max_price = models.FloatField(default=99999.0, blank=True)
 	item_type = models.CharField(max_length=256, default='', blank=True)

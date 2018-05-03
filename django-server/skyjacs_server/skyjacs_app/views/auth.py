@@ -8,6 +8,10 @@ from skyjacs_app.models import User
 from skyjacs_app.serializers import UserSerializer
 import uuid
 
+# DON'T WORRY ABOUT THIS FILE
+# AS LONG AS YOU HAVE TOKEN
+# EVERYTHING ON THIS PAGE WILL WORK
+
 def create_token():
 	token = uuid.uuid4().hex
 	return token
@@ -18,28 +22,6 @@ def authenticate(token):
 		return user
 	except User.DoesNotExist:
 		return None
-
-class NewUserView(APIView):
-
-	def post(self, request, format=None):
-
-		email = request.POST.get('email')
-		username = request.POST.get('username')
-		first_name = request.POST.get('first_name')
-		last_name = request.POST.get('last_name')
-		password = make_password(request.POST.get('password'), salt=None, hasher='default')
-
-		newUser = User.objects.create(
-			email=email, 
-			username=username,
-			password=password)
-
-		newUserProfile = Profile.objects.create(
-			user=newUser,
-			first_name=first_name,
-			last_name=last_name)
-
-		return Response({'message' : 'User created! Login to start browsing!'})
 
 class LoginView(APIView):
 

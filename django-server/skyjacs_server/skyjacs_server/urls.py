@@ -43,4 +43,5 @@ urlpatterns = [
     url(r'^sellings/$', views.selling.SellingListViewSet.as_view()),
     url(r'^sellings/(?P<pk>[0-9]+)$', views.selling.SellingDetailViewSet.as_view()),
     url(r'^recent/$', views.recent.RecentView.as_view()),
+    url(r'^rating/$', views.rating.RatingView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

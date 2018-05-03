@@ -68,65 +68,11 @@ def updateRecent(user, listingType, pk):
 
 	recent.save()
 
-def getRecentListings(user):
-
-	recent = Recent.objects.get(user=user)
-	buying_string = recent.recent_buyings
-	selling_string = recent.recent_sellings
-
-	if buying_string == "" and selling_string == "":
-		return Response({'message' : 'There are no recently visited listings.'})
-
-	buying_list = stringToList(buying_string)
-	selling_list = stringToList(selling_string)
-
-	recent_listings = []
-	missing_listings = []
-
-	if buying_list:
-		for uid in buying_list:
-			try:
-				listing = Buying.objects.get(pk=uid)
-				serializer = BuyingSerializer(listing, context={'request':request})
-				recent_listings.append(serializer.data)
-			except Buying.DoesNotExist:
-				missing_listings.append(uid)
-	
-		if not missing_listings:
-			for uid in missing_listings:
-				buying_list.remove(uid)
-	
-		missing_listings = []
-
-	if selling_list:
-		for uid in selling_list:
-			try:
-				listing = Selling.objects.get(pk=uid)
-				serializer = SellingSerializer(listing, context={'request':request})
-				recent_listings.append(serializer.data)
-			except Selling.DoesNotExist:
-				missing_listings.append(uid)
-
-		if not missing_listings:
-			for uid in missing_listings:
-				selling_list.remove(uid)
-
-	if not buying_list:
-		recent.recent_buyings = ""
-	else:
-		recent.recent_buyings = listToString(buying_list)
-	
-	if not selling_list:
-		recent.recent_sellings= ""
-	else:
-		recent.recent_sellings = listToString(selling_list)
-
-	recent.save()
-
-	return recent_listings
-
 class RecentView(APIView):
 
+	# Needs listing_type and listing_uid.
+	# listing_type and listing_uid (listing_uid refers to the uid of
+	# selling or buying) can both be found in Selling and Buying Models.
 	def post(self, request, format=None):
 
 		token = request.META.get('HTTP_TOKEN')
@@ -140,6 +86,9 @@ class RecentView(APIView):
 			return Response({'message' : 'Listing has been added to recent history.'})
 		return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
+	# Needs no input, just call it with a token
+	# and it'll return the recent listings as json
 	def get(self, request, format=None):
 
 		token = request.META.get('HTTP_TOKEN')
@@ -196,7 +145,7 @@ class RecentView(APIView):
 				recent.recent_buyings = listToString(buying_list)
 	
 			if not selling_list:
-				recent.recent_sellings= ""
+				recent.recent_sellings = ""
 			else:
 				recent.recent_sellings = listToString(selling_list)
 
