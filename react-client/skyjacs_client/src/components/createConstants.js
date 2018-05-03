@@ -1,12 +1,15 @@
 export const setting = [
   {
-    value: 'None',
+    value: 0,
   },
   {
-    value: 'Strict',
+    value: 1,
   },
   {
-    value: 'Priority',
+    value: 2,
+  },
+  {
+    value: 3,
   },
 ];
 

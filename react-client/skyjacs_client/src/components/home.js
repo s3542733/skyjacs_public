@@ -1,13 +1,15 @@
 import React from 'react';
-import { AsyncStorage, Image, ScrollView, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
+import { TouchableOpacity, AsyncStorage, Image, ScrollView, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { material, sanFranciscoWeights } from 'react-native-typography';
-import { Icon } from 'react-native-elements';
+import { Icon, Card } from 'react-native-elements';
 import { IP_ADDRESS, ACCESS_TOKEN } from './constants';
 
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
+/* eslint-disable object-curly-newline */
+/* eslint-disable global-require */
 
 const styles = StyleSheet.create({
   screen: {
@@ -17,11 +19,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flex: 1,
-    borderColor: '#cccccc',
-    borderWidth: 0.5,
     height: 300,
-    padding: 10,
-    borderRadius: 5,
   },
   headerContainer: {
     paddingBottom: 5,
@@ -51,21 +49,37 @@ export default class HomeScreen extends React.Component {
 
   constructor() {
     super();
-    this.state = { isLoading: true };
+    this.getHistory = this.getHistory.bind(this);
+    this.state = { isLoading: true, dataSource: [] };
   }
 
   componentDidMount() {
-    return fetch(`${IP_ADDRESS}`)
-      .then(response => response.json())
-      .then((responseJson) => {
-        this.setState({
-          isLoading: false,
-          dataSource: responseJson,
-        });
+    this.getHistory('recent/');
+  }
+
+  getHistory(route) {
+    AsyncStorage.getItem(ACCESS_TOKEN).then((token) => {
+      fetch(IP_ADDRESS + route, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          token: token,
+        },
       })
-      .catch((error) => {
-        console.error(error);
-      });
+        .then(response => (response.json()))
+        .then((responseJson) => {
+          console.log('RESPONSE');
+          console.log(responseJson);
+          console.log(JSON.stringify(responseJson));
+          this.setState({
+            dataSource: responseJson,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
   }
 
   async getToken() {
@@ -78,14 +92,16 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    // loading screen
-    if (this.state.isLoading) {
-      return (
-        <View style={{ flex: 1, padding: 20 }}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
+    const { navigate } = this.props.navigation;
+    const { dataSource } = this.state;
+
+    // if (this.state.isLoading) {
+    //   return (
+    //     <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center' }}>
+    //       <ActivityIndicator />
+    //     </View>
+    //   );
+    // }
 
     this.getToken();
 
@@ -95,21 +111,35 @@ export default class HomeScreen extends React.Component {
           <View style={{ paddingBottom: 15 }}>
             <Text style={[material.headline, sanFranciscoWeights.semibold]}>Recent History</Text>
           </View>
-          <View style={styles.itemContainer}>
+          {
+            dataSource.map(dataItem => (
+              <TouchableOpacity
+                onPress={() => navigate('Detail')}
+              >
+                <Card containerStyle={{ margin: 0 }}>
+                  <View style={styles.itemContainer}>
 
-            <View style={styles.headerContainer}>
-              <Text style={[material.subheading, sanFranciscoWeights.medium]}>Header</Text>
-              <Text style={[material.subheading, sanFranciscoWeights.thin]}>Date</Text>
-            </View>
-            <Image
-              style={styles.image}
-              source={require('../images/shoe_images/adidas_ultra_boost.jpeg')}
-            />
-            <View style={styles.footerContainer}>
-              <Text style={[material.subheading, sanFranciscoWeights.thin]}>Short Description</Text>
-            </View>
+                    <View style={styles.headerContainer}>
+                      <Text style={[material.subheading, sanFranciscoWeights.medium]}>
+                        {dataItem.item_brand}
+                      </Text>
+                      <Text style={[material.subheading, sanFranciscoWeights.thin]}>Date</Text>
+                    </View>
+                    <Image
+                      style={styles.image}
+                      source={require('../images/shoe_images/adidas_ultra_boost.jpeg')}
+                    />
+                    <View style={styles.footerContainer}>
+                      <Text style={[material.subheading, sanFranciscoWeights.thin]}>
+                        Short Description
+                      </Text>
+                    </View>
 
-          </View>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            ))
+          }
         </ScrollView>
       </View>
     );

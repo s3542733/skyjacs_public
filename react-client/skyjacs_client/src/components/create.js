@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AsyncStorage,
   View,
   StyleSheet,
   TouchableOpacity,
@@ -10,9 +11,17 @@ import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { material, sanFranciscoWeights } from 'react-native-typography';
-import { Card } from 'react-native-elements';
+import { Icon, Card } from 'react-native-elements';
 import { brand, type, setting, gender, condition, materials, size } from './createConstants';
-import { IP_ADDRESS } from './constants';
+import { IP_ADDRESS, ACCESS_TOKEN, ACCESS_UID, BUYING_UID } from './constants';
+
+/* eslint-disable global-require */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
+/* eslint-disable react/sort-comp */
+/* eslint-disable prefer-template */
 
 const styles = StyleSheet.create({
   screen: {
@@ -25,7 +34,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 50,
   },
   postContainer: {
     padding: 15,
@@ -44,9 +52,21 @@ const styles = StyleSheet.create({
 });
 
 export default class CreateScreen extends React.Component {
+  static navigationOptions = {
+    tabBarIcon: ({ tintColor }) => (
+      <Icon
+        name="md-person"
+        type="ionicon"
+        color={tintColor}
+      />
+    ),
+  }
+
+
   constructor(props) {
     super(props);
 
+    this.postData = this.postData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
 
@@ -58,6 +78,10 @@ export default class CreateScreen extends React.Component {
     this.conditionRef = this.updateRef.bind(this, 'condition');
     this.sizeRef = this.updateRef.bind(this, 'size');
     this.colorRef = this.updateRef.bind(this, 'color');
+    this.minPriceRef = this.updateRef.bind(this, 'minPrice');
+    this.maxPriceRef = this.updateRef.bind(this, 'maxPrice');
+
+    this.brandPriorityRef = this.updateRef.bind(this, 'brandPriority');
 
     this.state = {
       brand: '',
@@ -65,43 +89,72 @@ export default class CreateScreen extends React.Component {
       model: '',
       gender: '',
       condition: '',
-      size: '',
+      size: 0.0,
       color: '',
       materials: '',
-      brandPriority: false,
-      typePriority: false,
-      modelPriority: false,
-      genderPriority: false,
-      conditionPriority: false,
-      sizePriority: false,
-      colorPriority: false,
-      materialsPriority: false,
-      brandStrict: false,
-      modelStrict: false,
-      typeStrict: false,
-      genderStrict: false,
-      conditionStrict: false,
-      sizeStrict: false,
-      colorStrict: false,
-      materialsStrict: false,
+      minPrice: 0.0,
+      maxPrice: 0.0,
+      brandPriority: 0,
+      typePriority: 0,
+      modelPriority: 0,
+      genderPriority: 0,
+      conditionPriority: 0,
+      sizePriority: 0,
+      colorPriority: 0,
+      materialsPriority: 0,
     };
   }
 
-  componentDidMount() {
-    fetch(`${IP_ADDRESS}users`)
-      .then(response => response.json())
-      .then((responseJson) => {
-        this.setState({
-          dataSource: responseJson,
-        });
+  postData(data, route) {
+    AsyncStorage.getItem(ACCESS_TOKEN).then((token) => {
+      fetch(IP_ADDRESS + route, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          token: token,
+        },
+        body: data,
       })
-      .catch((error) => {
-        console.error(error);
-      });
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          console.log('Buying UID from response: ' + JSON.stringify(responseJson.buying_id));
+          this.storeUID(JSON.stringify(responseJson.buying_id));
+          this.props.navigation.navigate('Match');
+        })
+        .catch((error) => {
+          console.log('Could not create matches');
+          console.log(error);
+        });
+    });
+  }
+
+  async storeUID(uid) {
+    try {
+      console.log('storing buying uid ' + uid);
+      await AsyncStorage.setItem(BUYING_UID, uid);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  componentDidMount() {
+    // fetch(`${IP_ADDRESS}users`)
+    //   .then(response => response.json())
+    //   .then((responseJson) => {
+    //     this.setState({
+    //       dataSource: responseJson,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+    console.log('hi');
   }
 
   onChangeText(text) {
-    ['brand', 'model', 'materials', 'type', 'gender', 'condition', 'size', 'color']
+    ['brand', 'brandPriority', 'model', 'minPrice', 'maxPrice', 'materials', 'type', 'gender', 'condition', 'size', 'color']
       .map(name => ({ name, ref: this[name] }))
       .forEach(({ name, ref }) => {
         if (ref.isFocused()) {
@@ -112,129 +165,33 @@ export default class CreateScreen extends React.Component {
 
   onSubmit() {
     const data = new FormData();
-
-    // test dummy
-    data.append('user', `${IP_ADDRESS}users/2/`);
-    data.append('listing_type', 'Buying');
+    data.append('listing_title', '');
     data.append('item_sex', this.state.gender);
     data.append('sex_priority', this.state.genderPriority);
-    data.append('sex_strict', this.state.genderStrict);
     data.append('item_type', this.state.type);
     data.append('type_priority', this.state.typePriority);
-    data.append('type_strict', this.state.typeStrict);
     data.append('item_brand', this.state.brand);
     data.append('brand_priority', this.state.brandPriority);
-    data.append('brand_strict', this.state.brandStrict);
     data.append('item_model', this.state.model);
     data.append('model_priority', this.state.modelPriority);
-    data.append('model_strict', this.state.modelStrict);
     data.append('item_condition', this.state.condition);
     data.append('condition_priority', this.state.conditionPriority);
-    data.append('condition_strict', this.state.conditionStrict);
     data.append('item_colour', this.state.color);
-    data.append('color_priority', this.state.colorPriority);
-    data.append('color_strict', this.state.colorStrict);
-    data.append('item_materials', this.state.materials);
-    data.append('materials_priority', this.state.materialsPriority);
-    data.append('materials_strict', this.state.materialsStrict);
+    data.append('colour_priority', this.state.colorPriority);
+    data.append('item_material', this.state.materials);
+    data.append('material_priority', this.state.materialsPriority);
     data.append('item_size', this.state.size);
     data.append('size_priority', this.state.sizePriority);
-    data.append('size_strict', this.state.sizeStrict);
-
-    fetch(`${IP_ADDRESS}listings/`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-      body: data,
-    })
-      .then(response => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    this.props.navigation.navigate('Match');
+    data.append('min_price', this.state.minPrice);
+    data.append('max_price', this.state.maxPrice);
+    data.append('item_notes', '');
+    console.log(data);
+    this.postData(data, 'buyings/');
   }
 
   updateRef(name, ref) {
     this[name] = ref;
   }
-
-  handleBrandPriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ brandPriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ brandStrict: true });
-    }
-  };
-
-  handleModelPriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ modelPriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ modelStrict: true });
-    }
-  };
-
-  handleTypePriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ typePriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ typeStrict: true });
-    }
-  };
-
-  handleGenderPriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ genderPriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ genderStrict: true });
-    }
-  };
-
-  handleConditionPriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ conditionPriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ conditionStrict: true });
-    }
-  };
-
-  handleSizePriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ sizePriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ sizeStrict: true });
-    }
-  };
-
-  handleColorPriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ colorPriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ colorStrict: true });
-    }
-  };
-
-  handleMaterialsPriority = (text) => {
-    if (text === 'Priority') {
-      this.setState({ materialsPriority: true });
-    }
-    if (text === 'Strict') {
-      this.setState({ materialsStrict: true });
-    }
-  };
 
   renderForm = () => {
     return (
@@ -252,10 +209,10 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.brandPriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Brand - Priority"
           data={setting}
-          onChangeText={this.handleBrandPriority}
+          onChangeText={this.onChangeText}
         />
 
         <TextField
@@ -267,10 +224,10 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.modelPriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Model - Priority"
           data={setting}
-          onChangeText={this.handleModelPriority}
+          onChangeText={this.onChangeText}
         />
 
         <Dropdown
@@ -283,10 +240,10 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.typePriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Type - Priority"
           data={setting}
-          onChangeText={this.handleTypePriority}
+          onChangeText={this.onChangeText}
         />
 
         <Dropdown
@@ -299,10 +256,10 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.genderPriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Shoe Gender - Priority"
           data={setting}
-          onChangeText={this.handleGenderPriority}
+          onChangeText={this.onChangeText}
         />
 
         <Dropdown
@@ -315,10 +272,10 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.conditionPriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Condition - Priority"
           data={setting}
-          onChangeText={this.handleConditionPriority}
+          onChangeText={this.onChangeText}
         />
 
         <Dropdown
@@ -331,10 +288,10 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.materialsPriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Materials - Priority"
           data={setting}
-          onChangeText={this.handleMaterialsPriority}
+          onChangeText={this.onChangeText}
         />
 
         <Dropdown
@@ -347,10 +304,10 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.sizePriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Size - Priority"
           data={setting}
-          onChangeText={this.handleSizePriority}
+          onChangeText={this.onChangeText}
         />
 
         <TextField
@@ -362,26 +319,39 @@ export default class CreateScreen extends React.Component {
         <Dropdown
           ref={this.colorPriorityRef}
           baseColor="#edc374"
-          value="None"
+          value={0}
           label="Color - Priority"
           data={setting}
-          onChangeText={this.handleColorPriority}
+          onChangeText={this.onChangeText}
+        />
+
+        <TextField
+          ref={this.minPriceRef}
+          label="Minimum Price"
+          onChangeText={this.onChangeText}
+        />
+
+        <TextField
+          ref={this.maxPriceRef}
+          label="Maximum Price"
+          onChangeText={this.onChangeText}
         />
       </KeyboardAwareScrollView>
     );
   }
 
+  // <Image
+  //   style={{
+  //     position: 'absolute',
+  //     resizeMode: 'repeat',
+  //     top: 0,
+  //   }}
+  //   source={require('../images/post_wallpaper.png')}
+  // />
+
   render() {
     return (
       <View style={styles.screen}>
-        <Image
-          style={{
-            position: 'absolute',
-            resizeMode: 'repeat',
-            top: 0,
-          }}
-          source={require('../images/post_wallpaper.png')}
-        />
         <View style={styles.container}>
           <Card containerStyle={{ borderRadius: 5 }}>
             {this.renderForm()}

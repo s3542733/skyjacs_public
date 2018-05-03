@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AsyncStorage,
   Modal,
   CameraRoll,
   Image,
@@ -18,8 +19,15 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Icon, Card } from 'react-native-elements';
 import { material, sanFranciscoWeights } from 'react-native-typography';
 import SelectedPhoto from './selectedPhoto';
-import IP_ADDRESS from './constants';
+import { IP_ADDRESS, ACCESS_TOKEN, ACCESS_UID } from './constants';
 import { brand, type, gender, condition, materials, size } from './createConstants';
+
+/* eslint-disable global-require */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
+/* eslint-disable prefer-template */
 
 const { width } = Dimensions.get('window');
 
@@ -38,7 +46,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 50,
     paddingBottom: 75,
   },
   postContainer: {
@@ -61,7 +68,7 @@ const styles = StyleSheet.create({
 
 export default class PostScreen extends React.Component {
   static navigationOptions = {
-    tabBarIcon: ({tintColor}) => (
+    tabBarIcon: ({ tintColor }) => (
       <Icon
         name="md-pricetag"
         type="ionicon"
@@ -70,31 +77,15 @@ export default class PostScreen extends React.Component {
     ),
   }
 
-  static postData(data, route) {
-    fetch(IP_ADDRESS + route, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-      body: data,
-    })
-      .then(response => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
   constructor(props) {
     super(props);
 
+    this.postData = this.postData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
     this.onFocus = this.onFocus.bind(this);
 
+    this.onSubmitPrice = this.onSubmitPrice.bind(this);
     this.onSubmitBrand = this.onSubmitBrand.bind(this);
     this.onSubmitType = this.onSubmitType.bind(this);
     this.onSubmitGender = this.onSubmitGender.bind(this);
@@ -104,7 +95,10 @@ export default class PostScreen extends React.Component {
     this.onSubmitDescription = this.onSubmitDescription.bind(this);
     this.onSubmitMaterials = this.onSubmitMaterials.bind(this);
     this.onSubmitModel = this.onSubmitModel.bind(this);
+    this.onSubmitTitle = this.onSubmitTitle.bind(this);
 
+    this.priceRef = this.updateRef.bind(this, 'price');
+    this.titlelRef = this.updateRef.bind(this, 'title');
     this.modelRef = this.updateRef.bind(this, 'model');
     this.materialsRef = this.updateRef.bind(this, 'materials');
     this.brandRef = this.updateRef.bind(this, 'brand');
@@ -116,6 +110,8 @@ export default class PostScreen extends React.Component {
     this.descriptionRef = this.updateRef.bind(this, 'description');
 
     this.state = {
+      listing_uid: '',
+      title: '',
       brand: '',
       type: '',
       model: '',
@@ -125,6 +121,7 @@ export default class PostScreen extends React.Component {
       color: '',
       materials: '',
       description: '',
+      price: 0.0,
       modalVisible: false,
       photos: [],
       index: null,
@@ -147,13 +144,17 @@ export default class PostScreen extends React.Component {
   }
 
   onChangeText(text) {
-    ['brand', 'materials', 'model', 'type', 'gender', 'condition', 'size', 'color', 'description']
+    ['title', 'brand', 'materials', 'price', 'model', 'type', 'gender', 'condition', 'size', 'color', 'description']
       .map(name => ({ name, ref: this[name] }))
       .forEach(({ name, ref }) => {
         if (ref.isFocused()) {
           this.setState({ [name]: text });
         }
       });
+  }
+
+  onSubmitPrice() {
+    this.price.focus();
   }
 
   onSubmitBrand() {
@@ -192,12 +193,16 @@ export default class PostScreen extends React.Component {
     this.model.focus();
   }
 
+  onSubmitTitle() {
+    this.title.focus();
+  }
+
   onSubmit() {
     const errors = {};
     const data = new FormData();
     const photodata = new FormData();
 
-    ['brand', 'model', 'materials', 'type', 'gender', 'condition', 'size', 'color', 'description']
+    ['title', 'brand', 'price', 'model', 'materials', 'type', 'gender', 'condition', 'size', 'color', 'description']
       .forEach((name) => {
         const value = this[name].value();
         if (!value) {
@@ -206,30 +211,48 @@ export default class PostScreen extends React.Component {
       });
     this.setState({ errors });
 
-    if (this.state.showSelectedPhoto) {
-      const photo = {
-        uri: this.state.uri,
-        type: 'image/jpeg',
-        name: 'photo.jpeg',
-      };
-      data.append('user', `${IP_ADDRESS}users/1/`);
-      data.append('listing_type', 'Selling');
-      data.append('item_sex', this.state.gender);
-      data.append('item_type', this.state.type);
-      data.append('item_brand', this.state.brand);
-      data.append('item_model', this.state.model);
-      data.append('item_condition', this.state.condition);
-      data.append('item_colour', this.state.color);
-      data.append('item_materials', this.state.materials);
-      data.append('item_size', this.state.size);
-      data.append('item_notes', this.state.description);
-      PostScreen.postData(data, 'listings/');
-      photodata.append('listing', `${IP_ADDRESS}listings/7/`);
-      photodata.append('image_url', photo);
-      PostScreen.postData(photodata, 'images/');
-    } else {
-      alert('Please upload an image before posting');
-    }
+    data.append('listing_title', this.state.title);
+    data.append('item_sex', this.state.gender);
+    data.append('item_type', this.state.type);
+    data.append('item_brand', this.state.brand);
+    data.append('item_model', this.state.model);
+    data.append('item_condition', this.state.condition);
+    data.append('item_colour', this.state.color);
+    data.append('item_material', this.state.materials);
+    data.append('item_size', this.state.size);
+    data.append('item_notes', this.state.description);
+    data.append('item_price', this.state.price);
+    this.postData(data, 'sellings/');
+    alert('Item successfully uploaded!');
+    console.log(data);  
+
+
+    // if (this.state.showSelectedPhoto) {
+    //   const photo = {
+    //     uri: this.state.uri,
+    //     type: 'image/jpeg',
+    //     name: 'photo.jpeg',
+    //   };
+    //   // data.append('user', `${IP_ADDRESS}users/1/`);
+    //   data.append('listing_type', 'Selling');
+    //   data.append('listing_title', this.state.title);
+    //   data.append('item_sex', this.state.gender);
+    //   data.append('item_type', this.state.type);
+    //   data.append('item_brand', this.state.brand);
+    //   data.append('item_model', this.state.model);
+    //   data.append('item_condition', this.state.condition);
+    //   data.append('item_colour', this.state.color);
+    //   data.append('item_material', this.state.materials);
+    //   data.append('item_size', this.state.size);
+    //   data.append('item_notes', this.state.description);
+    //   console.log(data);
+    //   PostScreen.postData(data, 'listings/');
+    //   photodata.append('listing', `${IP_ADDRESS}listings/1/`);
+    //   photodata.append('image_url', photo);
+    //   PostScreen.postData(photodata, 'images/');
+    // } else {
+    //   alert('Please upload an image before posting');
+    // }
   }
 
   getPhotos = () => {
@@ -238,6 +261,40 @@ export default class PostScreen extends React.Component {
       assetType: 'All',
     }).then(r => this.setState({ photos: r.edges }));
   };
+
+  postData(data, route) {
+    AsyncStorage.getItem(ACCESS_TOKEN).then((token) => {
+      fetch(IP_ADDRESS + route, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          token: token,
+        },
+        body: data,
+      })
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log('RESPONSE');
+          console.log(responseJson);
+          console.log(JSON.stringify(responseJson.listing_uid));
+          // this.setState({ listingUid: responseJson.listing_uid });
+          // this.storeUid(JSON.stringify(responseJson.listing_uid));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+  }
+
+  // async storeUid(uid) {
+  //   try {
+  //     await AsyncStorage.setItem(ACCESS_UID, uid);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
 
   toggleModal = () => {
     this.setState({ modalVisible: !this.state.modalVisible });
@@ -262,7 +319,6 @@ export default class PostScreen extends React.Component {
           Describe your shoe to us!
         </Text>
         <TextField
-          textColor="red"
           ref={this.titlelRef}
           onFocus={this.onFocus}
           error={errors.title}
@@ -360,6 +416,14 @@ export default class PostScreen extends React.Component {
           onSubmitEditing={this.onSubmitColor}
           onChangeText={this.onChangeText}
         />
+        <TextField
+          ref={this.priceRef}
+          onFocus={this.onFocus}
+          error={errors.price}
+          label="Price"
+          onSubmitEditing={this.onSubmitPrice}
+          onChangeText={this.onChangeText}
+        />
         {this.renderSelectedPhoto(showSelectedPhoto, uri)}
       </KeyboardAwareScrollView>
     );
@@ -410,17 +474,18 @@ export default class PostScreen extends React.Component {
     );
   }
 
+  // <Image
+  //   style={{
+  //     position: 'absolute',
+  //     resizeMode: 'repeat',
+  //     top: 0,
+  //   }}
+  //   source={require('../images/post_wallpaper.png')}
+  // />
+
   render() {
     return (
       <View style={styles.screen}>
-        <Image
-          style={{
-            position: 'absolute',
-            resizeMode: 'repeat',
-            top: 0,
-          }}
-          source={require('../images/post_wallpaper.png')}
-        />
         <View style={styles.container}>
           <Card containerStyle={{ borderRadius: 5 }} style={{ flex: 1 }}>
             {this.renderPost()}

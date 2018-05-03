@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, AsyncStorage, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { IP_ADDRESS, ACCESS_TOKEN } from '../constants';
 
 /* eslint-disable class-methods-use-this */
@@ -64,7 +64,7 @@ export default class LoginForm extends Component {
       if (response.status >= 200 && response.status < 300) {
         console.log(`RESPONSE: success ${res} STATUS:${response.status}`);
         const responseToken = res;
-        this.storeToken(responseToken);
+        this.storeToken(responseToken.slice(1, -1));
         this.props.navigation.navigate('Tabs');
       } else {
         const errors = res;
@@ -108,36 +108,40 @@ export default class LoginForm extends Component {
     const { error } = this.state;
     return (
       <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          autoCapitalize="none"
-          autoCorrect={false}
-          returnKeyType="next"
-          placeholder="Username"
-          placeholderTextColor="rgba(225,225,225,0.7)"
-          onChangeText={val => this.setState({ username: val })}
-        />
-        <TextInput
-          style={styles.input}
-          returnKeyType="go"
-          placeholder="Password"
-          placeholderTextColor="rgba(225,225,225,0.7)"
-          secureTextEntry
-          onChangeText={val => this.setState({ password: val })}
-        />
-        <Text>{ error || null }</Text>
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={this.onSignIn}
-        >
-          <Text style={styles.buttonText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={() => this.props.navigation.navigate('SignUp')}
-        >
-          <Text style={styles.buttonText}>SIGN UP</Text>
-        </TouchableOpacity>
+        <KeyboardAvoidingView behavior="padding">
+          <TextInput
+            style={styles.input}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="next"
+            placeholder="Username"
+            placeholderTextColor="rgba(225,225,225,0.7)"
+            onChangeText={val => this.setState({ username: val })}
+          />
+          <TextInput
+            style={styles.input}
+            returnKeyType="go"
+            placeholder="Password"
+            placeholderTextColor="rgba(225,225,225,0.7)"
+            secureTextEntry
+            onChangeText={val => this.setState({ password: val })}
+          />
+          <View style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: 'red' }}>{ error || null }</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={this.onSignIn}
+          >
+            <Text style={styles.buttonText}>LOGIN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => this.props.navigation.navigate('SignUp')}
+          >
+            <Text style={styles.buttonText}>SIGN UP</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </View>
     );
   }

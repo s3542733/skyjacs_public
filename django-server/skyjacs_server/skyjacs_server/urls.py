@@ -24,19 +24,23 @@ from rest_framework import routers
 # API is connected thorugh automatic URL routing
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'profiles', views.ProfileViewSet)
-router.register(r'listings', views.ListingViewSet)
-router.register(r'notifications', views.NotificationViewSet)
-router.register(r'images', views.ImageViewSet)
+router.register(r'users', views.users.UserViewSet)
+router.register(r'profiles', views.profiles.ProfileViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^matches/(?P<pk>[0-9]+)$', views.MatchingView.as_view()),
-    url(r'^newuser/', views.NewUserView.as_view()),
-    url(r'^login/', views.LoginView.as_view()),
-    url(r'^logout/', views.LogoutView.as_view()),
+    url(r'^buyingmatches/(?P<pk>[0-9]+)$', views.matching.BuyingMatchingView.as_view()),
+    url(r'^sellingmatches/(?P<pk>[0-9]+)$', views.matching.SellingMatchingView.as_view()),
+    url(r'^register/', views.users.RegisterView.as_view()),
+    url(r'^login/', views.auth.LoginView.as_view()),
+    url(r'^logout/', views.auth.LogoutView.as_view()),
+    url(r'^buyings/$', views.buying.BuyingListViewSet.as_view()),
+    url(r'^buyings/(?P<pk>[0-9]+)$', views.buying.BuyingDetailViewSet.as_view()),
+    url(r'^sellings/$', views.selling.SellingListViewSet.as_view()),
+    url(r'^sellings/(?P<pk>[0-9]+)$', views.selling.SellingDetailViewSet.as_view()),
+    url(r'^recent/$', views.recent.RecentView.as_view()),
+    url(r'^rating/$', views.rating.RatingView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -147,7 +147,7 @@ export default class LoginForm extends Component {
       data.append('password', this.state.password);
 
       try {
-        const response = await fetch(`${IP_ADDRESS}newuser/`, {
+        const response = await fetch(`${IP_ADDRESS}register/`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -191,7 +191,9 @@ export default class LoginForm extends Component {
           placeholderTextColor="rgba(225,225,225,0.7)"
           onChangeText={val => this.setState({ firstName: val })}
         />
-        <Text>{ firstNameError || null }</Text>
+        <View style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'red' }}>{ firstNameError || null }</Text>
+        </View>
         <TextInput
           style={styles.input}
           autoCapitalize="none"
@@ -202,7 +204,9 @@ export default class LoginForm extends Component {
           placeholderTextColor="rgba(225,225,225,0.7)"
           onChangeText={val => this.setState({ lastName: val })}
         />
-        <Text>{ lastNameError || null }</Text>
+        <View style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'red' }}>{ lastNameError || null }</Text>
+        </View>
         <TextInput
           style={styles.input}
           autoCapitalize="none"
@@ -213,7 +217,9 @@ export default class LoginForm extends Component {
           placeholderTextColor="rgba(225,225,225,0.7)"
           onChangeText={val => this.setState({ username: val })}
         />
-        <Text>{ usernameError || null }</Text>
+        <View style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'red' }}>{ usernameError || null }</Text>
+        </View>
         <TextInput
           style={styles.input}
           autoCapitalize="none"
@@ -224,7 +230,9 @@ export default class LoginForm extends Component {
           placeholderTextColor="rgba(225,225,225,0.7)"
           onChangeText={val => this.setState({ email: val })}
         />
-        <Text>{ emailError || null }</Text>
+        <View style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'red' }}>{ emailError || null }</Text>
+        </View>
         <TextInput
           style={styles.input}
           returnKeyType="go"
@@ -233,7 +241,9 @@ export default class LoginForm extends Component {
           secureTextEntry
           onChangeText={val => this.setState({ password: val })}
         />
-        <Text>{ passwordError || null }</Text>
+        <View style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'red' }}>{ passwordError || null }</Text>
+        </View>
         <TextInput
           style={styles.input}
           returnKeyType="go"

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, View, Text, Image, ImageBackground, StyleSheet } from 'react-native';
+import { AsyncStorage, ScrollView, TouchableOpacity, View, Text, Image, ImageBackground, StyleSheet } from 'react-native';
 import { Icon, Card, Rating } from 'react-native-elements';
 import { material, sanFranciscoWeights } from 'react-native-typography';
 import PropTypes from 'prop-types';
-import { ACCESS_TOKEN } from './constants';
+import { IP_ADDRESS, ACCESS_TOKEN } from './constants';
 
 /* eslint-disable global-require */
 /* eslint-disable class-methods-use-this */
@@ -84,19 +84,68 @@ export default class UserScreen extends React.Component {
     // avatarBackground: PropTypes.string,
   }
 
+  constructor() {
+    super();
+    this.getUserData = this.getUserData.bind(this);
+    this.logout = this.logout.bind(this);
+    this.state = { username: '', email: '' };
+  }
+
+  componentWillMount() {
+    this.getUserData('users/');
+  }
+
+
   async getToken() {
     try {
-      const token = await AsyncStorage.getItem(ACCESS_TOKEN);
-      console.log(`Token: ${token}`);
+      const asyncToken = await AsyncStorage.getItem(ACCESS_TOKEN);
+      console.log(`Token: ${asyncToken}`);
     } catch (error) {
       console.log('ERROR: failed to get token');
+    }
+    return null;
+  }
+
+  getUserData(route) {
+    AsyncStorage.getItem(ACCESS_TOKEN).then((token) => {
+      fetch(IP_ADDRESS + route, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          token: token,
+        },
+      })
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log('RESPONSE');
+          console.log(responseJson);
+          console.log(JSON.stringify(responseJson[0].username));
+          this.setState({ username: JSON.stringify(responseJson[0].username) });
+          this.setState({ email: JSON.stringify(responseJson[0].email) });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+  }
+
+  logout() {
+    this.removeToken();
+  }
+
+  async removeToken() {
+    try {
+      await AsyncStorage.removeItem(ACCESS_TOKEN);
+      console.log('Token removed');
+      this.props.navigation.navigate('SignIn');
+    } catch (error) {
+      console.log(error);
     }
   }
 
   renderHeader = () => {
-    const {
-      name,
-    } = this.props;
+    const { username } = this.state;
 
     return (
       <View style={styles.headerContainer}>
@@ -108,7 +157,7 @@ export default class UserScreen extends React.Component {
               style={styles.userImage}
               source={require('../images/default_profile_pic.png')}
             />
-            <Text style={[material.headline, sanFranciscoWeights.semibold]}>{name}</Text>
+            <Text style={[material.headline, sanFranciscoWeights.semibold]}>{username}</Text>
           </View>
         </ImageBackground>
       </View>
@@ -140,7 +189,7 @@ export default class UserScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => navigate('Post')}
+          onPress={() => navigate('Item')}
         >
           <Text style={[material.headline, sanFranciscoWeights.thin]}>View your items</Text>
         </TouchableOpacity>
@@ -149,6 +198,12 @@ export default class UserScreen extends React.Component {
           onPress={() => navigate('Post')}
         >
           <Text style={[material.headline, sanFranciscoWeights.thin]}>Edit profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={this.logout}
+        >
+          <Text style={[material.headline, sanFranciscoWeights.thin, { color: 'red' }]}>Logout</Text>
         </TouchableOpacity>
       </View>
     );
@@ -168,6 +223,7 @@ export default class UserScreen extends React.Component {
                 frations={1}
                 startingValue={5}
                 imageSize={20}
+                readonly
               />
             </View>
           </View>

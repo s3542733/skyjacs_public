@@ -9,6 +9,7 @@ import UserScreen from './user';
 import CreateScreen from './create';
 import MatchScreen from './match';
 import DetailScreen from './detail';
+import UserItemsScreen from './userItems';
 // login stack
 import SignInScreen from './auth/signIn';
 import SignUpScreen from './auth/signUp';
@@ -36,6 +37,12 @@ export const UserStack = StackNavigator({
     screen: DetailScreen,
     navigationOptions: ({
       title: 'Detail View',
+    }),
+  },
+  Item: {
+    screen: UserItemsScreen,
+    navigationOptions: ({
+      title: 'My Items',
     }),
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Text, Dimensions, StyleSheet } from 'react-native';
 import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import { Icon } from 'react-native-elements';
 import { material, sanFranciscoWeights } from 'react-native-typography';
@@ -113,10 +113,12 @@ export default class DetailScreen extends React.Component {
               <Text style={[material.body2, sanFranciscoWeights.thin]}>Some dank comments</Text>
             </View>
             <View style={styles.sellerSection}>
-              <View>
-                <Text style={[material.subheading, sanFranciscoWeights.semibold]}>Seller</Text>
-                <Text style={[material.body2, sanFranciscoWeights.thin]}>Some dank info</Text>
-              </View>
+              <TouchableOpacity>
+                <View>
+                  <Text style={[material.subheading, sanFranciscoWeights.semibold]}>Seller</Text>
+                  <Text style={[material.body2, sanFranciscoWeights.thin]}>Some dank info</Text>
+                </View>
+              </TouchableOpacity>
               <View style={styles.iconEmailContainer}>
                 <Icon
                   name="ios-mail-outline"
