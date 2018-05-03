@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
-import validate from 'validate.js';
 import { IP_ADDRESS } from '../constants';
 
 /* eslint-disable no-undef  */

@@ -157,7 +157,6 @@ export default class UserScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
           <Card containerStyle={styles.cardContainer}>
             {this.renderHeader()}
           </Card>
@@ -176,7 +175,6 @@ export default class UserScreen extends React.Component {
               {this.renderBody()}
             </View>
           </View>
-        </ScrollView>
       </View>
     );
   }

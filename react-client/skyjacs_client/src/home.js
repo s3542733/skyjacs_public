@@ -51,7 +51,7 @@ export default class HomeScreen extends React.Component {
 
   constructor() {
     super();
-    this.state = { isLoading: true };
+    this.state = { isLoading: false };
   }
 
   componentDidMount() {
@@ -91,7 +91,6 @@ export default class HomeScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
           <View style={{ paddingBottom: 15 }}>
             <Text style={[material.headline, sanFranciscoWeights.semibold]}>Recent History</Text>
           </View>
@@ -110,7 +109,6 @@ export default class HomeScreen extends React.Component {
             </View>
 
           </View>
-        </ScrollView>
       </View>
     );
   }
