@@ -225,29 +225,6 @@ def matchSize(pkSpec, dbSpec, strictList):
 		diff = dbSpec - pkSpec
 		return 100.0 - (diff/13.5 * 100)
 
-#def getStrict(pkSpec):
-#
-#	strictList = []
-#
-#	if pkSpec.type_strict == True:
-#		strictList.append('type')
-#	if pkSpec.sex_strict == True:
-#		strictList.append('sex')
-#	if pkSpec.brand_strict  == True:
-#		strictList.append('brand')
-#	if pkSpec.model_strict  == True:
-#		strictList.append('model')
-#	if pkSpec.colour_strict  == True:
-#		strictList.append('colour')
-#	if pkSpec.condition_strict  == True:
-#		strictList.append('condition')
-#	if pkSpec.material_strict  == True:
-#		strictList.append('material')
-#	if pkSpec.size_strict  == True:
-#		strictList.append('size')
-#
-#	return strictList
-
 def getStrictList(pkSpec):
 
 	priorityList = []
@@ -277,9 +254,9 @@ def setPriority(fieldPc, priorityLevel):
 		if priorityLevel == 0:
 			return fieldPc
 		elif priorityLevel == 1:
-			return fieldPC * 1.5
+			return fieldPc * 1.5
 		elif priorityLevel == 2:
-			return fieldPC * 0.5
+			return fieldPc * 0.5
 	else:
 		return fieldPc
 
@@ -316,16 +293,16 @@ class BuyingMatchingView(APIView):
 		for dbSpec in dbSpecs:
 			if dbSpec.item_price <= pkSpec.max_price and dbSpec.item_price >= pkSpec.min_price:
 				validFields = 8
-				typePc = setPriority(matchType(pkSpec.item_type, dbSpec.item_type, strictList))
-				sexPc = setPriority(matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList))
-				brandPc = setPriority(matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList))
+				typePc = setPriority(matchType(pkSpec.item_type, dbSpec.item_type, strictList), pkSpec.type_priority)
+				sexPc = setPriority(matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList), pkSpec.sex_priority)
+				brandPc = setPriority(matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList), pkSpec.brand_priority)
 				modelPc = 0
 				if brandPc == 100 or brandPc == -1:
-					modelPc = setPriority(matchModel(pkSpec.item_model, dbSpec.item_model, strictList))
-				colourPc = setPriority(matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList))
-				conditionPc = setPriority(matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList))
-				materialPc = setPriority(matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList))
-				sizePc = setPriority(matchSize(pkSpec.item_size, dbSpec.item_size, strictList))
+					modelPc = setPriority(matchModel(pkSpec.item_model, dbSpec.item_model, strictList), pkSpec.model_priority)
+				colourPc = setPriority(matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList), pkSpec.colour_priority)
+				conditionPc = setPriority(matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList), pkSpec.condition_priority)
+				materialPc = setPriority(matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList), pkSpec.material_priority)
+				sizePc = setPriority(matchSize(pkSpec.item_size, dbSpec.item_size, strictList), pkSpec.size_priority)
 				totalPc = 0.0
 				valueList = [typePc, sexPc, brandPc, modelPc, colourPc, conditionPc, materialPc, sizePc]
 				for value in valueList:
@@ -347,7 +324,7 @@ class BuyingMatchingView(APIView):
 				dbSpec.item_matching = -2
 
 		queryset = dbSpecs
-		serializer = SellingSerializer(queryset, many=True)	
+		serializer = SellingSerializer(queryset, many=True, context={'request':request})	
 		return Response(serializer.data)
 
 class SellingMatchingView(APIView):
@@ -382,16 +359,16 @@ class SellingMatchingView(APIView):
 		for dbSpec in dbSpecs:
 			if dbSpec.min_price <= pkSpec.item_price and dbSpec.max_price >= pkSpec.item_price:
 				validFields = 8
-				typePc = setPriority(matchType(pkSpec.item_type, dbSpec.item_type, strictList))
-				sexPc = setPriority(matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList))
-				brandPc = setPriority(matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList))
+				typePc = matchType(pkSpec.item_type, dbSpec.item_type, strictList)
+				sexPc = matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList)
+				brandPc = matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList)
 				modelPc = 0
 				if brandPc == 100 or brandPc == -1:
-					modelPc = setPriority(matchModel(pkSpec.item_model, dbSpec.item_model, strictList))
-				colourPc = setPriority(matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList))
-				conditionPc = setPriority(matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList))
-				materialPc = setPriority(matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList))
-				sizePc = setPriority(matchSize(pkSpec.item_size, dbSpec.item_size, strictList))
+					modelPc = matchModel(pkSpec.item_model, dbSpec.item_model, strictList)
+				colourPc = matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList)
+				conditionPc = matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList)
+				materialPc = matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList)
+				sizePc = matchSize(pkSpec.item_size, dbSpec.item_size, strictList)
 				totalPc = 0.0
 				valueList = [typePc, sexPc, brandPc, modelPc, colourPc, conditionPc, materialPc, sizePc]
 				for value in valueList:
@@ -413,7 +390,7 @@ class SellingMatchingView(APIView):
 				dbSpec.item_matching = -2
 
 		queryset = dbSpecs
-		serializer = BuyingSerializer(queryset, many=True)	
+		serializer = BuyingSerializer(queryset, many=True, context={'request':request})	
 		return Response(serializer.data)
 
 #class MatchingView(APIView):

@@ -24,32 +24,28 @@ class BuyingListViewSet(APIView):
 				listing_title = request.POST.get('listing_title')
 				min_price = request.POST.get('min_price')
 				max_price = request.POST.get('max_price')
-				type_priority = request.POST.get('_priority')
+				item_type = request.POST.get('item_type')
+				type_priority = request.POST.get('type_priority')
 				item_sex = request.POST.get('item_sex')
-				sex_priority = request.POST.get('_priority')
+				sex_priority = request.POST.get('sex_priority')
 				item_brand = request.POST.get('item_brand')
-				brand_priority = request.POST.get('_priority')
+				brand_priority = request.POST.get('brand_priority')
 				item_model = request.POST.get('item_model')
-				model_priority = request.POST.get('_priority')
+				model_priority = request.POST.get('model_priority')
 				item_colour =  request.POST.get('item_colour')
-				colour_priority = request.POST.get('_priority')
+				colour_priority = request.POST.get('colour_priority')
 				item_condition = request.POST.get('item_condition')
-				condition_priority = request.POST.get('_priority')
+				condition_priority = request.POST.get('condition_priority')
 				item_material = request.POST.get('item_material')
-				material_priority = request.POST.get('_priority')
+				material_priority = request.POST.get('material_priority')
 				item_size = request.POST.get('item_size')
-				size_priority = request.POST.get('_priority')
+				size_priority = request.POST.get('size_priority')
 				item_notes =request.POST.get('item_notes')
 				
 				item_image = None
-				if request.FILES['item_image']:
-					item_image = request.FILES['item_image']
+				if request.FILES.get('item_image'):
+					item_image = request.FILES.get('item_image')
 
-				#admin_fields = {'req_user' : req_user, 'listing_type' : listing_type, 'listing_title' : listing_title, 'item_type' : item_type, 'type_priority' : type_priority, 'type_strict' : type_strict, 'item_sex' : item_sex,
-				#'sex_priority' : sex_priority, 'sex_strict' : sex_strict, 'item_brand' : item_brand, 'brand_priority' : brand_priority, 'brand_strict' : brand_strict, 'item_model' : item_model, 'model_priority' : model_priority, 'model_strict' : model_strict,
-				#'item_colour' : item_colour, 'colour_priority' : colour_priority, 'colour_strict' : colour_strict, 'item_material' : item_material, '' : material_priority, '' : material_strict, '' : item_size,
-				#'size_priority' : size_priority, 'size_strict, item_notes' : size_strict, 'item_notes' : item_notes}
-				
 				if user.user_admin == True:
 					buying = Buying.objects.create(user=req_user, listing_title=listing_title, 
 						item_type=item_type, type_priority=type_priority, item_sex=item_sex, 

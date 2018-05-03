@@ -23,6 +23,7 @@ class SellingListViewSet(APIView):
 						return Response({'message' : "Requested user doesn't exist."})
 				listing_title = request.POST.get('listing_title')
 				item_price = request.POST.get('item_price')
+				item_type = request.POST.get('item_type')
 				item_sex = request.POST.get('item_sex')
 				item_brand = request.POST.get('item_brand')
 				item_model = request.POST.get('item_model')
@@ -33,14 +34,9 @@ class SellingListViewSet(APIView):
 				item_notes =request.POST.get('item_notes')
 				
 				item_image = None
-				if request.FILES['item_image']:
-					item_image = request.FILES['item_image']
+				if request.FILES.get('item_image'):
+					item_image = request.FILES.get('item_image')
 
-				#admin_fields = {'req_user' : req_user, 'listing_type' : listing_type, 'listing_title' : listing_title, 'item_type' : item_type, 'type_priority' : type_priority, 'type_strict' : type_strict, 'item_sex' : item_sex,
-				#'sex_priority' : sex_priority, 'sex_strict' : sex_strict, 'item_brand' : item_brand, 'brand_priority' : brand_priority, 'brand_strict' : brand_strict, 'item_model' : item_model, 'model_priority' : model_priority, 'model_strict' : model_strict,
-				#'item_colour' : item_colour, 'colour_priority' : colour_priority, 'colour_strict' : colour_strict, 'item_material' : item_material, '' : material_priority, '' : material_strict, '' : item_size,
-				#'size_priority' : size_priority, 'size_strict, item_notes' : size_strict, 'item_notes' : item_notes}
-				
 				if user.user_admin == True:
 					selling = Selling.objects.create(user=req_user, item_price=item_price, 
 						listing_title=listing_title, item_sex=item_sex, item_brand=item_brand, 

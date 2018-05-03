@@ -42,6 +42,4 @@ urlpatterns = [
     url(r'^buyings/(?P<pk>[0-9]+)$', views.buying.BuyingDetailViewSet.as_view()),
     url(r'^sellings/$', views.selling.SellingListViewSet.as_view()),
     url(r'^sellings/(?P<pk>[0-9]+)$', views.selling.SellingDetailViewSet.as_view()),
-#    url(r'^listings/$', views.listings.ListingListViewSet.as_view()),
-#   url(r'^listings/(?P<pk>[0-9]+)$', views.listings.ListingDetailViewSet.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
