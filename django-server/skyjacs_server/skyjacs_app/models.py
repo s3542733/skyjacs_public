@@ -19,6 +19,12 @@ class Profile(models.Model):
 	user_num_ratings = models.IntegerField(default=0.0)
 	user_banned = models.BooleanField(default=False)
 
+class Recent(models.Model):
+	uid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	recent_buyings = models.CharField(default="", max_length=256)
+	recent_sellings = models.CharField(default="", max_length=256)
+
 class Buying(models.Model):
 	uid = models.AutoField(primary_key=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)

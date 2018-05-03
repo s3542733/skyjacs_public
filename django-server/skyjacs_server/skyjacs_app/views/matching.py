@@ -209,7 +209,7 @@ def matchColour(pkSpec, dbSpec, strictList):
 
 def matchSize(pkSpec, dbSpec, strictList):
 
-	if pkSpec == 0.0 or dbSpec:
+	if pkSpec == 0.0 or dbSpec == 0.0:
 		return -1
 
 	if 'size' in strictList:
@@ -392,97 +392,3 @@ class SellingMatchingView(APIView):
 		queryset = dbSpecs
 		serializer = BuyingSerializer(queryset, many=True, context={'request':request})	
 		return Response(serializer.data)
-
-#class MatchingView(APIView):
-#
-#	def get(self, request, pk, format=None):
-#
-#		token = request.META.get('HTTP_TOKEN');
-#		user = authenticate(token)
-#		if user != None:
-#			if user.user_admin == True:
-#				try:
-#					pkSpec = Listing.objects.get(pk=pk)
-#				except Listing.DoesNotExist:
-#					return Response("Listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
-#			else:
-#				try:
-#					pkSpec = Listing.objects.get(pk=pk, user=user)
-#				except Listing.DoesNotExist:
-#					return Response("Listing does not exists.", status=status.HTTP_400_BAD_REQUEST)
-#		else:
-#			return Response("Please log in to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
-#
-#		dbSpecs = Listing.objects.filter(listing_type=pkSpec.listing_type)
-#		if not dbSpecs:
-#			return Response("There are no listings to compare to at this time.", status=status.HTTP_400_BAD_REQUEST)
-#
-#		strictList = []
-#		priorityList = []
-#
-#		if pkSpec.listing_type == "Buying":
-#
-#			strictList = getStrict(pkSpec)
-#			priorityList = getPriority(pkSpec)
-#
-#		for dbSpec in dbSpecs:
-#			if dbSpec.uid != pkSpec.uid:
-#				if dbSpec.listing_type != pkSpec.listing_type:
-#					validFields = 8
-#					typePc = matchType(pkSpec.item_type, dbSpec.item_type, strictList)
-#					sexPc = matchSex(pkSpec.item_sex, dbSpec.item_sex, strictList)
-#					brandPc = matchBrand(pkSpec.item_brand, dbSpec.item_brand, strictList)
-#					modelPc = 0
-#					if brandPc == 100 or brandPc == -1:
-#						modelPc = matchModel(pkSpec.item_model, dbSpec.item_model, strictList)
-#					colourPc = matchColour(pkSpec.item_colour, dbSpec.item_colour, strictList)
-#					conditionPc = matchCondition(pkSpec.item_condition, dbSpec.item_condition, strictList)
-#					materialPc = matchMaterial(pkSpec.item_material, dbSpec.item_material, strictList)
-#					sizePc = matchSize(pkSpec.item_size, dbSpec.item_size, strictList)
-#					valueList = [typePc, sexPc, brandPc, modelPc, colourPc, conditionPc, materialPc, sizePc]
-#					print(valueList)
-#					totalPc = 0
-#					if priorityList != []:
-#						for priority in priorityList:
-#							if priority == 'type' and typePc != -1:
-#								typePc = prioritiseField(typePc)
-#							elif priority == 'sex' and sexPc != -1:
-#								sexPc = prioritiseField(sexPc)
-#							elif priority == 'brand' and brandPc != -1:
-#								brandPc = prioritiseField(brandPc)
-#							elif priority == 'model' and modelPc != -1:
-#								modelPc = prioritiseField(modelPc)
-#							elif priority == 'colour' and colourPc != -1:
-#								colourPc = prioritiseField(colourPc)
-#							elif priority == 'condition' and conditionPc != -1:
-#								conditionPc = prioritiseField(conditionPc)
-#							elif priority == 'material' and materialPc != -1:
-#								materialPc = prioritiseField(materialPc)
-#							elif priority == 'size' and sizePc != -1:
-#								sizePc = prioritiseField(sizePc)
-#
-#					for value in valueList:
-#						if value == -2:
-#							dbSpec.item_matching = None
-#							break
-#						if value != -1:
-#							totalPc = totalPc + value
-#						else:
-#							validFields = validFields - 1
-#					if dbSpec.item_matching != -2:
-#						if validFields == 0 :
-#							dbSpec.item_matching = 100.0
-#						else:
-#							dbSpec.item_matching = totalPc/validFields
-#
-#						if dbSpec.item_matching > 100.0:
-#							dbSpec.item_matching = 100.0
-#					try:
-#						image = Image.objects.get(listing=dbSpec)
-#						dbSpec.image_url = image.image_url
-#					except Image.DoesNotExist:
-#						dbSpec.image_url = None
-#
-#		queryset = dbSpecs
-#		serializer = MatchingSerializer(queryset, many=True)	
-#		return Response(serializer.data)

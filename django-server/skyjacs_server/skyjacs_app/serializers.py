@@ -1,4 +1,4 @@
-from skyjacs_app.models import User, Profile, Buying, Selling
+from skyjacs_app.models import User, Profile, Buying, Selling, Recent
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -11,6 +11,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 		model = Profile
 		fields = ('first_name', 'last_name', 'user_rating', 'user_num_ratings', 
 			'user_banned')
+
+class RecentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Recent
+		fields = ('uid', 'user', 'recent_buyings', 'recent_sellings')
 
 class BuyingSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
