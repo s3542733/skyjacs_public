@@ -53,7 +53,7 @@ class SellingListViewSet(APIView):
 					return Response({'message' : "Successfully created item for {req_user.username}."}, headers={'token':user.token})
 				else:
 					selling = Selling.objects.create(user=user, item_price=item_price, 
-						listing_title=listing_title, item_sex=item_sex, item_brand=item_brand, 
+						listing_title=listing_title, item_sex=item_sex, item_brand=item_brand, listing_type=listing_type,
 						item_model=item_model, item_colour=item_colour, item_condition=item_condition, 
 						item_material=item_material, item_size=item_size, item_notes=item_notes, image_url=item_image)
 					return Response({'message' : 'Successfully created item!', 'selling_id' : selling.uid}, headers={'token':user.token})

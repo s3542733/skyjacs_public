@@ -51,7 +51,7 @@ class BuyingListViewSet(APIView):
 
 				if user.user_admin == True:
 					buying = Buying.objects.create(user=req_user, listing_title=listing_title, listing_type=listing_type,
-						item_type=item_type, type_priority=type_priority, item_sex=item_sex, 
+						item_type=item_type, type_priority=type_priority, item_sex=item_sex, min_price=min_price, max_price=max_price,
 						sex_priority=sex_priority, item_brand=item_brand, brand_priority=brand_priority, 
 						item_model=item_model, model_priority=model_priority, item_colour=item_colour, 
 						colour_priority=colour_priority, item_condition=item_condition, condition_priority=condition_priority, 
@@ -59,8 +59,8 @@ class BuyingListViewSet(APIView):
 						size_priority=size_priority, item_notes=item_notes, image_url=item_image)
 					return Response({'message' : "Successfully created item for {req_user.username}."}, headers={'token':user.token})
 				else:
-					buying = Buying.objects.create(user=user, listing_title=listing_title, 
-						item_type=item_type, type_priority=type_priority, item_sex=item_sex, 
+					buying = Buying.objects.create(user=user, listing_title=listing_title, listing_type=listing_type,
+						item_type=item_type, type_priority=type_priority, item_sex=item_sex, min_price=min_price, max_price=max_price,
 						sex_priority=sex_priority, item_brand=item_brand, brand_priority=brand_priority, 
 						item_model=item_model, model_priority=model_priority, item_colour=item_colour, 
 						colour_priority=colour_priority, item_condition=item_condition, condition_priority=condition_priority, 
