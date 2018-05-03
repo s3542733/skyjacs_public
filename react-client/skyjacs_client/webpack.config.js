@@ -25,13 +25,14 @@ const babelLoaderConfiguration = {
   use: {
     loader: 'babel-loader',
     options: {
-      // cacheDirectory: false,
+      cacheDirectory: false,
       babelrc: false,
       // Babel configuration (or use .babelrc)
       // This aliases 'react-native' to 'react-native-web' and includes only
       // the modules needed by the app.
       plugins: [
         'expo-web',
+        'babel-polyfill',
         'react-native-web',
         'transform-decorators-legacy',
         [
@@ -79,7 +80,13 @@ const ttfLoaderConfiguration = {
 
 module.exports = {
   // your web-specific entry file
-  entry: path.resolve(appDirectory, 'src/index.js'),
+
+  entry: [
+    // Need babel polyfills before we include the bundle
+    'babel-polyfill',
+    // Bundle has to come second
+    path.resolve(appDirectory, 'src/index.js'),
+  ],
   devtool: 'cheap-module-source-map',
 
   // configures where the build ends up

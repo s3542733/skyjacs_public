@@ -27,6 +27,7 @@
     "@expo/samples": "2.1.1",
     "@expo/vector-icons": "^6.3.0",
     "babel-eslint": "8.1.1",
+    "babel-polyfill": "^6.26.0",
     "expo": "^25.0.0",
     "expo-web": "^0.0.12",
     "husky": "^0.14.3",
@@ -37,10 +38,12 @@
     "react-dom": "16.0.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
     "react-native-dotenv": "^0.1.1",
+    "react-native-modal-selector": "^0.0.27",
     "react-native-web": "^0.4.0",
-    "react-navigation": "^1.1.0-rc.4",
+    "react-navigation": "^1.5.11",
     "react-scripts": "1.0.17",
-    "webpack": "^3.11.0"
+    "webpack": "^3.11.0",
+    "yarn": "^1.6.0"
   },
   "devDependencies": {
     "babel-loader": "^7.1.2",
@@ -57,6 +60,8 @@
     "file-loader": "^1.1.7",
     "jest-cli": "^22.4.0",
     "jest-expo": "^25.0.0",
+    "patch-package": "^5.1.1",
+    "postinstall-prepare": "^1.0.1",
     "prettier": "^1.10.2",
     "react-style-proptype": "^3.2.0",
     "react-test-renderer": "^16.2.0"

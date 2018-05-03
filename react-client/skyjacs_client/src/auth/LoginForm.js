@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
+import { Platform, AsyncStorage, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { IP_ADDRESS, ACCESS_TOKEN } from '../constants';
 
 /* eslint-disable class-methods-use-this */
@@ -33,6 +33,10 @@ const styles = StyleSheet.create({
 });
 
 export default class LoginForm extends Component {
+  static navigationOptions = {
+    title: `${Platform.OS} App`,
+  };
+
   constructor() {
     super();
 
@@ -105,6 +109,7 @@ export default class LoginForm extends Component {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     const { error } = this.state;
     return (
       <View style={styles.container}>
@@ -134,7 +139,7 @@ export default class LoginForm extends Component {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => this.props.navigation.navigate('SignUp')}
+          onPress={() => navigate('SignUp')}
         >
           <Text style={styles.buttonText}>SIGN UP</Text>
         </TouchableOpacity>
