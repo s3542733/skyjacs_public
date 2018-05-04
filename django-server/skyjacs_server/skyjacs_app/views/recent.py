@@ -68,6 +68,10 @@ def updateRecent(user, listingType, pk):
 
 	recent.save()
 
+class RecentViewSet(viewsets.ModelViewSet):
+	queryset = Recent.objects.all().order_by('uid')
+	serializer_class = RecentSerializer
+
 class RecentView(APIView):
 
 	# Needs listing_type and listing_uid.

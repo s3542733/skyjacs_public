@@ -54,7 +54,7 @@ class Buying(models.Model):
 	item_size = models.FloatField(default='0.0', blank=True)
 	size_priority = models.IntegerField(default=0, blank=True)
 	item_notes = models.TextField(default='No notes have been left!')
-	item_matching = models.FloatField(null=True)
+	item_matching = models.IntegerField(null=True)
 	image_url = models.ImageField(blank=True, null=True, upload_to='images')
 
 class Selling(models.Model):
@@ -73,5 +73,5 @@ class Selling(models.Model):
 	item_material = models.CharField(max_length=64, default='')
 	item_size = models.FloatField(default='0.0')
 	item_notes = models.TextField(default='No notes have been left!')
-	item_matching = models.FloatField(null=True)
+	item_matching = models.IntegerField(null=True)
 	image_url = models.ImageField(blank=True, null=True, upload_to='images')

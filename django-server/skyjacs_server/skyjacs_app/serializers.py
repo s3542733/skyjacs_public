@@ -13,7 +13,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class RatingSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = Profile
+		model = Rating
 		fields = ('uid', 'rated_user', 'rating_user', 'rating_value')
 
 class RecentSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class RecentSerializer(serializers.ModelSerializer):
 		model = Recent
 		fields = ('uid', 'user', 'recent_buyings', 'recent_sellings')
 
-class BuyingSerializer(serializers.HyperlinkedModelSerializer):
+class BuyingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Buying
 		fields = ('uid', 'user', 'listing_title', 'listing_date', 'listing_type', 'min_price', 'max_price', 'item_type', 'type_priority', 'item_sex',
@@ -29,7 +29,7 @@ class BuyingSerializer(serializers.HyperlinkedModelSerializer):
 			'item_condition', 'condition_priority', 'item_colour', 'colour_priority', 'item_material', 
 			'material_priority', 'item_size', 'size_priority', 'item_notes', 'item_matching', 'image_url')
 
-class SellingSerializer(serializers.HyperlinkedModelSerializer):
+class SellingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Selling
 		fields = ('uid', 'user', 'listing_title', 'listing_date', 'listing_type', 'item_price', 'item_type', 'item_sex',  

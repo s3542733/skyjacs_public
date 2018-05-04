@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from rest_framework import viewsets, mixins, status
 from skyjacs_app.models import Buying, Selling, User, Rating, Profile
 from skyjacs_app.views.auth import authenticate
-from skyjacs_app.serializers import ProfileSerializer
+from skyjacs_app.serializers import ProfileSerializer, RatingSerializer
 
 def updateUserRating(user):
 
@@ -22,6 +22,10 @@ def updateUserRating(user):
 		profile.user_rating = totalRating
 
 	profile.save()
+
+class RatingViewSet(viewsets.ModelViewSet):
+	queryset = Rating.objects.all().order_by('uid')
+	serializer_class = RatingSerializer
 
 class RatingView(APIView):
 
