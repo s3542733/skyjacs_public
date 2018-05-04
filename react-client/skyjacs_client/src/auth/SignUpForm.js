@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { IP_ADDRESS } from '../constants';
+import validate from 'validate.js';
 
 /* eslint-disable no-undef  */
 /* eslint-disable no-console */
@@ -142,7 +143,7 @@ export default class LoginForm extends Component {
       data.append('username', this.state.username);
       data.append('first_name', this.state.firstName);
       data.append('last_name', this.state.lastName);
-      data.append('email', this.state.email);
+      data.append('email', 'user@email.com');
       data.append('password', this.state.password);
 
       try {
@@ -150,7 +151,7 @@ export default class LoginForm extends Component {
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
           },
           body: data,
         });

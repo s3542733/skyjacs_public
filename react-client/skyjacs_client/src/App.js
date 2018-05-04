@@ -3,7 +3,7 @@ import { StackNavigator } from 'react-navigation';
 // tabs
 // login stack
 import SignInScreen from './auth/login';
-import LoginForm from './auth/SignUpForm';
+import LoginForm from './auth/signUp';
 
 // export const UserStack = StackNavigator({
 //   Match: {

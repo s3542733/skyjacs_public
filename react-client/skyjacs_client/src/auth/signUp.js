@@ -24,7 +24,7 @@ export default class SignUpScreen extends React.Component {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <View style={styles.loginContainer}>
-          <Image resizeMode="contain" style={styles.logo} source={require('../../images/skyjacs_logo.png')} />
+          <Image resizeMode="contain" style={styles.logo} source={require('../images/skyjacs_logo.png')} />
         </View>
         <View style={styles.formContainer}>
           <SignUpForm {...this.props} />
