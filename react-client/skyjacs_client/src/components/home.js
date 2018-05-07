@@ -105,42 +105,49 @@ export default class HomeScreen extends React.Component {
 
     this.getToken();
 
+    if (dataSource.length > 0) {
+      return (
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
+          <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
+            <View style={{ paddingBottom: 15 }}>
+              <Text style={[material.headline, sanFranciscoWeights.semibold]}>Recent History</Text>
+            </View>
+            {
+              dataSource.map(dataItem => (
+                <TouchableOpacity
+                  onPress={() => navigate('Detail')}
+                >
+                  <Card containerStyle={{ margin: 0 }}>
+                    <View style={styles.itemContainer}>
+
+                      <View style={styles.headerContainer}>
+                        <Text style={[material.subheading, sanFranciscoWeights.medium]}>
+                          {dataItem.item_brand}
+                        </Text>
+                        <Text style={[material.subheading, sanFranciscoWeights.thin]}>Date</Text>
+                      </View>
+                      <Image
+                        style={styles.image}
+                        source={require('../images/shoe_images/adidas_ultra_boost.jpeg')}
+                      />
+                      <View style={styles.footerContainer}>
+                        <Text style={[material.subheading, sanFranciscoWeights.thin]}>
+                          Short Description
+                        </Text>
+                      </View>
+
+                    </View>
+                  </Card>
+                </TouchableOpacity>
+              ))
+            }
+          </ScrollView>
+        </View>
+      );
+    }
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <ScrollView style={{ padding: 20, backgroundColor: 'white' }}>
-          <View style={{ paddingBottom: 15 }}>
-            <Text style={[material.headline, sanFranciscoWeights.semibold]}>Recent History</Text>
-          </View>
-          {
-            dataSource.map(dataItem => (
-              <TouchableOpacity
-                onPress={() => navigate('Detail')}
-              >
-                <Card containerStyle={{ margin: 0 }}>
-                  <View style={styles.itemContainer}>
-
-                    <View style={styles.headerContainer}>
-                      <Text style={[material.subheading, sanFranciscoWeights.medium]}>
-                        {dataItem.item_brand}
-                      </Text>
-                      <Text style={[material.subheading, sanFranciscoWeights.thin]}>Date</Text>
-                    </View>
-                    <Image
-                      style={styles.image}
-                      source={require('../images/shoe_images/adidas_ultra_boost.jpeg')}
-                    />
-                    <View style={styles.footerContainer}>
-                      <Text style={[material.subheading, sanFranciscoWeights.thin]}>
-                        Short Description
-                      </Text>
-                    </View>
-
-                  </View>
-                </Card>
-              </TouchableOpacity>
-            ))
-          }
-        </ScrollView>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}> 
+        <Text style={[material.headline, sanFranciscoWeights.semibold]}> No History :(</Text>
       </View>
     );
   }

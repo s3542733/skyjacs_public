@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from rest_framework import viewsets, mixins, status
 from skyjacs_app.models import Buying, Selling, User, Rating, Profile
 from skyjacs_app.views.auth import authenticate
-from skyjacs_app.serializers import ProfileSerializer
+from skyjacs_app.serializers import ProfileSerializer, RatingSerializer
 
 def updateUserRating(user):
 
@@ -22,6 +22,10 @@ def updateUserRating(user):
     profile.user_rating = totalRating
 
   profile.save()
+
+class RatingViewSet(viewsets.ModelViewSet):
+  queryset = Rating.objects.all().order_by('uid')
+  serializer_class = RatingSerializer
 
 class RatingView(APIView):
 
@@ -52,7 +56,7 @@ class RatingView(APIView):
         updateUserRating(rated_user)
         profile = Profile.objects.get(user=rated_user)
         serializer = ProfileSerializer(profile, context={'request':request})
-        return Response(serializer.data)
+        return Response(serializer.data, headers={'token':user.token})
     return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
   def get(self, request, format=None):
@@ -63,6 +67,6 @@ class RatingView(APIView):
       updateUserRating(user)
       profile = Profile.objects.get(user=user)
       serializer = ProfileSerializer(profile, context={'request':request})
-      return Response(serializer.data)
+      return Response(serializer.data, headers={'token':user.token})
 
     return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)

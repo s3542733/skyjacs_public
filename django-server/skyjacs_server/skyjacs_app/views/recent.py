@@ -68,6 +68,10 @@ def updateRecent(user, listingType, pk):
 
   recent.save()
 
+class RecentViewSet(viewsets.ModelViewSet):
+  queryset = Recent.objects.all().order_by('uid')
+  serializer_class = RecentSerializer
+
 class RecentView(APIView):
 
   # Needs listing_type and listing_uid.
@@ -83,7 +87,7 @@ class RecentView(APIView):
 
       updateRecent(user, listing_type, listing_uid)
 
-      return Response({'message' : 'Listing has been added to recent history.'})
+      return Response({'message' : 'Listing has been added to recent history.'}, headers={'token':user.token})
     return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -151,5 +155,5 @@ class RecentView(APIView):
 
       recent.save()
 
-      return Response(recent_listings)
+      return Response(recent_listings, headers={'token':user.token})
     return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -26,6 +26,10 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'users', views.users.UserViewSet)
 router.register(r'profiles', views.profiles.ProfileViewSet)
+router.register(r'buyings', views.buying.BuyingViewSet)
+router.register(r'sellings', views.selling.SellingViewSet)
+router.register(r'recents', views.recent.RecentViewSet)
+router.register(r'ratings', views.rating.RatingViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -37,10 +41,13 @@ urlpatterns = [
     url(r'^register/', views.users.RegisterView.as_view()),
     url(r'^login/', views.auth.LoginView.as_view()),
     url(r'^logout/', views.auth.LogoutView.as_view()),
-    url(r'^buyings/$', views.buying.BuyingListViewSet.as_view()),
-    url(r'^buyings/(?P<pk>[0-9]+)$', views.buying.BuyingDetailViewSet.as_view()),
-    url(r'^sellings/$', views.selling.SellingListViewSet.as_view()),
-    url(r'^sellings/(?P<pk>[0-9]+)$', views.selling.SellingDetailViewSet.as_view()),
+    url(r'^buying/$', views.buying.BuyingListViewSet.as_view()),
+    url(r'^buying/(?P<pk>[0-9]+)$', views.buying.BuyingDetailViewSet.as_view()),
+    url(r'^selling/$', views.selling.SellingListViewSet.as_view()),
+    url(r'^selling/(?P<pk>[0-9]+)$', views.selling.SellingDetailViewSet.as_view()),
     url(r'^recent/$', views.recent.RecentView.as_view()),
     url(r'^rating/$', views.rating.RatingView.as_view()),
+    url(r'^getprofile/(?P<pk>[0-9]+)$', views.profiles.GetProfileView.as_view()),
+    url(r'^getuser/$', views.users.GetUserView.as_view()),
+    url(r'^getlistings/$', views.profiles.GetListings.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

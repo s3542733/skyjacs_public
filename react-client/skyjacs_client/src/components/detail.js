@@ -74,6 +74,15 @@ const styles = StyleSheet.create({
 });
 
 export default class DetailScreen extends React.Component {
+  constructor() {
+    super();
+    this.handleProfileView = this.handleProfileView.bind(this);
+  }
+
+  handleProfileView() {
+    this.props.navigation.navigate('Seller');
+  }
+
   render() {
     // const { params } = this.props.navigation.state;
     // const itemBrand = params ? params.item_brand : null;
@@ -113,7 +122,9 @@ export default class DetailScreen extends React.Component {
               <Text style={[material.body2, sanFranciscoWeights.thin]}>Some dank comments</Text>
             </View>
             <View style={styles.sellerSection}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.handleProfileView}
+              >
                 <View>
                   <Text style={[material.subheading, sanFranciscoWeights.semibold]}>Seller</Text>
                   <Text style={[material.body2, sanFranciscoWeights.thin]}>Some dank info</Text>

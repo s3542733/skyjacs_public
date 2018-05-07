@@ -12,6 +12,10 @@ from skyjacs_app.views.auth import authenticate
   # There are some minor differences, but you can pretty
   # much follow what is in buying for this too.
 
+class SellingViewSet(viewsets.ModelViewSet):
+  queryset = Selling.objects.all().order_by('uid')
+  serializer_class = SellingSerializer
+
 class SellingListViewSet(APIView):
 
   def post(self, request, format=None):   
@@ -58,7 +62,7 @@ class SellingListViewSet(APIView):
             item_material=item_material, item_size=item_size, item_notes=item_notes, image_url=item_image)
           return Response({'message' : 'Successfully created item!', 'selling_id' : selling.uid}, headers={'token':user.token})
       return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
-    return Respones({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
+    return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
   def get(self, request, format=None):
     token = self.request.META.get('HTTP_TOKEN')

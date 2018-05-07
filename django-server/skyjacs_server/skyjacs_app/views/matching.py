@@ -275,20 +275,22 @@ class BuyingMatchingView(APIView):
         try:
           pkSpec = Buying.objects.get(pk=pk)
         except Buying.DoesNotExist:
-          return Response("Listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
+          return Response({"message" : "Listing does not exists."}, status=status.HTTP_400_BAD_REQUEST)
       else:
         try:
           pkSpec = Buying.objects.get(pk=pk, user=user)
         except Buying.DoesNotExist:
-          return Response("Listing does not exists.", status=status.HTTP_400_BAD_REQUEST)
+          return Response({"message" : "Listing does not exists."}, status=status.HTTP_400_BAD_REQUEST)
     else:
-      return Response("Please log in to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
+      return Response({"message": "Please log in to start browsing."}, status=status.HTTP_401_UNAUTHORIZED)
 
     dbSpecs = Selling.objects.exclude(user=pkSpec.user)
     if not dbSpecs:
-      return Response("There are no listings to compare to at this time.", status=status.HTTP_400_BAD_REQUEST)
+      return Response({"message" :"There are no listings to compare to at this time."}, status=status.HTTP_400_BAD_REQUEST)
 
     strictList = getStrictList(pkSpec)
+
+    matchingVals = []
 
     for dbSpec in dbSpecs:
       if dbSpec.item_price <= pkSpec.max_price and dbSpec.item_price >= pkSpec.min_price:
@@ -317,15 +319,16 @@ class BuyingMatchingView(APIView):
             if validFields == 0 :
               dbSpec.item_matching = 100.0
             else:
-              dbSpec.item_matching = totalPc/validFields
+              dbSpec.item_matching = int(totalPc/validFields)
             if dbSpec.item_matching > 100.0:
               dbSpec.item_matching = 100.0
-      else:
-        dbSpec.item_matching = -2
-
-    queryset = dbSpecs
-    serializer = SellingSerializer(queryset, many=True, context={'request':request})  
-    return Response(serializer.data)
+            serializer = SellingSerializer(dbSpec, context={'request':request})
+            matchingVals.append(serializer.data)
+    
+    if not matchingVals:
+      return Response({"message" : "There are no matching listings at this time."}, headers={'token':user.token})
+              
+    return Response(matchingVals, headers={'token':user.token})
 
 class SellingMatchingView(APIView):
 
@@ -341,20 +344,21 @@ class SellingMatchingView(APIView):
         try:
           pkSpec = Selling.objects.get(pk=pk)
         except Selling.DoesNotExist:
-          return Response("Listing does not exist.", status=status.HTTP_400_BAD_REQUEST)
+          return Response({"message" : "Listing does not exists."}, status=status.HTTP_400_BAD_REQUEST)
       else:
         try:
           pkSpec = Selling.objects.get(pk=pk, user=user)
         except Listing.DoesNotExist:
-          return Response("Listing does not exists.", status=status.HTTP_400_BAD_REQUEST)
+          return Response({"message" : "Listing does not exists."}, status=status.HTTP_400_BAD_REQUEST)
     else:
-      return Response("Please log in to start browsing.", status=status.HTTP_401_UNAUTHORIZED)
+      return Response({"message" : "Please login to start browsing."}, status=status.HTTP_401_UNAUTHORIZED)
 
     dbSpecs = Buying.objects.exclude(user=pkSpec.user)
     if not dbSpecs:
-      return Response("There are no listings to compare to at this time.", status=status.HTTP_400_BAD_REQUEST)
+      return Response({"message" : "There are no listings to compare to at this time."}, status=status.HTTP_400_BAD_REQUEST, headers={'token':user.token})
 
     strictList = []
+    matchingVals = []
 
     for dbSpec in dbSpecs:
       if dbSpec.min_price <= pkSpec.item_price and dbSpec.max_price >= pkSpec.item_price:
@@ -383,12 +387,14 @@ class SellingMatchingView(APIView):
             if validFields == 0 :
               dbSpec.item_matching = 100.0
             else:
-              dbSpec.item_matching = totalPc/validFields
+              dbSpec.item_matching = int(totalPc/validFields)
             if dbSpec.item_matching > 100.0:
               dbSpec.item_matching = 100.0
-      else:
-        dbSpec.item_matching = -2
 
-    queryset = dbSpecs
-    serializer = BuyingSerializer(queryset, many=True, context={'request':request}) 
-    return Response(serializer.data)
+            serializer = BuyingSerializer(dbSpec, context={'request':request})
+            matchingVals.append(serializer.data)
+
+    if not matchingVals:
+      return Response({"message" : "There are no matching listings at this time."}, headers={'token':user.token})
+              
+    return Response(matchingVals)

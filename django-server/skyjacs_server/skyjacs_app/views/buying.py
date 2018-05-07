@@ -8,6 +8,10 @@ from skyjacs_app.models import Buying, User
 from skyjacs_app.serializers import BuyingSerializer
 from skyjacs_app.views.auth import authenticate
 
+class BuyingViewSet(viewsets.ModelViewSet):
+  queryset = Buying.objects.all().order_by('uid')
+  serializer_class = BuyingSerializer
+
 class BuyingListViewSet(APIView):
 
   def post(self, request, format=None):   
