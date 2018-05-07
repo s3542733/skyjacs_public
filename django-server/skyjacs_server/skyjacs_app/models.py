@@ -1,16 +1,77 @@
 from __future__ import unicode_literals
-from django.contrib.auth.models import User
 from django.db import models
 
-#TODO
+class User(models.Model):
+	uid = models.AutoField(primary_key=True)
+	username = models.CharField(max_length=64, unique=True, blank=False)
+	email = models.EmailField(unique=True, blank=False)
+	password = models.CharField(max_length=255, blank=False)
+	token = models.CharField(max_length=255, null=True, blank=False)
+	user_admin = models.BooleanField(default=False)
+	date_joined = models.DateTimeField(auto_now_add=True)
 
-# class Listing(models.Model):
+class Rating(models.Model):
+	uid = models.AutoField(primary_key=True)
+	rated_user = models.ForeignKey(User, related_name="user_that_is_rated", on_delete=models.CASCADE)
+	rating_user = models.ForeignKey(User, related_name="user_that_is_rating", on_delete=models.CASCADE)
+	rating_value = models.FloatField(default=5.0)
 
+class Profile(models.Model):
+	uid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	first_name = models.CharField(max_length=64, blank=False)
+	last_name = models.CharField(max_length=64, blank=False)
+	user_rating = models.FloatField(default=0.0)
 
-# class Notification(models.Model):
+class Recent(models.Model):
+	uid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	recent_buyings = models.CharField(default="", max_length=256)
+	recent_sellings = models.CharField(default="", max_length=256)
 
+class Buying(models.Model):
+	uid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	listing_title = models.CharField(max_length=255, default='')
+	listing_date = models.DateTimeField(auto_now_add=True)
+	listing_type = models.CharField(default="buying",max_length=12)
+	min_price = models.FloatField(default=0.0, blank=True)
+	max_price = models.FloatField(default=99999.0, blank=True)
+	item_type = models.CharField(max_length=256, default='', blank=True)
+	type_priority = models.IntegerField(default=0, blank=True)
+	item_sex = models.CharField(max_length=8, default='', blank=True)
+	sex_priority = models.IntegerField(default=0, blank=True)
+	item_brand = models.CharField(max_length=255, default='', blank=True)
+	brand_priority = models.IntegerField(default=0, blank=True)
+	item_model = models.CharField(max_length=255, default='', blank=True)
+	model_priority = models.IntegerField(default=0, blank=True)
+	item_colour = models.CharField(max_length=255, default='', blank=True)
+	colour_priority = models.IntegerField(default=0, blank=True)
+	item_condition = models.CharField(max_length=64, default='', blank=True)
+	condition_priority = models.IntegerField(default=0, blank=True)
+	item_material = models.CharField(max_length=64, default='', blank=True)
+	material_priority = models.IntegerField(default=0, blank=True)
+	item_size = models.FloatField(default='0.0', blank=True)
+	size_priority = models.IntegerField(default=0, blank=True)
+	item_notes = models.TextField(default='No notes have been left!')
+	item_matching = models.FloatField(null=True)
+	image_url = models.ImageField(blank=True, null=True, upload_to='images')
 
-# class Spec(models.Model):
-
-
-# class Image(models.Model):
+class Selling(models.Model):
+	uid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	listing_title = models.CharField(max_length=255, default='')
+	listing_date = models.DateTimeField(auto_now_add=True)
+	listing_type = models.CharField(default="selling",max_length=12)
+	item_price = models.FloatField(default=0.0)
+	item_type = models.CharField(max_length=256, default='', blank=True)
+	item_sex = models.CharField(max_length=8, default='')
+	item_brand = models.CharField(max_length=255, default='')
+	item_model = models.CharField(max_length=255, default='')
+	item_colour = models.CharField(max_length=255, default='')
+	item_condition = models.CharField(max_length=64, default='')
+	item_material = models.CharField(max_length=64, default='')
+	item_size = models.FloatField(default='0.0')
+	item_notes = models.TextField(default='No notes have been left!')
+	item_matching = models.FloatField(null=True)
+	image_url = models.ImageField(blank=True, null=True, upload_to='images')

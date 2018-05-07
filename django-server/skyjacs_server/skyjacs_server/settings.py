@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -25,8 +24,7 @@ SECRET_KEY = '+y++ayrn@cu1a%@2&m+$@mp9a(p(^fc&p-_717buc-xejdw6zw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com"]
-
+ALLOWED_HOSTS = ["10.132.110.114", "192.168.0.9", "django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com", "127.0.0.1"]
 
 # Application definition
 
@@ -39,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'skyjacs_app',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +123,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 LOGIN_REDIRECT_URL = 'home'
+MEDIA_URL = '/media/'
