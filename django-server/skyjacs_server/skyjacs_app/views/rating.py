@@ -56,7 +56,7 @@ class RatingView(APIView):
 				updateUserRating(rated_user)
 				profile = Profile.objects.get(user=rated_user)
 				serializer = ProfileSerializer(profile, context={'request':request})
-				return Response(serializer.data)
+				return Response(serializer.data, headers={'token':user.token})
 		return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 	def get(self, request, format=None):
@@ -67,6 +67,6 @@ class RatingView(APIView):
 			updateUserRating(user)
 			profile = Profile.objects.get(user=user)
 			serializer = ProfileSerializer(profile, context={'request':request})
-			return Response(serializer.data)
+			return Response(serializer.data, headers={'token':user.token})
 
 		return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -326,9 +326,9 @@ class BuyingMatchingView(APIView):
 						matchingVals.append(serializer.data)
 		
 		if not matchingVals:
-			return Response({"message" : "There are no matching listings at this time."})
+			return Response({"message" : "There are no matching listings at this time."}, headers={'token':user.token})
 							
-		return Response(matchingVals)
+		return Response(matchingVals, headers={'token':user.token})
 
 class SellingMatchingView(APIView):
 
@@ -355,7 +355,7 @@ class SellingMatchingView(APIView):
 
 		dbSpecs = Buying.objects.exclude(user=pkSpec.user)
 		if not dbSpecs:
-			return Response({"message" : "There are no listings to compare to at this time."}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({"message" : "There are no listings to compare to at this time."}, status=status.HTTP_400_BAD_REQUEST, headers={'token':user.token})
 
 		strictList = []
 		matchingVals = []
@@ -395,6 +395,6 @@ class SellingMatchingView(APIView):
 						matchingVals.append(serializer.data)
 
 		if not matchingVals:
-			return Response({"message" : "There are no matching listings at this time."})
+			return Response({"message" : "There are no matching listings at this time."}, headers={'token':user.token})
 							
 		return Response(matchingVals)

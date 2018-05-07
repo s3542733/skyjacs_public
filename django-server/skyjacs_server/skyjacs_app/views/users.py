@@ -63,6 +63,6 @@ class GetUserView(APIView):
 					return Response(serializer.data)		
 			else:
 				serializer = UserSerializer(user, context={'request':request})
-				return Response(serializer.data)
+				return Response(serializer.data, headers={'token':user.token})
 		
 		return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)

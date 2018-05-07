@@ -50,4 +50,5 @@ urlpatterns = [
     url(r'^rating/$', views.rating.RatingView.as_view()),
     url(r'^getprofile/(?P<pk>[0-9]+)$', views.profiles.GetProfileView.as_view()),
     url(r'^getuser/$', views.users.GetUserView.as_view()),
+    url(r'^getlistings/$', views.profiles.GetListings.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
