@@ -4,6 +4,7 @@ import { StackNavigator } from 'react-navigation';
 // login stack
 import SignInScreen from './auth/login';
 import LoginForm from './auth/signUp';
+import User from './user';
 
 // export const UserStack = StackNavigator({
 //   Match: {
@@ -72,6 +73,12 @@ const Root = StackNavigator({
   },
   SignUp: {
     screen: LoginForm,
+  },
+  User: {
+      screen: User,
+      navigationOptions: {
+      tabBarLabel: 'User',
+    },
   },
   // Tabs: {
   //   screen: Tabs,
