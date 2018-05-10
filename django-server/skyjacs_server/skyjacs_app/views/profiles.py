@@ -18,15 +18,29 @@ class GetProfileView(APIView):
 
     token = request.META.get('HTTP_TOKEN')
     user = authenticate(token)
+    username = ""
+    first_name = ""
+    last_name = ""
+    user_rating = 0
+    user_data = [];
     if user != None:
       try:
         updateUserRating(pk)
         profile = Profile.objects.get(user=pk)
-        serializer = ProfileSerializer(profile, context={'request':request})
-        return Response(serializer.data)
+        profile_user = User.objects.get(pk=pk) 
+        username = profile_user.username
+        first_name = profile.first_name
+        last_name = profile.last_name
+        user_rating = profile.user_rating
+        email = profile_user.email
+        user_data.append(username)
+        user_data.append(first_name)
+        user_data.append(last_name)
+        user_data.append(user_rating)
+        user_data.append(email)
+        return Response(user_data)
       except Profile.DoesNotExist:
         return Response({'message':'This user does not exists.'}, status=status.HTTP_400_BAD_REQUEST)
-
     return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class GetListings(APIView):
