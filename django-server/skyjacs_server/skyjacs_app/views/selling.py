@@ -51,14 +51,14 @@ class SellingListViewSet(APIView):
         if user.user_admin == True:
           selling = Selling.objects.create(user=req_user, item_price=item_price, listing_type=listing_type,
             listing_title=listing_title, item_sex=item_sex, item_brand=item_brand, 
-            item_model=item_model, item_colour=item_colour, item_condition=item_condition, 
+            item_type=item_type, item_model=item_model, item_colour=item_colour, item_condition=item_condition, 
             item_material=item_material, item_size=item_size, item_notes=item_notes, image_url=item_image)
 
           return Response({'message' : "Successfully created item for {req_user.username}."}, headers={'token':user.token})
         else:
           selling = Selling.objects.create(user=user, item_price=item_price, 
             listing_title=listing_title, item_sex=item_sex, item_brand=item_brand, listing_type=listing_type,
-            item_model=item_model, item_colour=item_colour, item_condition=item_condition, 
+            item_type=item_type, item_model=item_model, item_colour=item_colour, item_condition=item_condition, 
             item_material=item_material, item_size=item_size, item_notes=item_notes, image_url=item_image)
           return Response({'message' : 'Successfully created item!', 'selling_id' : selling.uid}, headers={'token':user.token})
       return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
