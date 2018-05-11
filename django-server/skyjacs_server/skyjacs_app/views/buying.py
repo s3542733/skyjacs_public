@@ -48,7 +48,26 @@ class BuyingListViewSet(APIView):
         item_size = float(request.POST.get('item_size'))
         size_priority = request.POST.get('size_priority')
         item_notes =request.POST.get('item_notes')
-        
+
+        if item_type = "None":
+          item_type = ""
+        if item_sex = "None":
+          item_sex = ""
+        if item_brand = "None":
+          item_brand = ""
+        if item_model = "None":
+          item_model = ""
+        if item_colour = "None":
+          item_colour = ""
+        if item_condition = "None":
+          item_condition = ""
+        if item_material = "None"
+          item_material = ""
+        if item_size = "None":
+          item_size = 0.0
+
+
+
         item_image = None
         if request.FILES.get('item_image'):
           item_image = request.FILES.get('item_image')
