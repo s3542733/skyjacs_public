@@ -102,7 +102,7 @@ export default class HomeScreen extends React.Component {
             </View>
             <Image
               style={styles.image}
-              source={require('../images/shoe_images/adidas_ultra_boost.jpeg')}
+              source={require('./images/shoe_images/adidas_ultra_boost.jpeg')}
             />
             <View style={styles.footerContainer}>
               <Text style={[material.subheading, sanFranciscoWeights.thin]}>Short Description</Text>

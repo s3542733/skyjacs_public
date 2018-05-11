@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, TabNavigator } from 'react-navigation';
 // tabs
 // login stack
 import SignInScreen from './auth/login';
 import LoginForm from './auth/signUp';
-import User from './user';
-
-// export const UserStack = StackNavigator({
-//   Match: {
-//     screen: MatchScreen,
-//     navigationOptions: ({
-//       title: 'Found Matches',
-//     }),
-//   },
-// });
+// import User from './user';
+import HomeScreen from './home';
+import UserScreen from './user';
+import MatchScreen from './match';
+export const UserStack = StackNavigator({
+  Match: {
+    screen: MatchScreen,
+    navigationOptions: ({
+      title: 'Found Matches',
+    }),
+  },
+});
 
 // export const PostStack = StackNavigator({
 //   Post: {
@@ -24,48 +26,29 @@ import User from './user';
 //   },
 // });
 
-// export const HomeStack = StackNavigator({
-//   Home: {
-//     screen: HomeScreen,
-//     navigationOptions: {
-//       title: 'Home',
-//     },
-//   },
-// });
+export const HomeStack = StackNavigator({
+  Home: {
+    screen: HomeScreen,
+    navigationOptions: {
+      title: 'Home',
+    },
+  },
+});
 
-// export const Tabs = TabNavigator({
-//   Home: {
-//     screen: HomeStack,
-//     navigationOptions: {
-//       title: 'Home',
-//     },
-//   },
-//   User: {
-//     screen: UserStack,
-//     navigationOptions: {
-//       tabBarLabel: 'User',
-//     },
-//   },
-//   Post: {
-//     screen: PostStack,
-//     navigationOptions: {
-//       tabBarLabel: 'Post',
-//     },
-
-//   },
-//   Starred: { screen: StarredScreen },
-//   Notification: { screen: NotificationScreen },
-// }, {
-//   animationEnabled: true,
-//   swipeEnable: true,
-//   tabBarPosition: 'bottom',
-//   tabBarOptions: {
-//     activeTintColor: '#2980b6',
-//     inactiveTintColor: '#d1cece',
-//     showIcon: true,
-//     showLabel: false,
-//   },
-// });
+export const Tabs = TabNavigator({
+  Home: {
+    screen: HomeStack,
+    navigationOptions: {
+      title: 'Home',
+    },
+  },
+  User: {
+    screen: UserStack,
+    navigationOptions: {
+      tabBarLabel: 'User',
+    },
+  }
+});
 
 const Root = StackNavigator({
   SignIn: {
@@ -75,14 +58,14 @@ const Root = StackNavigator({
     screen: LoginForm,
   },
   User: {
-      screen: User,
+      screen: UserScreen,
       navigationOptions: {
       tabBarLabel: 'User',
     },
   },
-  // Tabs: {
-  //   screen: Tabs,
-  // },
+  Tabs: {
+    screen: Tabs,
+  },
 }, {
   headerMode: 'none',
 });

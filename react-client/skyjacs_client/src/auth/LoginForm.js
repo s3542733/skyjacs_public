@@ -49,36 +49,37 @@ export default class LoginForm extends Component {
     };
   }
 
-  async onSignIn() {
-    const data = new FormData();
-    data.append('username', this.state.username);
-    data.append('password', this.state.password);
+  onSignIn() {
+    // const data = new FormData();
+    // data.append('username', this.state.username);
+    // data.append('password', this.state.password);
 
-    try {
-      const response = await fetch(`${IP_ADDRESS}login/`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
-        },
-        body: data,
-      });
-      const res = await response.text();
+    // try {
+    //   const response = await fetch(`${IP_ADDRESS}login/`, {
+    //     method: 'POST',
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
+    //     },
+    //     body: data,
+    //   });
+    //   const res = await response.text();
 
-      if (response.status >= 200 && response.status < 300) {
-        console.log(`RESPONSE: success ${res} STATUS:${response.status}`);
-        const responseToken = res;
-        this.storeToken(responseToken);
-        this.props.navigation.navigate('Tabs');
-      } else {
-        const errors = res;
-        throw errors;
-      }
-    } catch (errors) {
-      this.removeToken();
-      this.setState({ error: errors });
-      console.log(`ERROR: ${errors}`);
-    }
+    //   if (response.status >= 200 && response.status < 300) {
+    //     console.log(`RESPONSE: success ${res} STATUS:${response.status}`);
+    //     const responseToken = res;
+    //     this.storeToken(responseToken);
+    //     this.props.navigation.navigate('Tabs');
+    //   } else {
+    //     const errors = res;
+    //     throw errors;
+    //   }
+    // } catch (errors) {
+    //   this.removeToken();
+    //   this.setState({ error: errors });
+    //   console.log(`ERROR: ${errors}`);
+    // }
+    this.props.navigation.navigate('Tabs');
   }
   
   async getToken() {

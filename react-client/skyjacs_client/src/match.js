@@ -96,7 +96,7 @@ export default class SignUpScreen extends React.Component {
                 <View style={styles.contentContainer}>
                   <Image
                     style={styles.image}
-                    source={require('../images/shoe_images/adidas_ultra_boost.jpeg')}
+                    source={require('./images/shoe_images/adidas_ultra_boost.jpeg')}
                   />
                   <View key={dataItem.uid} style={styles.textContainer}>
                     <Text style={[material.subheading, sanFranciscoWeights.semibold]}>
