@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+from _future_ import unicode_literals
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -138,11 +138,14 @@ def matchBrand(pkSpec, dbSpec, strictList):
   if 'brand' in strictList:
     if pkSpec != dbSpec:
       return -2
+    else:
+      return 100
 
-  if pkSpec != dbSpec:
-    return 0
-  else:
+  if pkSpec == dbSpec:
     return 100
+  else:
+    return 0
+
 
 def matchModel(pkSpec, dbSpec, strictList):
 
@@ -162,7 +165,6 @@ def matchCondition(pkSpec, dbSpec, strictList):
   else:
     pkSpecVal = CONDITIONOPTS[pkSpec]
 
-    
   if dbSpec == '':
     dbSpecVal = 5.0
   else:
@@ -215,6 +217,8 @@ def matchSize(pkSpec, dbSpec, strictList):
   if 'size' in strictList:
     if pkSpec != dbSpec:
       return -2
+    else:
+      return 100
 
   if pkSpec == dbSpec:
     return 100
@@ -231,19 +235,19 @@ def getStrictList(pkSpec):
 
   if pkSpec.type_priority == 3:
     priorityList.append('type')
-  if pkSpec.type_priority == 3:
+  if pkSpec.sex_priority == 3:
     priorityList.append('sex')
-  if pkSpec.type_priority == 3:
+  if pkSpec.brand_priority == 3:
     priorityList.append('brand')
-  if pkSpec.type_priority == 3:
+  if pkSpec.model_priority == 3:
     priorityList.append('model')
-  if pkSpec.type_priority == 3:
+  if pkSpec.colour_priority == 3:
     priorityList.append('colour')
-  if pkSpec.type_priority == 3:
+  if pkSpec.condition_priority == 3:
     priorityList.append('condition')
-  if pkSpec.type_priority == 3:
+  if pkSpec.material_priority == 3:
     priorityList.append('material')
-  if pkSpec.type_priority == 3:
+  if pkSpec.size_priority == 3:
     priorityList.append('size')
 
   return priorityList
@@ -257,6 +261,8 @@ def setPriority(fieldPc, priorityLevel):
       return fieldPc * 1.5
     elif priorityLevel == 2:
       return fieldPc * 0.5
+    elif priorityLevel == 3:
+      return fieldPc
   else:
     return fieldPc
 
