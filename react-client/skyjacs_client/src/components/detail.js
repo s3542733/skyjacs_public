@@ -74,26 +74,68 @@ const styles = StyleSheet.create({
 });
 
 export default class DetailScreen extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    const { params } = this.props.navigation.state;
+    const itemBrand = params ? params.item_brand : null;
+    const itemType = params ? params.item_type : null;
+    const itemModel = params ? params.item_model : null;
+    const itemGender = params ? params.item_gender : null;
+    const itemCondition = params ? params.item_condition : null;
+    const itemSize = params ? params.item_size : null;
+    const itemColour = params ? params.item_colour : null;
+    const itemMaterial = params ? params.item_material : null;
+    const itemMatching = params ? params.item_matching : null;
+    const itemDescription = params ? params.item_notes : null;
+    const userParam = params ? params.user : null;
+
     this.handleProfileView = this.handleProfileView.bind(this);
+
+    this.state = {
+      brand: itemBrand,
+      type: itemType,
+      model: itemModel,
+      gender: itemGender,
+      condition: itemCondition,
+      size: itemSize,
+      colour: itemColour,
+      material: itemMaterial,
+      matching: itemMatching,
+      description: itemDescription,
+      user: userParam,
+    };
   }
 
   handleProfileView() {
-    this.props.navigation.navigate('Seller');
+    // AsyncStorage.getItem(ACCESS_TOKEN).then((token) => {
+    //   fetch(IP_ADDRESS + route, {
+    //     method: 'GET',
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'multipart/form-data',
+    //       token: token,
+    //     },
+    //   })
+    //     .then(response => response.json())
+    //     .then((responseJson) => {
+    //       console.log('RESPONSE');
+    //       console.log(responseJson);
+    //       this.props.navigation.navigate('Seller');
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // });
+    console.log('User ID : ' + this.state.user);
+    const user_id = this.state.user;
+    this.props.navigation.navigate('Seller', { userID: user_id });  
+  }
+
+  ComponentWillMount() {
+
   }
 
   render() {
-    // const { params } = this.props.navigation.state;
-    // const itemBrand = params ? params.item_brand : null;
-    // const itemType = params ? params.item_type : null;
-    // const itemModel = params ? params.item_model : null;
-    // const itemGender = params ? params.item_gender : null;
-    // const itemCondition = params ? params.item_condition : null;
-    // const itemSize = params ? params.item_size : null;
-    // const itemColour = params ? params.item_colour : null;
-    // const itemMaterial = params ? params.item_material : null;
-    // const itemMatching = params ? params.item_matching : null;
 
     return (
       <View style={{ flex: 1 }}>
@@ -119,7 +161,14 @@ export default class DetailScreen extends React.Component {
             </View>
             <View style={styles.section}>
               <Text style={[material.subheading, sanFranciscoWeights.semibold]}>Description</Text>
-              <Text style={[material.body2, sanFranciscoWeights.thin]}>Some dank comments</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.description}</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.brand}</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.type}</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.gender}</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.condition}</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.size}</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.colour}</Text>
+              <Text style={[material.body2, sanFranciscoWeights.thin]}>{this.state.material}</Text>
             </View>
             <View style={styles.sellerSection}>
               <TouchableOpacity

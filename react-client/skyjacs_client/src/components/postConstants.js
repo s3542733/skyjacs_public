@@ -47,9 +47,6 @@ export const brand = [
   {
     value: 'Saucony',
   },
-  {
-    value: 'None',
-  },
 ];
 
 export const type = [
@@ -74,9 +71,6 @@ export const type = [
   {
     value: 'Cageless',
   },
-  {
-    value: 'None',
-  },
 ];
 
 export const gender = [
@@ -85,9 +79,6 @@ export const gender = [
   },
   {
     value: 'Female',
-  },
-  {
-    value: 'None',
   },
 ];
 
@@ -107,9 +98,6 @@ export const condition = [
   {
     value: 'Boxed Mint',
   },
-  {
-    value: 'None',
-  },
 ];
 
 export const materials = [
@@ -127,9 +115,6 @@ export const materials = [
   },
   {
     value: 'Mesh',
-  },
-  {
-    value: 'None',
   },
 ];
 
@@ -196,8 +181,5 @@ export const size = [
   },
   {
     value: 14.5,
-  },
-  {
-    value: 'None',
   },
 ];

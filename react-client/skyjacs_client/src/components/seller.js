@@ -84,15 +84,29 @@ export default class SellerScreen extends React.Component {
     // avatarBackground: PropTypes.string,
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    // const { navigation } = this.props;
+    // const userParams = navigation.getParam('userID', 'NO-ID');
+
+    const { params } = this.props.navigation.state;
+    const userParam = params ? params.userID : null;
     this.getUserData = this.getUserData.bind(this);
     this.logout = this.logout.bind(this);
-    this.state = { username: '', email: '' };
+    this.state = { 
+      username: '',
+      email: '', 
+      userID: userParam,
+      firstName: '',
+      lastName: '',
+      userRating: 0,
+    };
+    console.log('USER ==ID: ' + this.state.userID); 
+
   }
 
   componentWillMount() {
-    this.getUserData('users/');
+    this.getUserData('getprofile/' + this.state.userID);
   }
 
 
@@ -107,6 +121,7 @@ export default class SellerScreen extends React.Component {
   }
 
   getUserData(route) {
+    console.log('USER ID: ' + this.state.userID); 
     AsyncStorage.getItem(ACCESS_TOKEN).then((token) => {
       fetch(IP_ADDRESS + route, {
         method: 'GET',
@@ -120,9 +135,14 @@ export default class SellerScreen extends React.Component {
         .then((responseJson) => {
           console.log('RESPONSE');
           console.log(responseJson);
-          console.log(JSON.stringify(responseJson[0].username));
-          this.setState({ username: JSON.stringify(responseJson[0].username) });
-          this.setState({ email: JSON.stringify(responseJson[0].email) });
+          this.setState({
+            firstName: responseJson.first_name,
+            lastName: responseJson.last_name,
+            userRating: responseJson.user_rating,
+          });
+          // console.log(JSON.stringify(responseJson[0].username));
+          // this.setState({ username: JSON.stringify(responseJson[0].username) });
+          // this.setState({ email: JSON.stringify(responseJson[0].email) });
         })
         .catch((error) => {
           console.log(error);
@@ -157,7 +177,7 @@ export default class SellerScreen extends React.Component {
               style={styles.userImage}
               source={require('../images/default_profile_pic.png')}
             />
-            <Text style={[material.headline, sanFranciscoWeights.semibold]}>{username}</Text>
+            <Text style={[material.headline, sanFranciscoWeights.semibold]}>{this.state.firstName} {this.state.lastName}</Text>
           </View>
         </ImageBackground>
       </View>
@@ -190,6 +210,10 @@ export default class SellerScreen extends React.Component {
     );
   }
 
+  completeRating() {
+
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -204,6 +228,7 @@ export default class SellerScreen extends React.Component {
                 frations={1}
                 startingValue={0}
                 imageSize={20}
+                onFinishRating={() => this.completeRating()}
               />
               <Text>Give this user a rating!</Text>
             </View>

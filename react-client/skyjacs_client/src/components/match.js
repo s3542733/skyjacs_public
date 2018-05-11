@@ -107,7 +107,6 @@ export default class SignUpScreen extends React.Component {
         .then((responseJson) => {
           console.log('RESPONSE');
           console.log(responseJson);
-          console.log(JSON.stringify(responseJson));
           this.setState({
             dataSource: responseJson,
           });
@@ -169,7 +168,7 @@ export default class SignUpScreen extends React.Component {
           {
             dataSource.map(dataItem => (
               <TouchableOpacity
-                onPress={this.handleViewItemButton(dataItem)}
+                onPress={() => this.handleViewItemButton(dataItem)}
               >
                 <View style={styles.itemContainer}>
                   <View style={styles.contentContainer}>

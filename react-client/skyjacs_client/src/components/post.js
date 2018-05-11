@@ -20,7 +20,7 @@ import { Icon, Card } from 'react-native-elements';
 import { material, sanFranciscoWeights } from 'react-native-typography';
 import SelectedPhoto from './selectedPhoto';
 import { IP_ADDRESS, ACCESS_TOKEN, ACCESS_UID } from './constants';
-import { brand, type, gender, condition, materials, size } from './createConstants';
+import { brand, type, gender, condition, materials, size } from './postConstants';
 
 /* eslint-disable global-require */
 /* eslint-disable class-methods-use-this */
@@ -222,7 +222,7 @@ export default class PostScreen extends React.Component {
     data.append('item_size', this.state.size);
     data.append('item_notes', this.state.description);
     data.append('item_price', this.state.price);
-    this.postData(data, 'sellings/');
+    this.postData(data, 'selling/');
     alert('Item successfully uploaded!');
     console.log(data);  
 

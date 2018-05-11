@@ -1,4 +1,4 @@
-export const IP_ADDRESS = 'http://10.132.110.114:19004/';
+export const IP_ADDRESS = 'http://10.132.111.22:19005/';
 
 // export const IP_ADDRESS = 'http://192.168.0.9:19004/';
 

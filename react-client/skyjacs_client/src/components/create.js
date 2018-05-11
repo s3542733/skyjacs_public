@@ -93,7 +93,7 @@ export default class CreateScreen extends React.Component {
       color: '',
       materials: '',
       minPrice: 0.0,
-      maxPrice: 0.0,
+      maxPrice: 99999.0,
       brandPriority: 0,
       typePriority: 0,
       modelPriority: 0,
@@ -150,7 +150,6 @@ export default class CreateScreen extends React.Component {
     //   .catch((error) => {
     //     console.error(error);
     //   });
-    console.log('hi');
   }
 
   onChangeText(text) {
@@ -186,7 +185,7 @@ export default class CreateScreen extends React.Component {
     data.append('max_price', this.state.maxPrice);
     data.append('item_notes', '');
     console.log(data);
-    this.postData(data, 'buyings/');
+    this.postData(data, 'buying/');
   }
 
   updateRef(name, ref) {
