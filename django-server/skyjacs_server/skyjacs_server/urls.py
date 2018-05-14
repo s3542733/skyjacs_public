@@ -24,12 +24,12 @@ from rest_framework import routers
 # API is connected thorugh automatic URL routing
 
 router = routers.DefaultRouter()
-router.register(r'users', views.users.UserViewSet)
-router.register(r'profiles', views.profiles.ProfileViewSet)
-router.register(r'buyings', views.buying.BuyingViewSet)
-router.register(r'sellings', views.selling.SellingViewSet)
-router.register(r'recents', views.recent.RecentViewSet)
-router.register(r'ratings', views.rating.RatingViewSet)
+router.register(r'api_users', views.users.UserViewSet)
+router.register(r'api_profiles', views.profiles.ProfileViewSet)
+router.register(r'api_buyings', views.buying.BuyingViewSet)
+router.register(r'api_sellings', views.selling.SellingViewSet)
+router.register(r'api_recents', views.recent.RecentViewSet)
+router.register(r'api_ratings', views.rating.RatingViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -50,4 +50,7 @@ urlpatterns = [
     url(r'^getprofile/(?P<pk>[0-9]+)$', views.profiles.GetProfileView.as_view()),
     url(r'^getuser/$', views.users.GetUserView.as_view()),
     url(r'^getlistings/$', views.profiles.GetListings.as_view()),
+    url(r'^getuserbuying/$', views.buying.BuyingAltListViewSet.as_view()),
+    url(r'^getuserselling/$', views.selling.SellingAltListViewSet.as_view()),
+    url(r'^getrandomselling/$', views.selling.RandomSellingView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

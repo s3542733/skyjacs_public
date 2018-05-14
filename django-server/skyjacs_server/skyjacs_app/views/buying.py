@@ -1,16 +1,38 @@
-from __future__ import unicode_literals
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import viewsets, mixins, status
 from skyjacs_app.models import Buying, User
-from skyjacs_app.serializers import BuyingSerializer
+from skyjacs_app.serializers import BuyingSerializer, CreateBuyingSerializer
 from skyjacs_app.views.auth import authenticate
 
-class BuyingViewSet(viewsets.ModelViewSet):
+class BuyingViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
   queryset = Buying.objects.all().order_by('uid')
-  serializer_class = BuyingSerializer
+  serializer_class = CreateBuyingSerializer
+
+class BuyingAltListViewSet(APIView):
+
+  def post(self, request, format=None):
+    token = request.META.get('HTTP_TOKEN')
+    if token != "":
+      user = authenticate(token)
+      if user != None:
+        if request.POST.get('user_id') != None:
+          try:
+            req_user = User.objects.get(uid=request.POST.get('user_id'))
+            buyings = Buying.objects.filter(user=req_user)
+            if buyings:
+              serializer = BuyingSerializer(buyings, many=True, context={'request':request})
+              return Response(serializer.data)
+            else:
+              return Response({'message': "User doesn't have any buying listings."})
+          except User.DoesNotExist:
+            return Response({'message' : "User doesn't exist."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+          return Response({'message' : "Invalid request."}, status=status.HTTP_400_BAD_REQUEST)
+      else:
+        return Respones({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class BuyingListViewSet(APIView):
 
@@ -23,7 +45,7 @@ class BuyingListViewSet(APIView):
         if request.POST.get('user_id') != None:
           try:
             req_user = User.objects.get(pk=int(request.POST.get('user_id')))
-          except:
+          except User.DoesNotExist:
             return Response({'message' : "Requested user doesn't exist."})
         # Each thing that has request.POST.get() needs to be from a form.
         # Try and enforce float format i.e 0.0 for float fields.
@@ -49,24 +71,22 @@ class BuyingListViewSet(APIView):
         size_priority = request.POST.get('size_priority')
         item_notes =request.POST.get('item_notes')
 
-        if item_type = "None":
+        if item_type == "None":
           item_type = ""
-        if item_sex = "None":
+        if item_sex == "None":
           item_sex = ""
-        if item_brand = "None":
+        if item_brand == "None":
           item_brand = ""
-        if item_model = "None":
+        if item_model == "None":
           item_model = ""
-        if item_colour = "None":
+        if item_colour == "None":
           item_colour = ""
-        if item_condition = "None":
+        if item_condition == "None":
           item_condition = ""
-        if item_material = "None"
+        if item_material == "None":
           item_material = ""
-        if item_size = "None":
+        if item_size == "None":
           item_size = 0.0
-
-
 
         item_image = None
         if request.FILES.get('item_image'):
@@ -101,13 +121,18 @@ class BuyingListViewSet(APIView):
       if user != None:
         if user.user_admin == True:
           queryset = Buying.objects.all()
-          serializer = BuyingSerializer(queryset, many=True, context={'request':request})
-          return Response(serializer.data)
+          if queryset:
+            serializer = BuyingSerializer(queryset, many=True, context={'request':request})
+            return Response(serializer.data)
+          else:
+            return Response({'message': "User doesn't have any buying listings."})
         else:
           queryset = Buying.objects.all().filter(user=user)
-          serializer = BuyingSerializer(queryset, many=True, context={'request':request})
-          return Response(serializer.data)
-
+          if queryset:
+            serializer = BuyingSerializer(queryset, many=True, context={'request':request})
+            return Response(serializer.data)
+          else:
+            return Response({'message': "User doesn't have any buying listings."})
     return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class BuyingDetailViewSet(APIView):

@@ -7,14 +7,64 @@ from rest_framework import viewsets, mixins, status
 from skyjacs_app.models import Selling, User
 from skyjacs_app.serializers import SellingSerializer
 from skyjacs_app.views.auth import authenticate
+import random
 
   # Pretty much the same instructions as in buying.
   # There are some minor differences, but you can pretty
   # much follow what is in buying for this too.
 
-class SellingViewSet(viewsets.ModelViewSet):
+class SellingViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
   queryset = Selling.objects.all().order_by('uid')
   serializer_class = SellingSerializer
+
+class RandomSellingView(APIView):
+
+  def get(self, request, format=None):
+    token = request.META.get('HTTP_TOKEN')
+    if token != "":
+      user = authenticate(token)
+      if user != None:
+        rand = False
+        try:
+          count = 0
+          max_uid = Selling.objects.all().count()
+          while(rand == False and max_uid != 0):
+            count += 1
+            pk = random.randint(1, max_uid)
+            selling = Selling.objects.get(uid=pk)
+            if selling.user != user.uid:
+              serializer = SellingSerializer(selling, context={'request' : request})
+              return Response(serializer.data)
+            elif(count >= 20):
+              return Response({'message' : "Things aren't random enough at the moment. Try again in a second or two."})
+        except Selling.DoesNotExist:
+          return Response({'message' : "Looks like there are no listings to randomise at the moment."})
+
+
+    return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+class SellingAltListViewSet(APIView):
+
+  def post(self, request, format=None):
+    token = request.META.get('HTTP_TOKEN')
+    if token != "":
+      user = authenticate(token)
+      if user != None:
+        if request.POST.get('user_id') != None:
+          try:
+            req_user = User.objects.get(uid=request.POST.get('user_id'))
+            sellings = Selling.objects.filter(user=req_user)
+            if sellings:
+              serializer = SellingSerializer(sellings, many=True, context={'request':request})
+              return Response(serializer.data)
+            else:
+              return Response({'message': "User doesn't have any buying listings."})
+          except User.DoesNotExist:
+            return Response({'message' : "User doesn't exist."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+          return Response({'message' : "Invalid request."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    return Response({'message' : 'Please log in to browse.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class SellingListViewSet(APIView):
 

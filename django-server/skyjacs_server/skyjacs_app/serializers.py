@@ -21,7 +21,15 @@ class RecentSerializer(serializers.ModelSerializer):
 		model = Recent
 		fields = ('uid', 'user', 'recent_buyings', 'recent_sellings')
 
-class BuyingSerializer(serializers.HyperlinkedModelSerializer):
+class CreateBuyingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Buying
+		fields = ('uid', 'listing_title', 'listing_date', 'listing_type', 'min_price', 'max_price', 'item_type', 'type_priority', 'item_sex',
+			'sex_priority', 'type_priority', 'item_brand', 'brand_priority', 'item_model', 'model_priority', 
+			'item_condition', 'condition_priority', 'item_colour', 'colour_priority', 'item_material', 
+			'material_priority', 'item_size', 'size_priority', 'item_notes', 'item_matching', 'image_url')
+
+class BuyingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Buying
 		fields = ('uid', 'user', 'listing_title', 'listing_date', 'listing_type', 'min_price', 'max_price', 'item_type', 'type_priority', 'item_sex',
@@ -29,7 +37,14 @@ class BuyingSerializer(serializers.HyperlinkedModelSerializer):
 			'item_condition', 'condition_priority', 'item_colour', 'colour_priority', 'item_material', 
 			'material_priority', 'item_size', 'size_priority', 'item_notes', 'item_matching', 'image_url')
 
-class SellingSerializer(serializers.HyperlinkedModelSerializer):
+class CreateSellingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Selling
+		fields = ('uid', 'listing_title', 'listing_date', 'listing_type', 'item_price', 'item_type', 'item_sex',  
+			'item_brand', 'item_model', 'item_condition', 'item_colour', 'item_material', 
+			'item_size', 'item_notes', 'item_matching', 'image_url')
+
+class SellingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Selling
 		fields = ('uid', 'user', 'listing_title', 'listing_date', 'listing_type', 'item_price', 'item_type', 'item_sex',  
