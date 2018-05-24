@@ -69,6 +69,11 @@ class test_auth_class(TestCase):
         self.assertEqual(test_None, None)
 
 
+
+
+
+
+'''----------------------legacy Test Cases---------------------
 #test class for matching algorithm
 class test_matching_algorithm(TestCase):
     #create a test user
@@ -228,4 +233,4 @@ class matchViewTest(TestCase):
         listing1 = Buying.objects.create(user = self.user, listing_type = 'buying')
         listing2 = Buying.objects.create(user = self.user)
         pk = listing1.pk
-
+'''
