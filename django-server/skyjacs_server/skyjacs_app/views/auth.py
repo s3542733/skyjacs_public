@@ -13,43 +13,43 @@ import uuid
 # EVERYTHING ON THIS PAGE WILL WORK
 
 def create_token():
-  token = uuid.uuid4().hex
-  return token
+	token = uuid.uuid4().hex
+	return token
 
 def authenticate(token):
-  try:
-    user = User.objects.get(token=token)
-    return user
-  except User.DoesNotExist:
-    return None
+	try:
+		user = User.objects.get(token=token)
+		return user
+	except User.DoesNotExist:
+		return None
 
 class LoginView(APIView):
 
-  def post(self, request, format=None):
+	def post(self, request, format=None):
 
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+		username = request.POST.get('username')
+		password = request.POST.get('password')
 
-    try:
-      user = User.objects.get(username=username)
-      if check_password(password, user.password):
-        user.token = create_token()
-        user.save()
-        return Response(user.token)
-      else:
-        return Response({'message' : 'Login failed. Incorrect username or password.'}, status=status.HTTP_400_BAD_REQUEST)
-    except User.DoesNotExist:
-      return Response({'message' : 'Login failed. Incorrect username or password.'}, status=status.HTTP_400_BAD_REQUEST)
+		try:
+			user = User.objects.get(username=username)
+			if check_password(password, user.password):
+				user.token = create_token()
+				user.save()
+				return Response(user.token)
+			else:
+				return Response({'message' : 'Login failed. Incorrect username or password.'}, status=status.HTTP_400_BAD_REQUEST)
+		except User.DoesNotExist:
+			return Response({'message' : 'Login failed. Incorrect username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
 
-  def post(self, request, format=None):
-    token = request.META.get('HTTP_TOKEN')
-    
-    user = authenticate(token)
-    if user != None:
-      user.token = None
-      user.save()
-      return Response({'message' : "You've been logged out"})
-    else:
-      return Response({'message' : 'Log in to browse.'}, status=status.HTTP_400_BAD_REQUEST)
+	def post(self, request, format=None):
+		token = request.META.get('HTTP_TOKEN')
+		
+		user = authenticate(token)
+		if user != None:
+			user.token = None
+			user.save()
+			return Response({'message' : "You've been logged out"})
+		else:
+			return Response({'message' : 'Log in to browse.'}, status=status.HTTP_400_BAD_REQUEST)

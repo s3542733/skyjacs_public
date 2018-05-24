@@ -19,8 +19,11 @@ const styles = StyleSheet.create({
     flex: 1,
     borderColor: '#cccccc',
     borderWidth: 0.5,
+    marginLeft: 70,
+    marginRight: 70,
+    marginBottom: 20,
     height: 300,
-    padding: 10,
+    padding: 40,
     borderRadius: 5,
   },
   headerContainer: {
@@ -90,14 +93,15 @@ export default class HomeScreen extends React.Component {
     this.getToken();
 
     return (
+      <ScrollView>
       <View style={{ flex: 1, backgroundColor: 'white' }}>
-          <View style={{ paddingBottom: 15 }}>
+          <View style={{ paddingBottom: 15, paddingLeft: 70 }}>
             <Text style={[material.headline, sanFranciscoWeights.semibold]}>Recent History</Text>
           </View>
           <View style={styles.itemContainer}>
 
             <View style={styles.headerContainer}>
-              <Text style={[material.subheading, sanFranciscoWeights.medium]}>Header</Text>
+              <Text style={[material.subheading, sanFranciscoWeights.medium]}>Puma</Text>
               <Text style={[material.subheading, sanFranciscoWeights.thin]}>Date</Text>
             </View>
             <Image
@@ -109,7 +113,11 @@ export default class HomeScreen extends React.Component {
             </View>
 
           </View>
+          
+
+
       </View>
+      </ScrollView>
     );
   }
 }

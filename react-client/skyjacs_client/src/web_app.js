@@ -39,7 +39,7 @@ export const Tabs = TabNavigator({
   Home: {
     screen: HomeStack,
     navigationOptions: {
-      title: 'Home',
+      tabBarLabel: 'Home',
     },
   },
   User: {
@@ -48,6 +48,15 @@ export const Tabs = TabNavigator({
       tabBarLabel: 'User',
     },
   }
+}, {
+  animationEnabled: true,
+  swipeEnable: false,
+  tabBarPosition: 'Top',
+  tarBarOptionL: {
+    activeTintColor: '#2980b6',
+    inactiveTintColor: '#d1cece',
+    showLabel: false,
+  },
 });
 
 const Root = StackNavigator({
