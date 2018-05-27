@@ -6,7 +6,7 @@ from rest_framework.test import APIRequestFactory
 from django.urls import reverse
 from rest_framework.test import force_authenticate
 
-from .models import User, Buying
+from .models import User, Buying, Selling
 from skyjacs_app.views.users import *
 from skyjacs_app.views.profiles import *
 from skyjacs_app.views.rating import *
@@ -102,8 +102,6 @@ class test_auth_class(TestCase):
         #force authenticate to simulate successful login
         request = APIRequestFactory().get('/skyjacs_app/User')
         force_authenticate(request, user)
-        view = GetUserView.as_view()
-        response = view(request)
         #test logout with dummy user account
         response = client.post('/logout/',HTTP_TOKEN=user.token)
         self.assertEqual(response.status_code, 200)
@@ -151,19 +149,15 @@ class test_user_profile(TestCase):
         #force authenticate to simulate successful login
         request = APIRequestFactory().get('/skyjacs_app/User')
         force_authenticate(request, user)
-        response = client.get('/profiles/', user.username, HTTP_TOKEN=user.token)
+        response = client.get('/profiles/', HTTP_TOKEN=user.token, pk=user)
         self.assertEqual(response.status_code, 200)
 
-
-
-
-'''----------------------legacy Test Cases---------------------
 #test class for matching algorithm
 class test_matching_algorithm(TestCase):
     #create a test user
     def create_user(self):
         #setup testing user object
-        return User.objects.create(username='test', email='test@email.com', \
+        return User.objects.create(username='test2', email='test2@email.com', \
             password='130518', token=create_token())
 
     #Test cases
@@ -270,35 +264,23 @@ class test_matching_algorithm(TestCase):
     
     def test_skyjacs_views_getStrictList(self):
         user = self.create_user()
-        testListing = Buying(user,type_strict = True)
-        Case1 = getStrict(testListing)
+        testListing = Buying(user,type_priority=3)
+        Case1 = getStrictList(testListing)
         strictList = []
         strictList.append('type')
         self.assertEqual(Case1, strictList)
-    
-    def test_skyjacs_views_getPriority(self):
-        user = self.create_user()
-        testListing = Buying(user,type_priority = True)
-        Case1 = getPriority(testListing)
-        priorityList = []
-        priorityList.append('type')
-        self.assertEqual(Case1, priorityList)
-
-    def test_skyjacs_views_UserViewSet(self):
-        request = APIRequestFactory().get('/skyjacs_app/User')
-        user = self.create_user()
-        userview = UserViewSet.as_view({'get': 'retrieve'})
-        response = userview(request, pk=user.pk)
-        self.assertEqual(response.status_code, 200)
 
     def test_skyjacs_views_ListingViewSet(self):
-        request = APIRequestFactory().get('/skyjacs_app/Listing')
-        listingview = BuyingViewSet.as_view({'get': 'retrieve'})
         user = self.create_user()
-        listing = Buying.objects.create(user = user, type_strict = True)
-        response = listingview(request, pk=listing.pk)
+        seller = User.objects.create(username='test', email='test@email.com', \
+            password='130518', token=create_token())
+        request = APIRequestFactory().get('/skyjacs_app/User')
+        force_authenticate(request, user)
+        listing = Buying.objects.create(user=user)
+        dblist = Selling.objects.create(user=seller)
+        response = client.get('/buyingmatches/', pk=listing.uid, HTTP_TOKEN=user.token)
         self.assertEqual(response.status_code, 200)
-    
+'''----------------------legacy Test Cases---------------------    
     """def test_skyjacs_views_NotificationViewSet(self):
         request = APIRequestFactory().get('/skyjacs_app/Notification')
         user = self.create_user()

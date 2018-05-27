@@ -231,19 +231,19 @@ def getStrictList(pkSpec):
 
 	if pkSpec.type_priority == 3:
 		priorityList.append('type')
-	if pkSpec.type_priority == 3:
+	if pkSpec.sex_priority == 3:
 		priorityList.append('sex')
-	if pkSpec.type_priority == 3:
+	if pkSpec.brand_priority == 3:
 		priorityList.append('brand')
-	if pkSpec.type_priority == 3:
+	if pkSpec.model_priority == 3:
 		priorityList.append('model')
-	if pkSpec.type_priority == 3:
+	if pkSpec.colour_priority == 3:
 		priorityList.append('colour')
-	if pkSpec.type_priority == 3:
+	if pkSpec.condition_priority == 3:
 		priorityList.append('condition')
-	if pkSpec.type_priority == 3:
+	if pkSpec.material_priority == 3:
 		priorityList.append('material')
-	if pkSpec.type_priority == 3:
+	if pkSpec.size_priority == 3:
 		priorityList.append('size')
 
 	return priorityList
@@ -267,7 +267,7 @@ class BuyingMatchingView(APIView):
 		pkSpec = None
 		dbSpecs = None
 
-		token = request.META.get('HTTP_TOKEN');
+		token = request.META.get('HTTP_TOKEN')
 		user = authenticate(token)
 		
 		if user != None:
@@ -337,7 +337,7 @@ class SellingMatchingView(APIView):
 		pkSpec = None
 		dbSpec = None
 
-		token = request.META.get('HTTP_TOKEN');
+		token = request.META.get('HTTP_TOKEN')
 		user = authenticate(token)
 		if user != None:
 			if user.user_admin == True:
