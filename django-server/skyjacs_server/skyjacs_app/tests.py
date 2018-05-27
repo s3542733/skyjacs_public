@@ -4,9 +4,17 @@ from __future__ import unicode_literals
 from django.test import TestCase, Client
 from rest_framework.test import APIRequestFactory
 from django.urls import reverse
+from rest_framework.test import force_authenticate
 
 from .models import User, Buying
-from .views import *
+from skyjacs_app.views.users import *
+from skyjacs_app.views.profiles import *
+from skyjacs_app.views.rating import *
+from skyjacs_app.views.buying import *
+from skyjacs_app.views.selling import *
+from skyjacs_app.views.recent import *
+from skyjacs_app.views.matching import *
+from skyjacs_app.views.auth import *
 
 #initialize APIClient app
 client = Client()
@@ -35,11 +43,10 @@ class test_user_models(TestCase):
 
 #Test auth viewset
 class test_auth_class(TestCase):
-
     #create a test user
     def create_user(self):
         #setup testing user object
-        return User.objects.create(username='test', email='test@email.com', \
+        return User.objects.create(username='test2', email='test2@email.com', \
             password='130518', token=create_token())
 
     def create_admin(self):
@@ -47,7 +54,6 @@ class test_auth_class(TestCase):
         return User.objects.create(username='admin', email='admin@email.com',\
             password='admin123', token=create_token())
     
-
     #Test Cases
     def test_authenticate(self):
         #create fake user
@@ -68,7 +74,85 @@ class test_auth_class(TestCase):
         test_None = authenticate(token)
         self.assertEqual(test_None, None)
 
+    def test_loginView(self):
+        #set up a user for api test
+        data = {'email': 'test@email.com', 'username': 'test', 'password': '130518', \
+        'first_name': 'testUser', 'last_name': 'test'}
+        client.post('/register/', data)
+        #test login viewset
+        data = {'username': 'test', 'password': '130518'}
+        response = client.post('/login/', data)
+        self.assertEqual(response.status_code, 200)
+        #test unsuccessful login with wrong password
+        response = client.post('/login/', {'username': 'test', \
+        'password': '123456'})
+        self.assertEqual(response.status_code, 400)
+        #test unsuccessful login with wrong username
+        response = client.post('/login/', {'username': 'test1', \
+        'password': '123456'})
+        self.assertEqual(response.status_code, 400)
 
+    def test_logOutView(self):
+        #create dummy account
+        user = self.create_user()
+        #test unsuccessful logout
+        response = client.post('/logout/',HTTP_TOKEN='')
+        self.assertNotEqual(response.status_code, 200)
+
+        #force authenticate to simulate successful login
+        request = APIRequestFactory().get('/skyjacs_app/User')
+        force_authenticate(request, user)
+        view = GetUserView.as_view()
+        response = view(request)
+        #test logout with dummy user account
+        response = client.post('/logout/',HTTP_TOKEN=user.token)
+        self.assertEqual(response.status_code, 200)
+
+class test_user_class(TestCase):
+    #create a test user
+    def create_user(self):
+        #setup testing user object
+        return User.objects.create(username='test2', email='test2@email.com', \
+            password='130518', token=create_token())
+    #set up dummy data
+    def setUp(self):
+        self.data = {'email': 'test@email.com', 'username': 'test', 'password': '130518', \
+        'first_name': 'testUser', 'last_name': 'test'}
+
+    def test_registerView(self):
+        response = client.post('/register/', self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_getUserView(self):
+        user = self.create_user()
+        #force authenticate to simulate successful login
+        request = APIRequestFactory().get('/skyjacs_app/User')
+        force_authenticate(request, user)
+        view = GetUserView.as_view()
+        response = view(request)
+        #test logout with dummy user account
+        response = client.post('/logout/',HTTP_TOKEN=user.token)
+        self.assertEqual(response.status_code, 200)
+
+class test_user_profile(TestCase):
+    #create a test user
+    def create_user(self):
+        #setup testing user object
+        return User.objects.create(username='test2', email='test2@email.com', \
+            password='130518', token=create_token())
+
+    #set up dummy data
+    def setUp(self):
+        self.data = {'email': 'test@email.com', 'username': 'test', 'password': '130518', \
+        'first_name': 'testUser', 'last_name': 'test'}
+
+    def test_getProfileView(self):
+        user = self.create_user()
+        #force authenticate to simulate successful login
+        request = APIRequestFactory().get('/skyjacs_app/User')
+        force_authenticate(request, user)
+        response = client.get('/profiles/', user.username, HTTP_TOKEN=user.token)
+        self.assertEqual(response.status_code, 200)
 
 
 
