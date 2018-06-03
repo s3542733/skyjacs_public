@@ -6,3 +6,4 @@ django-server/skyjacs_server/.coverage
 *.json
 *.png
 *.css
+*.pyc
