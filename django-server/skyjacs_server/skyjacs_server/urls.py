@@ -29,7 +29,7 @@ router.register(r'profiles', views.profiles.ProfileViewSet)
 router.register(r'buyings', views.buying.BuyingViewSet)
 router.register(r'sellings', views.selling.SellingViewSet)
 router.register(r'recents', views.recent.RecentViewSet)
-router.register(r'ratings', views.rating.RatingViewSet)
+#router.register(r'ratings', views.rating.RatingViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
