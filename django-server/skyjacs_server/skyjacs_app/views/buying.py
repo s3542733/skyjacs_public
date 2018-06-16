@@ -49,21 +49,21 @@ class BuyingListViewSet(APIView):
         size_priority = request.POST.get('size_priority')
         item_notes =request.POST.get('item_notes')
 
-        if item_type = "None":
+        if item_type == "None":
           item_type = ""
-        if item_sex = "None":
+        if item_sex == "None":
           item_sex = ""
-        if item_brand = "None":
+        if item_brand == "None":
           item_brand = ""
-        if item_model = "None":
+        if item_model == "None":
           item_model = ""
-        if item_colour = "None":
+        if item_colour == "None":
           item_colour = ""
-        if item_condition = "None":
+        if item_condition == "None":
           item_condition = ""
-        if item_material = "None"
+        if item_material == "None"
           item_material = ""
-        if item_size = "None":
+        if item_size == "None":
           item_size = 0.0
 
 
