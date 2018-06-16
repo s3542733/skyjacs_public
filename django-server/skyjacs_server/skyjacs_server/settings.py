@@ -24,7 +24,7 @@ SECRET_KEY = '+y++ayrn@cu1a%@2&m+$@mp9a(p(^fc&p-_717buc-xejdw6zw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.132.110.114", "192.168.0.9", "django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com", "127.0.0.1"]
+ALLOWED_HOSTS = ["10.132.110.114", "192.168.0.9", "django-env.unwf22fga6.ap-southeast-2.elasticbeanstalk.com", "skyjacsserver-djang-eb.unwf22fga6.ap-southeast-2.elasticbeanstalk.com","127.0.0.1"]
 
 # Application definition
 
