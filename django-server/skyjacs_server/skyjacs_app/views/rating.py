@@ -23,9 +23,9 @@ def updateUserRating(user):
 
   profile.save()
 
-class RatingViewSet(viewsets.ModelViewSet):
-  queryset = Rating.objects.all().order_by('uid')
-  serializer_class = RatingSerializer
+#class RatingViewSet(viewsets.ModelViewSet):
+#  queryset = Rating.objects.all().order_by('uid')
+#  serializer_class = RatingSerializer
 
 class RatingView(APIView):
 
