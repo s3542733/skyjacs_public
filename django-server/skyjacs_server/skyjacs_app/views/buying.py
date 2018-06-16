@@ -61,7 +61,7 @@ class BuyingListViewSet(APIView):
           item_colour = ""
         if item_condition == "None":
           item_condition = ""
-        if item_material == "None"
+        if item_material == "None":
           item_material = ""
         if item_size == "None":
           item_size = 0.0
